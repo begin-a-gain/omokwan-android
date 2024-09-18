@@ -30,6 +30,7 @@ composeBom = "2024.06.00"
 glide = "1.0.0-beta01"
 appcompat = "1.6.1"
 material = "1.10.0"
+jetbrainsKotlinJvm = "1.9.0"
 
 
 [libraries]
@@ -85,6 +86,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
 [bundles]
 di-hilt = [
