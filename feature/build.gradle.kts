@@ -40,4 +40,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.bundles.android.compose)
+    implementation(libs.bundles.android.lifecycle)
+    implementation(libs.bundles.di.hilt)
 }
