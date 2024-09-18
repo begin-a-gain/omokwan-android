@@ -28,6 +28,8 @@ composeBom = "2024.06.00"
 
 # Util
 glide = "1.0.0-beta01"
+appcompat = "1.6.1"
+material = "1.10.0"
 
 
 [libraries]
@@ -76,10 +78,13 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 # Util
 util-ui-glide = { module = "com.github.bumptech.glide:compose", version.ref = "glide" }
 util-jodatime = { module = "joda-time:joda-time", version = "2.12.5" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
 [bundles]
 di-hilt = [

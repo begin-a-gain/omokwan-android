@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Omokwang"
 include(":app")
- 
+include(":feature")
