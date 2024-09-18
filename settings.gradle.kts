@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Omokwang"
 include(":app")
- 
+include(":feature")
+include(":domain")
+include(":data")
+include(":feature:signin")
