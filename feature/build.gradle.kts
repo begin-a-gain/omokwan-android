@@ -9,9 +9,10 @@ android {
 
     defaultConfig {
         minSdk = 29
+        minSdk = 29
+        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -30,6 +31,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
@@ -41,7 +48,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
     implementation(libs.bundles.android.lifecycle)
-    implementation(libs.bundles.di.hilt)
+//    implementation(libs.bundles.di.hilt)
 }
