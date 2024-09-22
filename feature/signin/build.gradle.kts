@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.android.hilt)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -9,7 +15,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,5 +55,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
     implementation(libs.bundles.android.lifecycle)
-//    implementation(libs.bundles.di.hilt)
+    ksp(libs.di.google.hilt.compiler)
+    implementation(libs.bundles.di.hilt)
+
+    implementation(libs.login.kakao)
 }

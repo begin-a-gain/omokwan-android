@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.android.hilt)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -10,7 +16,6 @@ android {
     defaultConfig {
         applicationId = "com.begin_a_gain.omokwang"
         minSdk = 29
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -67,4 +72,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    ksp(libs.di.google.hilt.compiler)
+    implementation(libs.bundles.di.hilt)
 }

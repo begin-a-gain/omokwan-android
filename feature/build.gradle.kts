@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.android.hilt)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -51,5 +57,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
     implementation(libs.bundles.android.lifecycle)
-//    implementation(libs.bundles.di.hilt)
+    ksp(libs.di.google.hilt.compiler)
+    implementation(libs.bundles.di.hilt)
 }
