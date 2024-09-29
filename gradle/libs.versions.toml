@@ -13,6 +13,9 @@ kotlinXserialization = "2.0.10"
 # DI
 hilt = "2.51.1"
 
+# MVI Orbit
+mviOrbit = "9.0.0"
+
 # Network / Data
 datastore = "1.1.1"
 securityCrypto = "1.0.0"
@@ -57,6 +60,11 @@ di-google-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hil
 di-google-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 di-google-hilt-test = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 di-javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+
+# MVI
+mvi-orbit-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "mviOrbit"}
+mvi-orbit-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "mviOrbit"}
+mvi-orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "mviOrbit"}
 
 # Datastore
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -132,4 +140,10 @@ data-local = [
     "androidx-datastore",
     "androidx-datastore-core",
     "androidx-security-crypto"
+]
+
+mvi-orbit = [
+    "mvi-orbit-core",
+    "mvi-orbit-viewmodel",
+    "mvi-orbit-compose"
 ]
