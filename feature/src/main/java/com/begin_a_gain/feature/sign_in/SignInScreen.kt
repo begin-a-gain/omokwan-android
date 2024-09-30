@@ -12,8 +12,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SignInScreen(
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
-
+    LaunchedEffect(Unit) {
+        viewModel.initKakaoSdk()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -21,7 +24,7 @@ fun SignInScreen(
     ) {
         Button(
             onClick = {
-
+                viewModel.signInWithKakao()
             }
         ) {
             Text(text = "KAKAO")
