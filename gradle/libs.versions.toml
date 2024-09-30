@@ -53,7 +53,8 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class"}
+androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+androidx-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 
 # DI
 di-google-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -117,7 +118,8 @@ android-compose = [
     "androidx-ui-test-manifest",
     "androidx-ui-test-junit4",
     "androidx-material3",
-    "androidx-material3-window-size"
+    "androidx-material3-window-size",
+    "androidx-hilt-navigation"
 ]
 
 android-lifecycle = [

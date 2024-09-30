@@ -1,4 +1,4 @@
-package com.begin_a_gain.signin
+package com.begin_a_gain.library
 
 import org.junit.Test
 

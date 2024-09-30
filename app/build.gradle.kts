@@ -63,7 +63,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.feature.signin)
+    implementation(projects.feature)
+    implementation(projects.library)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

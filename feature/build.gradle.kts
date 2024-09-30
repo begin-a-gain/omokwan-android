@@ -15,9 +15,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-        minSdk = 29
-        targetSdk = 34
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -46,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.library)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -59,4 +57,7 @@ dependencies {
     implementation(libs.bundles.android.lifecycle)
     ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
+    implementation(libs.bundles.mvi.orbit)
+
+    implementation(libs.login.kakao)
 }
