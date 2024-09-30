@@ -26,7 +26,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "KAKAO_API_KEY", properties.get("KAKAO_API_KEY").toString())
+        buildConfigField("String", "KAKAO_API_KEY", getLocalProperties("KAKAO_API_KEY"))
     }
 
     buildFeatures {
@@ -60,6 +60,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+fun getLocalProperties(key: String): String {
+    return gradleLocalProperties(rootDir, providers).getProperty(key)
 }
 
 dependencies {

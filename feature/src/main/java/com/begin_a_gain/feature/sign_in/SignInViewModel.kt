@@ -50,7 +50,6 @@ class SignInViewModel @Inject constructor(
 
                     UserApiClient.instance.loginWithKakaoAccount(
                         context = context,
-                        prompts = listOf(Prompt.SELECT_ACCOUNT),
                         callback = kakaoSignInCallBack
                     )
                 } else if (token != null) {
@@ -67,7 +66,6 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun successToKakaoSignUp(token: OAuthToken) = intent {
-        // TODO update token in our server
         if (AuthApiClient.instance.hasToken()) {
             postSideEffect(SignInSideEffect.NavigateToMain)
         } else {
