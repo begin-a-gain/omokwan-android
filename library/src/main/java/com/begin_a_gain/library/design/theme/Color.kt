@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.ui.theme
+package com.begin_a_gain.library.design.theme
 
 import androidx.compose.ui.graphics.Color
 

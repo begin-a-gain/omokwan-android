@@ -1,6 +1,5 @@
-package com.begin_a_gain.omokwang.ui.theme
+package com.begin_a_gain.library.design.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +51,6 @@ fun OmokwangTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }
