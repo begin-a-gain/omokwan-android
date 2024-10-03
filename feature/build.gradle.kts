@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.android.hilt)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -9,9 +15,7 @@ android {
 
     defaultConfig {
         minSdk = 29
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -30,9 +34,16 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
+    implementation(projects.library)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -41,7 +52,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
     implementation(libs.bundles.android.lifecycle)
+    ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
+    implementation(libs.bundles.mvi.orbit)
+
+    implementation(libs.login.kakao)
 }

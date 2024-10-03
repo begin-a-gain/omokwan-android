@@ -1,6 +1,14 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.android.hilt)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -10,7 +18,6 @@ android {
     defaultConfig {
         applicationId = "com.begin_a_gain.omokwang"
         minSdk = 29
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -18,6 +25,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "KAKAO_API_KEY", getLocalProperties("KAKAO_API_KEY"))
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -49,7 +62,13 @@ android {
     }
 }
 
+fun getLocalProperties(key: String): String {
+    return gradleLocalProperties(rootDir, providers).getProperty(key)
+}
+
 dependencies {
+    implementation(projects.feature)
+    implementation(projects.library)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,4 +85,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    ksp(libs.di.google.hilt.compiler)
+    implementation(libs.bundles.di.hilt)
 }
