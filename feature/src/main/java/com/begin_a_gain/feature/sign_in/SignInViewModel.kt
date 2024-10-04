@@ -1,7 +1,10 @@
 package com.begin_a_gain.feature.sign_in
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import com.begin_a_gain.feature.test.TAG
 import com.begin_a_gain.library.core.AppBuildConfig
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
@@ -18,54 +21,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    application: Application,
-    private val buildConfig: AppBuildConfig
-) : AndroidViewModel(application), ContainerHost<SignInState, SignInSideEffect> {
+
+) : ViewModel(), ContainerHost<SignInState, SignInSideEffect> {
 
     override val container: Container<SignInState, SignInSideEffect> = container(SignInState())
 
-    fun initKakaoSdk() {
-        val context = getApplication<Application>().applicationContext
-        KakaoSdk.init(context, buildConfig.getKakaoApiKey())
-    }
-
-    private val kakaoSignInCallBack: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            failedToKakaoSignUp(error)
-        } else if (token != null) {
-            successToKakaoSignUp(token)
-        }
-    }
-
-    fun signInWithKakao() {
-        val context = getApplication<Application>().applicationContext
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                if (error != null) {
-                    failedToKakaoSignUp(error)
-
-                    if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        return@loginWithKakaoTalk
-                    }
-
-                    UserApiClient.instance.loginWithKakaoAccount(
-                        context = context,
-                        callback = kakaoSignInCallBack
-                    )
-                } else if (token != null) {
-                    successToKakaoSignUp(token)
-                }
-            }
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoSignInCallBack)
-        }
-    }
-
-    private fun failedToKakaoSignUp(throwable: Throwable) = intent {
+    fun failedToKakaoSignUp(throwable: Throwable) = intent {
         postSideEffect(SignInSideEffect.SignInFailed)
     }
 
-    private fun successToKakaoSignUp(token: OAuthToken) = intent {
+    fun successToKakaoSignUp(token: OAuthToken) = intent {
+        reduce { state.copy(accessToken = token.accessToken) }
         if (AuthApiClient.instance.hasToken()) {
             postSideEffect(SignInSideEffect.NavigateToMain)
         } else {

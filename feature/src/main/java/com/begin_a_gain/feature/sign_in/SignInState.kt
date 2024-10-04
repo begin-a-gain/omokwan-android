@@ -1,7 +1,7 @@
 package com.begin_a_gain.feature.sign_in
 
 data class SignInState(
-    val accessKey: String = ""
+    val accessToken: String = ""
 )
 
 sealed class SignInSideEffect {
