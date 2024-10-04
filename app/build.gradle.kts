@@ -27,7 +27,7 @@ android {
         }
 
         buildConfigField("String", "KAKAO_API_KEY", getLocalProperties("KAKAO_API_KEY"))
-        manifestPlaceholders["KAKAO_REDIRECT_URI"] = getLocalProperties("KAKAO_REDIRECT_URI")
+        manifestPlaceholders["KAKAO_NATIVE_KEY"] = getLocalProperties("KAKAO_NATIVE_KEY")
     }
 
     buildFeatures {

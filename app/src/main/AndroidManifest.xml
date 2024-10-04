@@ -38,7 +38,7 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="${KAKAO_REDIRECT_URI}" />
+                    android:scheme="kakao${KAKAO_NATIVE_KEY}" />
             </intent-filter>
         </activity>
     </application>
