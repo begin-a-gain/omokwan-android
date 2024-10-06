@@ -75,13 +75,13 @@ androidx-datastore-core = { module = "androidx.datastore:datastore-preferences-c
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 
 # Network
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor"}
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
 # Serialization
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -132,14 +132,13 @@ android-lifecycle = [
 ]
 
 data-ktor = [
-    "ktor-client-android",
-    "ktor-client-auth",
-    "ktor-client-content-negotiation",
     "ktor-client-core",
+    "ktor-client-cio",
+    "ktor-client-android",
     "ktor-client-logging",
     "ktor-client-serialization",
     "ktor-serialization-kotlinx-json",
-    "kotlinx-serialization-json"
+    "ktor-client-content-negotiation"
 ]
 
 data-local = [
