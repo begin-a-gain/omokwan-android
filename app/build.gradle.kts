@@ -27,6 +27,7 @@ android {
         }
 
         buildConfigField("String", "KAKAO_API_KEY", getLocalProperties("KAKAO_API_KEY"))
+        buildConfigField("String", "BASE_URL", getLocalProperties("BASE_URL"))
         manifestPlaceholders["KAKAO_NATIVE_KEY"] = getLocalProperties("KAKAO_NATIVE_KEY")
     }
 

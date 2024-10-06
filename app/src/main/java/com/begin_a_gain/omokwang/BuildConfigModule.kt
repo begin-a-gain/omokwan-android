@@ -16,4 +16,8 @@ class BuildConfigModule {
     @Named("KAKAO_API_KEY")
     fun provideKakaoApiKey(): String = BuildConfig.KAKAO_API_KEY
 
+    @Provides
+    @Singleton
+    @Named("BASE_URL")
+    fun provideBaseUrl(): String = BuildConfig.BASE_URL
 }
