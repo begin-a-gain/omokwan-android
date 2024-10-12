@@ -32,7 +32,7 @@ enum class ButtonStyle {
 
 enum class ButtonType {
     Primary,
-    Error,
+    Alert,
     Disable
 }
 
@@ -67,7 +67,7 @@ fun OButton(
                         Modifier.background(
                             when (type) {
                                 ButtonType.Primary -> ColorToken.UI_PRIMARY.color()
-                                ButtonType.Error -> ColorToken.UI_ALERT.color()
+                                ButtonType.Alert -> ColorToken.UI_ALERT.color()
                                 ButtonType.Disable -> ColorToken.UI_DISABLE_01.color()
                             }
                         )
@@ -79,7 +79,7 @@ fun OButton(
                             shape = RoundedCornerShape(8.dp),
                             color = when (type) {
                                 ButtonType.Primary -> ColorToken.STROKE_PRIMARY.color()
-                                ButtonType.Error -> ColorToken.STROKE_ALERT.color()
+                                ButtonType.Alert -> ColorToken.STROKE_ALERT.color()
                                 ButtonType.Disable -> ColorToken.STROKE_DISABLE.color()
                             }
                         )
@@ -99,10 +99,22 @@ fun OButton(
             OImage(
                 image = icon,
                 size = 20.dp,
-                color = when(type) {
-                    ButtonType.Primary,
-                    ButtonType.Error -> ColorToken.ICON_ON_01
-                    ButtonType.Disable -> ColorToken.ICON_ON_DISABLE
+                color = when (style) {
+                    ButtonStyle.Solid -> {
+                        when(type) {
+                            ButtonType.Primary,
+                            ButtonType.Alert -> ColorToken.ICON_ON_01
+                            ButtonType.Disable -> ColorToken.ICON_ON_DISABLE
+                        }
+                    }
+                    ButtonStyle.Stroke,
+                    ButtonStyle.None -> {
+                        when(type) {
+                            ButtonType.Primary -> ColorToken.ICON_PRIMARY
+                            ButtonType.Alert -> ColorToken.ICON_ALERT
+                            ButtonType.Disable -> ColorToken.ICON_DISABLE
+                        }
+                    }
                 }
             )
         }
@@ -117,13 +129,13 @@ fun OButton(
                 ButtonStyle.Solid -> {
                     when(type) {
                         ButtonType.Primary,
-                        ButtonType.Error -> ColorToken.TEXT_ON_01
+                        ButtonType.Alert -> ColorToken.TEXT_ON_01
                         ButtonType.Disable -> ColorToken.TEXT_ON_DISABLE
                     }
                 }
                 else -> when(type) {
                     ButtonType.Primary -> ColorToken.TEXT_PRIMARY
-                    ButtonType.Error -> ColorToken.TEXT_ALERT
+                    ButtonType.Alert -> ColorToken.TEXT_ALERT
                     ButtonType.Disable -> ColorToken.TEXT_DISABLE
                 }
             }
@@ -133,10 +145,22 @@ fun OButton(
             OImage(
                 image = icon,
                 size = 20.dp,
-                color = when(type) {
-                    ButtonType.Primary,
-                    ButtonType.Error -> ColorToken.ICON_ON_01
-                    ButtonType.Disable -> ColorToken.ICON_ON_DISABLE
+                color = when (style) {
+                    ButtonStyle.Solid -> {
+                        when(type) {
+                            ButtonType.Primary,
+                            ButtonType.Alert -> ColorToken.ICON_ON_01
+                            ButtonType.Disable -> ColorToken.ICON_ON_DISABLE
+                        }
+                    }
+                    ButtonStyle.Stroke,
+                    ButtonStyle.None -> {
+                        when(type) {
+                            ButtonType.Primary -> ColorToken.ICON_PRIMARY
+                            ButtonType.Alert -> ColorToken.ICON_ALERT
+                            ButtonType.Disable -> ColorToken.ICON_DISABLE
+                        }
+                    }
                 }
             )
         }
@@ -164,7 +188,9 @@ fun ButtonPreview() {
             text = "BUTTON",
             type = ButtonType.Primary,
             style = ButtonStyle.Stroke,
-            size = ButtonSize.Large
+            size = ButtonSize.Large,
+            leadingIcon = OImageRes.PlaceHolder,
+            trailingIcon = OImageRes.PlaceHolder
         ) {}
         OButton(
             modifier = Modifier.fillMaxWidth(),
@@ -178,21 +204,21 @@ fun ButtonPreview() {
         OButton(
             modifier = Modifier.fillMaxWidth(),
             text = "BUTTON",
-            type = ButtonType.Error,
+            type = ButtonType.Alert,
             style = ButtonStyle.Solid,
             size = ButtonSize.Large
         ) {}
         OButton(
             modifier = Modifier.fillMaxWidth(),
             text = "BUTTON",
-            type = ButtonType.Error,
+            type = ButtonType.Alert,
             style = ButtonStyle.Stroke,
             size = ButtonSize.Large
         ) {}
         OButton(
             modifier = Modifier.fillMaxWidth(),
             text = "BUTTON",
-            type = ButtonType.Error,
+            type = ButtonType.Alert,
             style = ButtonStyle.None,
             size = ButtonSize.Large
         ) {}
@@ -212,7 +238,9 @@ fun ButtonPreview() {
             text = "BUTTON",
             type = ButtonType.Disable,
             style = ButtonStyle.Stroke,
-            size = ButtonSize.Large
+            size = ButtonSize.Large,
+            leadingIcon = OImageRes.PlaceHolder,
+            trailingIcon = OImageRes.PlaceHolder
         ) {}
         OButton(
             modifier = Modifier.fillMaxWidth(),
