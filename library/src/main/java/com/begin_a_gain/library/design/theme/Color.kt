@@ -54,7 +54,15 @@ enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {
     TEXT_ON_01(AppColors.White),
     TEXT_ON_DISABLE(AppColors.Gray600),
     TEXT_PRIMARY(AppColors.Primary),
-    TEXT_ALERT(AppColors.Red);
+    TEXT_ALERT(AppColors.Red),
+
+    ICON_01(AppColors.Gray900),
+    ICON_02(AppColors.Gray600),
+    ICON_DISABLE(AppColors.Gray400),
+    ICON_ON_01(AppColors.White),
+    ICON_ON_DISABLE(AppColors.Gray600),
+    ICON_PRIMARY(AppColors.Primary),
+    ICON_ALERT(AppColors.Red);
 
     companion object {
         @Composable
