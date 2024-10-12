@@ -27,34 +27,34 @@ object AppColors {
 }
 
 enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {
-    ui_backround(AppColors.White),
-    ui_backround_modal(AppColors.Black.copy(alpha = 0.2f)),
-    ui_01(AppColors.Gray50),
-    ui_02(AppColors.Gray100),
-    ui_03(AppColors.Gray200),
-    ui_disable_01(AppColors.Gray200),
-    ui_disable_02(AppColors.Gray400),
-    ui_primary(AppColors.Primary),
-    ui_alert(AppColors.Red),
+    UI_BG(AppColors.White),
+    UI_BG_MODAL(AppColors.Black.copy(alpha = 0.2f)),
+    UI_01(AppColors.Gray50),
+    UI_02(AppColors.Gray100),
+    UI_03(AppColors.Gray200),
+    UI_DISABLE_01(AppColors.Gray200),
+    UI_DISABLE_02(AppColors.Gray400),
+    UI_PRIMARY(AppColors.Primary),
+    UI_ALERT(AppColors.Red),
 
-    stroke_01(AppColors.Gray200),
-    stroke_02(AppColors.Gray300),
-    stroke_03(AppColors.Gray600),
-    stroke_focus(AppColors.Gray900),
-    stroke_disable(AppColors.Gray400),
-    stroke_on_01(AppColors.White),
-    stroke_on_disable(AppColors.Gray600),
-    stroke_primary(AppColors.Primary),
-    stroke_primary_op40(AppColors.Primary.copy(alpha = 0.4f)),
-    stroke_alert(AppColors.Red),
-
-    text_01(AppColors.Gray900),
-    text_02(AppColors.Gray600),
-    text_disable(AppColors.Gray400),
-    text_on_01(AppColors.White),
-    text_on_disable(AppColors.Gray600),
-    text_primary(AppColors.Primary),
-    text_alert(AppColors.Red);
+    STROKE_01(AppColors.Gray200),
+    STROKE_02(AppColors.Gray300),
+    STROKE_03(AppColors.Gray600),
+    STROKE_FOCUS(AppColors.Gray900),
+    STROKE_DISABLE(AppColors.Gray400),
+    STROKE_ON_01(AppColors.White),
+    STROKE_ON_DISABLE(AppColors.Gray600),
+    STROKE_PRIMARY(AppColors.Primary),
+    STROKE_PRIMARY_OP40(AppColors.Primary.copy(alpha = 0.4f)),
+    STROKE_ALERT(AppColors.Red),
+    
+    TEXT_01(AppColors.Gray900),
+    TEXT_02(AppColors.Gray600),
+    TEXT_DISABLE(AppColors.Gray400),
+    TEXT_ON_01(AppColors.White),
+    TEXT_ON_DISABLE(AppColors.Gray600),
+    TEXT_PRIMARY(AppColors.Primary),
+    TEXT_ALERT(AppColors.Red);
 
     companion object {
         @Composable

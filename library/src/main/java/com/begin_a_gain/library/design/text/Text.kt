@@ -23,7 +23,7 @@ fun OText(
     text: String,
     style: OTextStyle,
     modifier: Modifier = Modifier,
-    color: ColorToken = ColorToken.text_01,
+    color: ColorToken = ColorToken.TEXT_01,
 ) {
     var lineCount by rememberSaveable { mutableIntStateOf(1) }
 
