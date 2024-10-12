@@ -1,4 +1,4 @@
-package com.begin_a_gain.library.design.image
+package com.begin_a_gain.library.design.component.image
 
 import com.begin_a_gain.library.R
 

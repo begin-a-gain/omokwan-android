@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.library.design.image.OImage
-import com.begin_a_gain.library.design.image.OImageRes
-import com.begin_a_gain.library.design.text.OText
+import com.begin_a_gain.library.design.component.image.OImage
+import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle

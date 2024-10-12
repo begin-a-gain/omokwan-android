@@ -1,4 +1,4 @@
-package com.begin_a_gain.library.design.text
+package com.begin_a_gain.library.design.component.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
