@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.begin_a_gain.library.design.theme.ColorToken
@@ -23,6 +24,7 @@ fun OText(
     text: String,
     style: OTextStyle,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start,
     color: ColorToken = ColorToken.TEXT_01,
 ) {
     var lineCount by rememberSaveable { mutableIntStateOf(1) }
@@ -35,6 +37,7 @@ fun OText(
         fontSize = style.typography.fontSize,
         fontWeight = style.typography.fontWeight,
         letterSpacing = style.typography.letteringSpacing,
+        textAlign = textAlign,
         lineHeight = if (lineCount > 1 && style.typography.multiLineHeight != null) {
             style.typography.multiLineHeight
         } else {
