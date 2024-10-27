@@ -1,4 +1,4 @@
-package com.begin_a_gain.library.design.text
+package com.begin_a_gain.library.design.component.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,8 +11,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import com.begin_a_gain.library.design.theme.ColorToken
+import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.theme.suitFontFamily
 
@@ -21,16 +24,20 @@ fun OText(
     text: String,
     style: OTextStyle,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Start,
+    color: ColorToken = ColorToken.TEXT_01,
 ) {
     var lineCount by rememberSaveable { mutableIntStateOf(1) }
 
     Text(
         modifier = modifier,
         text = text,
+        color = color.color(),
         fontFamily = suitFontFamily,
         fontSize = style.typography.fontSize,
         fontWeight = style.typography.fontWeight,
         letterSpacing = style.typography.letteringSpacing,
+        textAlign = textAlign,
         lineHeight = if (lineCount > 1 && style.typography.multiLineHeight != null) {
             style.typography.multiLineHeight
         } else {
@@ -46,7 +53,9 @@ fun OText(
 @Composable
 private fun OTextPreview() {
     Column(
-        modifier = Modifier.background(Color.White).fillMaxSize()
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
     ) {
         OText(text = LoremIpsum().values.first().take(10), style = OTextStyle.Display)
         OText(text = LoremIpsum().values.first().take(10), style = OTextStyle.Headline)
