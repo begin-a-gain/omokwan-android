@@ -29,6 +29,10 @@ private val DarkThemeColors = darkColorScheme(
 val LocalDarkMode = compositionLocalOf { false }
 
 @Composable
+@ReadOnlyComposable
+fun isDarkMode() = LocalDarkMode.current
+
+@Composable
 fun OmokwangTheme(
     darkTheme: Boolean,
     dynamicColor: Boolean = true,
