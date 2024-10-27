@@ -15,4 +15,7 @@ enum class OImageRes(val res: Int) {
 
     Profile(R.drawable.profile),
     Bell(R.drawable.bell),
+
+    Checked(R.drawable.check),
+    Unchecked(R.drawable.check_disable),
 }
