@@ -1,22 +1,46 @@
 package com.begin_a_gain.feature.sign_in
 
 import android.content.Context
+import android.graphics.drawable.shapes.Shape
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.begin_a_gain.library.design.component.button.OTextButton
+import com.begin_a_gain.library.design.component.text.OText
+import com.begin_a_gain.library.design.theme.AppColors
+import com.begin_a_gain.library.design.theme.ColorToken
+import com.begin_a_gain.library.design.theme.OTextStyle
+import com.begin_a_gain.library.design.util.initScreen
+import com.begin_a_gain.library.design.util.noRippleClickable
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
+@Preview
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel()
@@ -33,18 +57,43 @@ fun SignInScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.initScreen(),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = {
-                signInWithKakao(context, kakaoSignInCallBack, viewModel::successToKakaoSignUp)
-            }
+        Spacer(modifier = Modifier.height(32.dp))
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(60.dp)
+                .background(AppColors.Kakao)
+                .clickable {
+                    signInWithKakao(context, kakaoSignInCallBack, viewModel::successToKakaoSignUp)
+                }
         ) {
-            Text(text = "KAKAO")
+
         }
 
-        Text(text = state.accessToken)
+        Spacer(modifier = Modifier.height(42.dp))
+        OText(
+            text = "회원가입을 진행할 경우, 아래의 정책에 대해 동의한 것으로 간주합니다.",
+            textAlign = TextAlign.Center,
+            style = OTextStyle.Caption,
+            color = ColorToken.TEXT_02
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OTextButton("이용약관") {
+
+            }
+
+            OTextButton("개인정보처리방침") {
+
+            }
+        }
+
+        Spacer(modifier = Modifier.height(38.dp))
     }
 }
 
