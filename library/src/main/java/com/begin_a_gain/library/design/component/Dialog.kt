@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
