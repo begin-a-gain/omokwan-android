@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.begin_a_gain.library.core.util.ValidationState
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.theme.ColorToken
@@ -58,10 +59,10 @@ enum class TextFieldStatus {
 
 @Composable
 fun OTextField(
-    label: String,
     text: String,
     hint: String,
     modifier: Modifier = Modifier,
+    label: String? = null,
     message: String? = null,
     singleLine: Boolean = true,
     maxCount: Int = Int.MAX_VALUE,
@@ -81,7 +82,7 @@ fun OTextField(
     Column(
         modifier = modifier
     ) {
-        if (label.isNotBlank()) {
+        label?.let {
             OText(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = label,
@@ -108,6 +109,7 @@ fun OTextField(
                                 ColorToken.STROKE_02.color()
                             }
                         }
+
                         TextFieldStatus.Error -> ColorToken.STROKE_ALERT.color()
                         TextFieldStatus.Disabled,
                         TextFieldStatus.ReadOnly -> Color.Transparent
@@ -187,12 +189,14 @@ fun OTextField(
             }
         )
 
-        TextFieldMessage(
-            status = status,
-            text = text,
-            message = message,
-            maxCount = maxCount
-        )
+        if (maxCount != Int.MAX_VALUE || message != null) {
+            TextFieldMessage(
+                status = status,
+                text = text,
+                message = message,
+                maxCount = maxCount
+            )
+        }
     }
 }
 
@@ -266,6 +270,7 @@ fun TextFieldMessage(
         else -> ColorToken.TEXT_02
     }
 
+    Spacer(modifier = Modifier.height(6.dp))
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp)
@@ -315,7 +320,8 @@ fun OTextFieldPreview() {
             modifier = Modifier.fillMaxWidth(),
             label = "TextField (Default)",
             text = text,
-            hint = "Fill this text field"
+            hint = "Fill this text field",
+            maxCount = 10
         ) {
             text = it
         }
