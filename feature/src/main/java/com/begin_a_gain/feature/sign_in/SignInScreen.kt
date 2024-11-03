@@ -12,16 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.library.design.component.button.OTextButton
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.AppColors
@@ -32,13 +29,14 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import org.orbitmvi.orbit.compose.collectSideEffect
 
-@Preview
 @Composable
 fun SignInScreen(
+    navigateToSignUp: () -> Unit,
+    navigateToMain: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     val kakaoSignInCallBack: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -87,6 +85,22 @@ fun SignInScreen(
         }
 
         Spacer(modifier = Modifier.height(38.dp))
+    }
+
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            SignInSideEffect.SignInFailed -> {
+
+            }
+
+            SignInSideEffect.NavigateToSignUp -> {
+                navigateToSignUp()
+            }
+
+            SignInSideEffect.NavigateToMain -> {
+                navigateToMain()
+            }
+        }
     }
 }
 

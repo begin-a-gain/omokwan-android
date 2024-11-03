@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,16 +17,17 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
 
-@Preview
 @Composable
 fun SignUpScreen(
+    navigateToSignUpDone: () -> Unit,
+    popBack: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     OScreen(
         onBackButtonClick = {
-            // Todo
+            popBack()
         },
         bottomButtonText = "다음",
         bottomButtonType = when (state.nicknameValidation) {
@@ -35,7 +35,7 @@ fun SignUpScreen(
             else -> ButtonType.Disable
         },
         onBottomButtonClick = {
-            // Todo
+            navigateToSignUpDone()
         }
     ) {
         Spacer(modifier = Modifier.height(32.dp))
