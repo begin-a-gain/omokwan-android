@@ -13,11 +13,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun OPreview(
+    modifier: Modifier = Modifier,
     verticalSpace: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.White)
             .fillMaxSize()
             .padding(10.dp),
