@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.begin_a_gain.library.design.theme.ColorToken
@@ -24,6 +25,7 @@ fun OText(
     text: String,
     style: OTextStyle,
     modifier: Modifier = Modifier,
+    textDecoration: TextDecoration = TextDecoration.None,
     textAlign: TextAlign = TextAlign.Start,
     color: ColorToken = ColorToken.TEXT_01,
 ) {
@@ -43,6 +45,7 @@ fun OText(
         } else {
             style.typography.lineHeight
         },
+        textDecoration = textDecoration,
         onTextLayout = { textLayoutResult ->
             lineCount = textLayoutResult.lineCount
         }

@@ -1,4 +1,4 @@
-package com.begin_a_gain.library.design.component
+package com.begin_a_gain.library.design.component.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

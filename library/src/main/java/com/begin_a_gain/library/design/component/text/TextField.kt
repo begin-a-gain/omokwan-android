@@ -2,8 +2,6 @@ package com.begin_a_gain.library.design.component.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
@@ -58,10 +51,10 @@ enum class TextFieldStatus {
 
 @Composable
 fun OTextField(
-    label: String,
     text: String,
     hint: String,
     modifier: Modifier = Modifier,
+    label: String? = null,
     message: String? = null,
     singleLine: Boolean = true,
     maxCount: Int = Int.MAX_VALUE,
@@ -81,7 +74,7 @@ fun OTextField(
     Column(
         modifier = modifier
     ) {
-        if (label.isNotBlank()) {
+        label?.let {
             OText(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = label,
@@ -108,6 +101,7 @@ fun OTextField(
                                 ColorToken.STROKE_02.color()
                             }
                         }
+
                         TextFieldStatus.Error -> ColorToken.STROKE_ALERT.color()
                         TextFieldStatus.Disabled,
                         TextFieldStatus.ReadOnly -> Color.Transparent
@@ -187,12 +181,14 @@ fun OTextField(
             }
         )
 
-        TextFieldMessage(
-            status = status,
-            text = text,
-            message = message,
-            maxCount = maxCount
-        )
+        if (maxCount != Int.MAX_VALUE || message != null) {
+            TextFieldMessage(
+                status = status,
+                text = text,
+                message = message,
+                maxCount = maxCount
+            )
+        }
     }
 }
 
@@ -266,6 +262,7 @@ fun TextFieldMessage(
         else -> ColorToken.TEXT_02
     }
 
+    Spacer(modifier = Modifier.height(6.dp))
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 16.dp)
@@ -315,7 +312,8 @@ fun OTextFieldPreview() {
             modifier = Modifier.fillMaxWidth(),
             label = "TextField (Default)",
             text = text,
-            hint = "Fill this text field"
+            hint = "Fill this text field",
+            maxCount = 10
         ) {
             text = it
         }

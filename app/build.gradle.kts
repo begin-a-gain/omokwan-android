@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -27,6 +28,8 @@ android {
         }
 
         buildConfigField("String", "KAKAO_API_KEY", getLocalProperties("KAKAO_API_KEY"))
+        buildConfigField("String", "BASE_URL", getLocalProperties("BASE_URL"))
+        manifestPlaceholders["KAKAO_NATIVE_KEY"] = getLocalProperties("KAKAO_NATIVE_KEY")
     }
 
     buildFeatures {
@@ -72,12 +75,9 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    implementation(libs.bundles.android.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,4 +88,7 @@ dependencies {
 
     ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.login.kakao)
 }

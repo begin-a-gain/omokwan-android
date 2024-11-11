@@ -24,6 +24,9 @@ object AppColors {
 
     // Error
     val Red = Color(0xFF_FF4321)
+
+    // Etc.
+    val Kakao = Color(0xFF_FEE500)
 }
 
 enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {
