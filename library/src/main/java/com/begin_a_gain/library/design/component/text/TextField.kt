@@ -201,7 +201,7 @@ fun TextFieldLeadingIcon(
         OImage(
             image = leadingIcon,
             size = 20.dp,
-            color = color
+            color = color?.color()
         )
         Spacer(modifier = Modifier.width(12.dp))
     }
@@ -245,7 +245,7 @@ fun TextFieldTrailingIcon(
             modifier = Modifier.noRippleClickable { onTrailingIconClick() },
             image = icon,
             size = 20.dp,
-            color = color
+            color = color?.color()
         )
     }
 }
