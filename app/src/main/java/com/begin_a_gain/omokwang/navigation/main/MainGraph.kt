@@ -1,13 +1,35 @@
 package com.begin_a_gain.omokwang.navigation.main
 
+import android.graphics.BlurMaskFilter
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.NavigationBar
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FabPosition
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.Scaffold
+import androidx.compose.material.BottomAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -17,33 +39,143 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.begin_a_gain.feature.main.MyPageScreen
 import com.begin_a_gain.feature.main.OmokListScreen
+import com.begin_a_gain.library.design.component.button.OIconButton
 import com.begin_a_gain.library.design.component.image.OImage
+import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.library.design.component.text.OText
+import com.begin_a_gain.library.design.theme.AppColors
+import com.begin_a_gain.library.design.theme.ColorToken
+import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.library.design.theme.OTextStyle
+import com.begin_a_gain.library.design.util.noRippleClickable
 import com.begin_a_gain.omokwang.navigation.MyPage
 import com.begin_a_gain.omokwang.navigation.OmokList
 
+fun Modifier.advanceShadow(
+    color: Color = Color.Black,
+    borderRadius: Dp = 16.dp,
+    blurRadius: Dp = 16.dp,
+    offsetY: Dp = 0.dp,
+    offsetX: Dp = 0.dp,
+    spread: Float = 1f,
+) = drawBehind {
+    this.drawIntoCanvas {
+        val paint = Paint()
+        val frameworkPaint = paint.asFrameworkPaint()
+        val spreadPixel = spread.dp.toPx()
+        val leftPixel = (0f - spreadPixel) + offsetX.toPx()
+        val topPixel = (0f - spreadPixel) + offsetY.toPx()
+        val rightPixel = (this.size.width)
+        val bottomPixel = (this.size.height + spreadPixel)
+
+        if (blurRadius != 0.dp) {
+            /*
+                The feature maskFilter used below to apply the blur effect only works
+                with hardware acceleration disabled.
+             */
+            frameworkPaint.maskFilter =
+                (BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL))
+        }
+
+        frameworkPaint.color = color.toArgb()
+        it.drawRoundRect(
+            left = leftPixel,
+            top = topPixel,
+            right = rightPixel,
+            bottom = bottomPixel,
+            radiusX = borderRadius.toPx(),
+            radiusY = borderRadius.toPx(),
+            paint
+        )
+    }
+}
+
+
+@Preview(showSystemUi = true)
 @Composable
-fun MainGraph() {
+fun MainGraph(
+
+) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        isFloatingActionButtonDocked = true,
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            OIconButton(
+                icon = OImageRes.Plus,
+                iconSize = 32.dp,
+                iconColor = AppColors.White,
+                backgroundColor = ColorToken.UI_PRIMARY,
+                size = 64.dp
+            ) {
+
+            }
+        },
         bottomBar = {
-            NavigationBar {
+            BottomAppBar(
+                modifier = Modifier
+                    .height(64.dp)
+                    .advanceShadow(
+                        color = ColorToken.UI_PRIMARY.color(),
+                        blurRadius = 32.dp,
+                        spread = 0.05f,
+                        offsetY = 20.dp
+                    ),
+                backgroundColor = ColorToken.UI_BG.color(),
+                cutoutShape = CircleShape
+            ) {
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = backStackEntry?.destination
+
                 bottomNavigationRoutes.forEach { bottomNavigation ->
-                    NavigationBarItem(
-                        selected = currentDestination?.hierarchy?.any { it.hasRoute(bottomNavigation.route::class) } == true,
-                        icon = { OImage(bottomNavigation.icon) },
-                        onClick = {
-                            navController.navigate(bottomNavigation.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(bottomNavigation.route::class) } == true
+
+                    if (bottomNavigation.route == MyPage) {
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .weight(1f)
+                            .noRippleClickable {
+                                navController.navigate(bottomNavigation.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OImage(
+                            image = bottomNavigation.icon,
+                            size = 24.dp,
+                            color = if (isSelected) {
+                                ColorToken.ICON_01.color()
+                            } else {
+                                ColorToken.ICON_DISABLE.color()
                             }
-                        }
-                    )
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        OText(
+                            text = bottomNavigation.name,
+                            style = OTextStyle.Title1,
+                            color = if (isSelected) {
+                                ColorToken.TEXT_01
+                            } else {
+                                ColorToken.TEXT_DISABLE
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
+                    if (bottomNavigation.route == OmokList) {
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
                 }
             }
         }
