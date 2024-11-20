@@ -11,6 +11,6 @@ data class MainGraphRoute<T: Any>(
 )
 
 val bottomNavigationRoutes = listOf(
-    MainGraphRoute("My 대국", OmokList, OImageRes.Checked),
-    MainGraphRoute("마이페이지", MyPage, OImageRes.Unchecked),
+    MainGraphRoute("My 대국", OmokList, OImageRes.PlaceHolder),
+    MainGraphRoute("마이페이지", MyPage, OImageRes.PlaceHolder),
 )

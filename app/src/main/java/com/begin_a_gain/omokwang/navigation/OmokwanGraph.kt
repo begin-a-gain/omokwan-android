@@ -48,7 +48,9 @@ fun OmokwanGraph(
             )
         }
 
-        composable<Main> { MainGraph() }
+        composable<Main> {
+            MainGraph()
+        }
     }
 }
 

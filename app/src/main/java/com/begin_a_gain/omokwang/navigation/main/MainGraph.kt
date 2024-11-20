@@ -53,10 +53,7 @@ fun MainGraph(
                 modifier = Modifier.advanceShadow(
                     color = ColorToken.UI_BG.color(),
                     borderRadius = 100.dp,
-                    blurRadius = 10.dp,
-                    offsetY = 8.dp,
-                    spreadHeight = 2.dp,
-                    spreadWidth = 5.dp
+                    blurRadius = 20.dp,
                 ),
                 icon = OImageRes.Plus,
                 iconSize = 32.dp,
@@ -70,12 +67,10 @@ fun MainGraph(
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier
-                    .height(64.dp)
+                    .height(80.dp)
                     .advanceShadow(
-                        color = ColorToken.UI_PRIMARY.color(),
-                        blurRadius = 32.dp,
-                        spread = 0.01f,
-                        offsetY = 20.dp
+                        color = ColorToken.UI_PRIMARY.color().copy(0.2f),
+                        blurRadius = 20.dp,
                     ),
                 backgroundColor = ColorToken.UI_BG.color(),
                 cutoutShape = CircleShape
@@ -93,7 +88,7 @@ fun MainGraph(
 
                     Column(
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(start =  20.dp, end = 20.dp, bottom = 16.dp)
                             .weight(1f)
                             .noRippleClickable {
                                 navController.navigate(bottomNavigation.route) {
