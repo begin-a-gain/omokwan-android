@@ -19,10 +19,10 @@ import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 @Composable
 fun OIconButton(
     icon: OImageRes,
-    backgroundColor: ColorToken,
     size: Dp,
     iconSize: Dp,
     modifier: Modifier = Modifier,
+    backgroundColor: ColorToken = ColorToken.UI_BG,
     iconColor: Color? = null,
     onClick: () -> Unit
 ) {

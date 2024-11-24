@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.begin_a_gain.feature.main.MyPageScreen
-import com.begin_a_gain.feature.main.OmokListScreen
+import com.begin_a_gain.feature.main.omoklist.OmokListScreen
 import com.begin_a_gain.library.design.component.button.OIconButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
