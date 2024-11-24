@@ -62,4 +62,6 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.login.kakao)
+
+    implementation(libs.util.jodatime)
 }

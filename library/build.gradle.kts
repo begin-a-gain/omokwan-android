@@ -59,4 +59,5 @@ dependencies {
     implementation(libs.bundles.mvi.orbit)
 
     implementation(libs.login.kakao)
+    implementation(libs.util.jodatime)
 }
