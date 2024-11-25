@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -44,7 +45,7 @@ import org.joda.time.DateTime
 @Preview(showSystemUi = true)
 @Composable
 fun OmokListScreen(
-    viewModel: OmokListViewModel = hiltViewModel()
+    viewModel: OmokListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
@@ -69,6 +70,23 @@ fun OmokListScreen(
             addDate = { day -> viewModel.addDate(day) }
         ) {
             showDatePicker = true
+        }
+
+        if (state.omokList.isEmpty()) {
+            Column {
+                OText(
+                    modifier = Modifier
+                        .size(176.dp, 42.dp)
+                        .background(
+                            color = ColorToken.UI_02.color(),
+                            shape = RoundedCornerShape(12.dp)
+                        ),
+                    text = "대국을 생성해보세요!",
+                    style = OTextStyle.Title1,
+                    color = ColorToken.TEXT_ON_01
+                )
+            }
+            Spacer(modifier = Modifier.height(34.dp))
         }
     }
 
