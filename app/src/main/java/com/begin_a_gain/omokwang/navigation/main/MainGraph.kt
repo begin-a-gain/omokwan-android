@@ -1,19 +1,32 @@
 package com.begin_a_gain.omokwang.navigation.main
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -25,6 +38,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.begin_a_gain.feature.main.MyPageScreen
 import com.begin_a_gain.feature.main.omoklist.OmokListScreen
+import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.button.OIconButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
@@ -35,15 +50,23 @@ import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.advanceShadow
 import com.begin_a_gain.library.design.util.noRippleClickable
+import com.begin_a_gain.omokwang.navigation.CreateMatch
+import com.begin_a_gain.omokwang.navigation.JoinMatch
 import com.begin_a_gain.omokwang.navigation.MyPage
 import com.begin_a_gain.omokwang.navigation.OmokList
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 fun MainGraph(
 
 ) {
     val navController = rememberNavController()
+    val sheetState = rememberModalBottomSheetState()
+    var showAddMatchBottomSheet by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         isFloatingActionButtonDocked = true,
@@ -61,7 +84,7 @@ fun MainGraph(
                 backgroundColor = ColorToken.UI_PRIMARY,
                 size = 64.dp
             ) {
-
+                showAddMatchBottomSheet = true
             }
         },
         bottomBar = {
@@ -69,7 +92,9 @@ fun MainGraph(
                 modifier = Modifier
                     .height(80.dp)
                     .advanceShadow(
-                        color = ColorToken.UI_PRIMARY.color().copy(0.2f),
+                        color = ColorToken.UI_PRIMARY
+                            .color()
+                            .copy(0.2f),
                         blurRadius = 20.dp,
                     ),
                 backgroundColor = ColorToken.UI_BG.color(),
@@ -88,7 +113,7 @@ fun MainGraph(
 
                     Column(
                         modifier = Modifier
-                            .padding(start =  20.dp, end = 20.dp, bottom = 16.dp)
+                            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
                             .weight(1f)
                             .noRippleClickable {
                                 navController.navigate(bottomNavigation.route) {
@@ -142,6 +167,77 @@ fun MainGraph(
             composable<MyPage> {
                 MyPageScreen()
             }
+        }
+
+        if (showAddMatchBottomSheet) {
+            AddMatchBottomSheet(
+                sheetState = sheetState,
+                onDismissRequest = { showAddMatchBottomSheet = false }
+            ) { type ->
+                when (type) {
+                    AddMatchType.CreateMatch -> {
+                        navController.navigate(CreateMatch)
+                    }
+                    AddMatchType.JoinMatch -> {
+                        navController.navigate(JoinMatch)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddMatchBottomSheet(
+    sheetState: SheetState,
+    onDismissRequest: () -> Unit,
+    onSelect: (AddMatchType) -> Unit
+) {
+    var selectedType by rememberSaveable { mutableStateOf(AddMatchType.CreateMatch) }
+
+    OBottomSheet(
+        title = "대국 추가하기",
+        sheetState = sheetState,
+        onDismissRequest = onDismissRequest
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            AddMatchType.values().forEach { type ->
+                val isSelected = selectedType == type
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(
+                            width = 1.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            color = if (isSelected) {
+                                ColorToken.STROKE_PRIMARY.color()
+                            } else {
+                                ColorToken.STROKE_02.color()
+                            }
+                        )
+                        .padding(24.dp)
+                        .clickable {
+                            selectedType = type
+                        }
+                ) {
+                    Spacer(modifier = Modifier
+                        .fillMaxSize()
+                        .background(ColorToken.UI_DISABLE_01.color()))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OText(text = type.title, style = OTextStyle.Title2)
+                }
+            }
+        }
+        OButton(
+            modifier = Modifier.padding(16.dp),
+            text = "확인"
+        ) {
+            onDismissRequest()
+            onSelect(selectedType)
         }
     }
 }

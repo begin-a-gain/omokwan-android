@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
 @Serializable object OmokList
 @Serializable object MyPage
 
-@Serializable object MakeMatch
+@Serializable object CreateMatch
 @Serializable object JoinMatch
 @Serializable object Alarm
 
@@ -51,6 +51,10 @@ fun OmokwanGraph(
         composable<Main> {
             MainGraph()
         }
+
+        composable<CreateMatch> {  }
+
+        composable<JoinMatch> {  }
     }
 }
 
