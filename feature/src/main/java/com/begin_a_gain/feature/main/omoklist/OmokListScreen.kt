@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.main.omoklist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -65,6 +66,7 @@ fun OmokListScreen(
         OmokListTopBar(
             navigateToAlarm = {}
         )
+
         OmokListDateBar(
             date = state.currentDate,
             addDate = { day -> viewModel.addDate(day) }
@@ -72,21 +74,22 @@ fun OmokListScreen(
             showDatePicker = true
         }
 
+        Box(modifier = Modifier
+            .fillMaxWidth(1f)
+            .weight(1f)) {
+            
+        }
+
         if (state.omokList.isEmpty()) {
-            Column {
+            Box {
+                OImage(image = OImageRes.SpeechBubble)
                 OText(
-                    modifier = Modifier
-                        .size(176.dp, 42.dp)
-                        .background(
-                            color = ColorToken.UI_02.color(),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
+                    modifier = Modifier.padding(bottom = 14.dp),
                     text = "대국을 생성해보세요!",
                     style = OTextStyle.Title1,
                     color = ColorToken.TEXT_ON_01
                 )
             }
-            Spacer(modifier = Modifier.height(34.dp))
         }
     }
 

@@ -18,4 +18,9 @@ enum class OImageRes(val res: Int) {
 
     Checked(R.drawable.check),
     Unchecked(R.drawable.check_disable),
+
+    SpeechBubble(R.drawable.speech_bubble),
+    PrimaryOmokRoom(R.drawable.omok_primary),
+    GrayOmokRoom(R.drawable.omok_gray),
+    EmptyOmokRoom(R.drawable.omok_grid),
 }
