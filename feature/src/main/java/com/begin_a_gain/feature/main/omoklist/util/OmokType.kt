@@ -1,6 +1,6 @@
 package com.begin_a_gain.feature.main.omoklist.util
 
-enum class OmokStatus {
+enum class OmokRoomStatus {
     None,
     Todo,
     Done,
