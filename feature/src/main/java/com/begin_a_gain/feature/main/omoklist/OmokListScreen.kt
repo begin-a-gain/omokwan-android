@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -23,10 +25,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.domain.repository.model.OmokRoom
+import com.begin_a_gain.feature.main.omoklist.util.OmokRoomItem
+import com.begin_a_gain.library.core.type.OmokRoomStatus
 import com.begin_a_gain.library.core.util.DateTimeFormat
 import com.begin_a_gain.library.core.util.DateTimeUtil.isToday
 import com.begin_a_gain.library.core.util.DateTimeUtil.toString
@@ -49,6 +56,7 @@ fun OmokListScreen(
     viewModel: OmokListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val configuration = LocalConfiguration.current
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
         selectableDates = TodayOrBeforeSelectableDates()
@@ -74,23 +82,10 @@ fun OmokListScreen(
             showDatePicker = true
         }
 
-        Box(modifier = Modifier
-            .fillMaxWidth(1f)
-            .weight(1f)) {
-            
-        }
-
-        if (state.omokList.isEmpty()) {
-            Box {
-                OImage(image = OImageRes.SpeechBubble)
-                OText(
-                    modifier = Modifier.padding(bottom = 14.dp),
-                    text = "대국을 생성해보세요!",
-                    style = OTextStyle.Title1,
-                    color = ColorToken.TEXT_ON_01
-                )
-            }
-        }
+        OmokRoomGrid(
+            omokRoomItemSize = ((configuration.screenWidthDp - 10)/2).dp,
+            omokRooms = state.omokRooms
+        )
     }
 
     if (showDatePicker) {
@@ -176,5 +171,56 @@ private fun OmokListDateBar(
                 ColorToken.ICON_01.color()
             }
         )
+    }
+}
+
+@Preview
+@Composable
+fun OmokRoomGrid(
+    omokRoomItemSize: Dp = 200.dp,
+    omokRooms: List<OmokRoom> = listOf(
+        OmokRoom(status = OmokRoomStatus.None),
+        OmokRoom(status = OmokRoomStatus.Todo, title = "1일 1Commit"),
+        OmokRoom(status = OmokRoomStatus.Done, title = "명상하기"),
+        OmokRoom(status = OmokRoomStatus.Skip, title = "블로그 쓰기"),
+    )
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(horizontal = 5.dp)
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2)
+        ) {
+            items(omokRooms) {
+                OmokRoomItem(
+                    omokRoom = it,
+                    size = omokRoomItemSize,
+                    onClickOmokRoom = { /*TODO*/ },
+                    onClickButton = { /*TODO*/ }
+                )
+            }
+        }
+
+        if (omokRooms.all { it.status == OmokRoomStatus.None }) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 42.dp)
+            ) {
+                OImage(
+                    modifier = Modifier.size(176.dp, 56.dp),
+                    image = OImageRes.SpeechBubble)
+                OText(
+                    modifier = Modifier
+                        .padding(bottom = 14.dp)
+                        .align(Alignment.Center),
+                    text = "대국을 생성해보세요!",
+                    style = OTextStyle.Title1,
+                    color = ColorToken.TEXT_ON_01
+                )
+            }
+        }
     }
 }

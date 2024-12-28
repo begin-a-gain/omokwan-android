@@ -21,7 +21,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.begin_a_gain.domain.repository.model.OmokRoom
 import com.begin_a_gain.library.core.constant.MAX_ROOM_MEMBER
+import com.begin_a_gain.library.core.type.OmokRoomStatus
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
@@ -30,14 +32,11 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.advanceShadow
+import com.begin_a_gain.library.design.util.noRippleClickable
 
 @Composable
-fun OmokItem(
-    status: OmokRoomStatus,
-    isLocked: Boolean,
-    title: String,
-    date: Int,
-    member: Int,
+fun OmokRoomItem(
+    omokRoom: OmokRoom,
     size: Dp,
     onClickOmokRoom: () -> Unit,
     onClickButton: () -> Unit,
@@ -49,12 +48,12 @@ fun OmokItem(
             image = OImageRes.OmokRoomGrid
         )
 
-        if (status != OmokRoomStatus.None) {
+        if (omokRoom.status != OmokRoomStatus.None) {
             OImage(
                 modifier = Modifier
                     .size(size)
                     .advanceShadow(
-                        color = when (status) {
+                        color = when (omokRoom.status) {
                             OmokRoomStatus.Todo,
                             OmokRoomStatus.Skip -> AppColors.OmokGrayShadow.copy(0.4f)
 
@@ -67,10 +66,10 @@ fun OmokItem(
                         spreadWidth = -20.dp,
                         spreadHeight = -20.dp
                     )
-                    .clickable {
+                    .noRippleClickable {
                         onClickOmokRoom()
                     },
-                image = when (status) {
+                image = when (omokRoom.status) {
                     OmokRoomStatus.Todo,
                     OmokRoomStatus.Skip -> OImageRes.GrayOmokRoom
 
@@ -86,15 +85,15 @@ fun OmokItem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OImage(
-                    image = if (isLocked) OImageRes.Locked else OImageRes.Unlocked,
+                    image = if (omokRoom.isLocked) OImageRes.Locked else OImageRes.Unlocked,
                     size = 16.dp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-                OText(text = title, style = OTextStyle.Title2)
+                OText(text = omokRoom.title, style = OTextStyle.Title2)
                 Spacer(modifier = Modifier.height(6.dp))
-                OText(text = "대국 +${date}일 째", style = OTextStyle.Caption)
+                OText(text = "대국 +${omokRoom.date}일 째", style = OTextStyle.Caption)
                 Spacer(modifier = Modifier.height(2.dp))
-                OText(text = "${member}/$MAX_ROOM_MEMBER 명", style = OTextStyle.Caption)
+                OText(text = "${omokRoom.member}/$MAX_ROOM_MEMBER 명", style = OTextStyle.Caption)
             }
 
             OmokCheckButton(
@@ -102,7 +101,7 @@ fun OmokItem(
                     .align(Alignment.TopEnd)
                     .padding(4.dp),
                 size = size / 192 * 64,
-                status = status,
+                status = omokRoom.status,
                 onClickButton = onClickButton
             )
         }
@@ -184,13 +183,16 @@ fun OmokItemPreview() {
         Modifier.background(Color.White)
     ) {
         OmokRoomStatus.entries.forEach { status ->
-            OmokItem(
+            OmokRoomItem(
                 modifier = Modifier.size(192.dp),
-                status = status,
-                title = "아침 달리기 하기",
-                date = 1,
-                member = 1,
-                isLocked = false,
+                omokRoom = OmokRoom(
+                    id = "",
+                    status = status,
+                    title = "아침 달리기 하기",
+                    date = 1,
+                    member = 1,
+                    isLocked = false,
+                ),
                 size = 192.dp,
                 onClickOmokRoom = {},
                 onClickButton = {}

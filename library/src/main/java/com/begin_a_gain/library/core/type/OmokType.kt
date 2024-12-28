@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omoklist.util
+package com.begin_a_gain.library.core.type
 
 enum class OmokRoomStatus {
     None,
