@@ -115,7 +115,7 @@ fun OButton(
                             ButtonType.Disable -> ColorToken.ICON_DISABLE
                         }
                     }
-                }
+                }.color()
             )
         }
         Spacer(modifier = Modifier.width(12.dp))
@@ -161,7 +161,7 @@ fun OButton(
                             ButtonType.Disable -> ColorToken.ICON_DISABLE
                         }
                     }
-                }
+                }.color()
             )
         }
     }

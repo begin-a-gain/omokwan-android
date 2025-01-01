@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.ksp)
 }
@@ -14,9 +14,6 @@ android {
 
     defaultConfig {
         minSdk = 29
-        minSdk = 29
-        targetSdk = 34
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -39,7 +36,7 @@ android {
 }
 
 dependencies {
-
+    implementation(projects.library)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

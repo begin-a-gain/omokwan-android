@@ -18,4 +18,12 @@ enum class OImageRes(val res: Int) {
 
     Checked(R.drawable.check),
     Unchecked(R.drawable.check_disable),
+
+    Locked(R.drawable.lock_closed),
+    Unlocked(R.drawable.lock_open),
+
+    SpeechBubble(R.drawable.speech_bubble),
+    PrimaryOmokMatch(R.drawable.omok_primary),
+    GrayOmokMatch(R.drawable.omok_gray),
+    OmokMatchGrid(R.drawable.omok_grid),
 }

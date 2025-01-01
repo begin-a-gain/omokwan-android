@@ -27,6 +27,8 @@ object AppColors {
 
     // Etc.
     val Kakao = Color(0xFF_FEE500)
+    val OmokGradientColor = Color(0xFF_ECFF9F)
+    val OmokGrayShadow = Color(0xFF_545F71)
 }
 
 enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {

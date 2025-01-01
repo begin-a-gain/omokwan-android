@@ -1,14 +1,15 @@
-package com.begin_a_gain.omokwang
+package com.begin_a_gain.omokwang.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import com.begin_a_gain.feature.create_match.CreateMatchScreen
+import com.begin_a_gain.feature.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
+import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import kotlinx.serialization.Serializable
 
 @Serializable object SignIn
@@ -19,12 +20,12 @@ import kotlinx.serialization.Serializable
 @Serializable object OmokList
 @Serializable object MyPage
 
-@Serializable object MakeMatch
+@Serializable object CreateMatch
 @Serializable object JoinMatch
 @Serializable object Alarm
 
 @Composable
-fun OmokwanNavigation(
+fun OmokwanGraph(
     navController: NavHostController,
     startDestination: Any
 ) {
@@ -49,15 +50,17 @@ fun OmokwanNavigation(
             )
         }
 
-        this.bottomNavigation()
+        composable<Main> {
+            MainGraph()
+        }
+
+        composable<CreateMatch> {
+            CreateMatchScreen()
+        }
+
+        composable<JoinMatch> {
+            JoinMatchScreen()
+        }
     }
 }
 
-fun NavGraphBuilder.bottomNavigation(
-) {
-    this.navigation<Main>(startDestination = OmokList) {
-        composable<OmokList> { }
-
-        composable<MyPage> {  }
-    }
-}

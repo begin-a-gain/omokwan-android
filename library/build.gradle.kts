@@ -38,7 +38,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompilerExtension.get()
     }
 }
 
@@ -59,4 +59,5 @@ dependencies {
     implementation(libs.bundles.mvi.orbit)
 
     implementation(libs.login.kakao)
+    implementation(libs.util.jodatime)
 }

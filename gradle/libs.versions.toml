@@ -6,10 +6,11 @@ espressoCore = "3.6.1"
 googleKsp = "1.9.20-1.0.14"
 
 # Kotlin
-kotlin = "1.9.0"
+kotlin = "1.9.21"
 coreKtx = "1.13.1"
-kotlinXserialization = "1.7.3"
-kotlinSerialization = "2.0.21"
+kotlinXserialization = "1.6.3"
+kotlinSerialization = "1.9.0"
+kotlinComposeCompilerExtension = "1.5.7"
 
 # DI
 hilt = "2.51.1"
@@ -61,6 +62,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-common", version.ref = "navigation"}
+androidx-compose-material = { group = "androidx.compose.material", name = "material", version = "1.7.5"}
 
 # DI
 di-google-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -129,7 +131,8 @@ android-compose = [
     "androidx-material3",
     "androidx-material3-window-size",
     "androidx-hilt-navigation",
-    "androidx-navigation-compose"
+    "androidx-navigation-compose",
+    "androidx-compose-material"
 ]
 
 android-lifecycle = [

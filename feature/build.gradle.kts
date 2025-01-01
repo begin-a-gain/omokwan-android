@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -38,12 +39,13 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompilerExtension.get()
     }
 }
 
 dependencies {
     implementation(projects.library)
+    implementation(projects.domain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -59,5 +61,8 @@ dependencies {
     implementation(libs.bundles.di.hilt)
     implementation(libs.bundles.mvi.orbit)
 
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.login.kakao)
+
+    implementation(libs.util.jodatime)
 }
