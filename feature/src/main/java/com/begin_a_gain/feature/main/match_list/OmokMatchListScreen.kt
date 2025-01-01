@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omok_list
+package com.begin_a_gain.feature.main.match_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.domain.model.OmokRoom
-import com.begin_a_gain.domain.enum.OmokRoomStatus
+import com.begin_a_gain.domain.model.OmokMatch
+import com.begin_a_gain.domain.enum.MatchStatus
 import com.begin_a_gain.library.core.util.DateTimeFormat
 import com.begin_a_gain.library.core.util.DateTimeUtil.isToday
 import com.begin_a_gain.library.core.util.DateTimeUtil.toString
@@ -51,8 +51,8 @@ import org.joda.time.DateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
-fun OmokListScreen(
-    viewModel: OmokListViewModel = hiltViewModel(),
+fun OmokMatchListScreen(
+    viewModel: OmokMatchListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
@@ -70,20 +70,20 @@ fun OmokListScreen(
             .fillMaxSize()
             .background(ColorToken.UI_BG.color())
     ) {
-        OmokListTopBar(
+        OmokMatchListTopBar(
             navigateToAlarm = {}
         )
 
-        OmokListDateBar(
+        OmokMatchListDateBar(
             date = state.currentDate,
             addDate = { day -> viewModel.addDate(day) }
         ) {
             showDatePicker = true
         }
 
-        OmokRoomGrid(
-            omokRoomItemSize = ((configuration.screenWidthDp - 10)/2).dp,
-            omokRooms = state.omokRooms
+        OmokMatchGrid(
+            omokMatchItemSize = ((configuration.screenWidthDp - 10)/2).dp,
+            omokMatches = state.omokMatches
         )
     }
 
@@ -100,7 +100,7 @@ fun OmokListScreen(
 }
 
 @Composable
-private fun OmokListTopBar(
+private fun OmokMatchListTopBar(
     navigateToAlarm: () -> Unit
 ) {
     Row(
@@ -128,7 +128,7 @@ private fun OmokListTopBar(
 }
 
 @Composable
-private fun OmokListDateBar(
+private fun OmokMatchListDateBar(
     date: DateTime,
     addDate: (Int) -> Unit,
     showDatePicker: () -> Unit
@@ -175,13 +175,13 @@ private fun OmokListDateBar(
 
 @Preview
 @Composable
-fun OmokRoomGrid(
-    omokRoomItemSize: Dp = 200.dp,
-    omokRooms: List<OmokRoom> = listOf(
-        OmokRoom(status = OmokRoomStatus.None),
-        OmokRoom(status = OmokRoomStatus.Todo, title = "1일 1Commit"),
-        OmokRoom(status = OmokRoomStatus.Done, title = "명상하기"),
-        OmokRoom(status = OmokRoomStatus.Skip, title = "블로그 쓰기"),
+fun OmokMatchGrid(
+    omokMatchItemSize: Dp = 200.dp,
+    omokMatches: List<OmokMatch> = listOf(
+        OmokMatch(status = MatchStatus.None),
+        OmokMatch(status = MatchStatus.Todo, title = "1일 1Commit"),
+        OmokMatch(status = MatchStatus.Done, title = "명상하기"),
+        OmokMatch(status = MatchStatus.Skip, title = "블로그 쓰기"),
     )
 ) {
     Box(
@@ -192,17 +192,17 @@ fun OmokRoomGrid(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2)
         ) {
-            items(omokRooms) {
-                OmokRoomItem(
-                    omokRoom = it,
-                    size = omokRoomItemSize,
-                    onClickOmokRoom = { /*TODO*/ },
+            items(omokMatches) {
+                OmokMatchItem(
+                    match = it,
+                    size = omokMatchItemSize,
+                    onClickOmokMatch = { /*TODO*/ },
                     onClickButton = { /*TODO*/ }
                 )
             }
         }
 
-        if (omokRooms.all { it.status == OmokRoomStatus.None }) {
+        if (omokMatches.all { it.status == MatchStatus.None }) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

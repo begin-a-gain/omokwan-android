@@ -23,7 +23,7 @@ enum class OImageRes(val res: Int) {
     Unlocked(R.drawable.lock_open),
 
     SpeechBubble(R.drawable.speech_bubble),
-    PrimaryOmokRoom(R.drawable.omok_primary),
-    GrayOmokRoom(R.drawable.omok_gray),
-    OmokRoomGrid(R.drawable.omok_grid),
+    PrimaryOmokMatch(R.drawable.omok_primary),
+    GrayOmokMatch(R.drawable.omok_gray),
+    OmokMatchGrid(R.drawable.omok_grid),
 }

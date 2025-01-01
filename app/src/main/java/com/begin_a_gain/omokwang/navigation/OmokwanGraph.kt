@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.begin_a_gain.feature.create_match.CreateMatchScreen
+import com.begin_a_gain.feature.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
@@ -52,9 +54,13 @@ fun OmokwanGraph(
             MainGraph()
         }
 
-        composable<CreateMatch> {  }
+        composable<CreateMatch> {
+            CreateMatchScreen()
+        }
 
-        composable<JoinMatch> {  }
+        composable<JoinMatch> {
+            JoinMatchScreen()
+        }
     }
 }
 

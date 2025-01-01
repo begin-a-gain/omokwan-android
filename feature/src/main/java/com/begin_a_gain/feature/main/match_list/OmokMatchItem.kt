@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omok_list
+package com.begin_a_gain.feature.main.match_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.OmokRoom
+import com.begin_a_gain.domain.enum.MatchStatus
+import com.begin_a_gain.domain.model.OmokMatch
 import com.begin_a_gain.library.core.constant.MAX_ROOM_MEMBER
-import com.begin_a_gain.domain.enum.OmokRoomStatus
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
@@ -35,27 +35,27 @@ import com.begin_a_gain.library.design.util.advanceShadow
 import com.begin_a_gain.library.design.util.noRippleClickable
 
 @Composable
-fun OmokRoomItem(
-    omokRoom: OmokRoom,
+fun OmokMatchItem(
+    match: OmokMatch,
     size: Dp,
-    onClickOmokRoom: () -> Unit,
+    onClickOmokMatch: () -> Unit,
     onClickButton: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         OImage(
             modifier = Modifier.size(size),
-            image = OImageRes.OmokRoomGrid
+            image = OImageRes.OmokMatchGrid
         )
 
-        if (omokRoom.status != OmokRoomStatus.None) {
+        if (match.status != MatchStatus.None) {
             OImage(
                 modifier = Modifier
                     .size(size)
                     .advanceShadow(
-                        color = when (omokRoom.status) {
-                            OmokRoomStatus.Todo,
-                            OmokRoomStatus.Skip -> AppColors.OmokGrayShadow.copy(0.4f)
+                        color = when (match.status) {
+                            MatchStatus.Todo,
+                            MatchStatus.Skip -> AppColors.OmokGrayShadow.copy(0.4f)
 
                             else -> ColorToken.UI_PRIMARY
                                 .color()
@@ -67,13 +67,13 @@ fun OmokRoomItem(
                         spreadHeight = -20.dp
                     )
                     .noRippleClickable {
-                        onClickOmokRoom()
+                        onClickOmokMatch()
                     },
-                image = when (omokRoom.status) {
-                    OmokRoomStatus.Todo,
-                    OmokRoomStatus.Skip -> OImageRes.GrayOmokRoom
+                image = when (match.status) {
+                    MatchStatus.Todo,
+                    MatchStatus.Skip -> OImageRes.GrayOmokMatch
 
-                    else -> OImageRes.PrimaryOmokRoom
+                    else -> OImageRes.PrimaryOmokMatch
                 }
             )
 
@@ -85,23 +85,23 @@ fun OmokRoomItem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OImage(
-                    image = if (omokRoom.isLocked) OImageRes.Locked else OImageRes.Unlocked,
+                    image = if (match.isLocked) OImageRes.Locked else OImageRes.Unlocked,
                     size = 16.dp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-                OText(text = omokRoom.title, style = OTextStyle.Title2)
+                OText(text = match.title, style = OTextStyle.Title2)
                 Spacer(modifier = Modifier.height(6.dp))
-                OText(text = "대국 +${omokRoom.date}일 째", style = OTextStyle.Caption)
+                OText(text = "대국 +${match.date}일 째", style = OTextStyle.Caption)
                 Spacer(modifier = Modifier.height(2.dp))
-                OText(text = "${omokRoom.member}/$MAX_ROOM_MEMBER 명", style = OTextStyle.Caption)
+                OText(text = "${match.member}/$MAX_ROOM_MEMBER 명", style = OTextStyle.Caption)
             }
 
-            OmokCheckButton(
+            MatchCheckButton(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp),
                 size = size / 192 * 64,
-                status = omokRoom.status,
+                status = match.status,
                 onClickButton = onClickButton
             )
         }
@@ -109,10 +109,10 @@ fun OmokRoomItem(
 }
 
 @Composable
-private fun OmokCheckButton(
+private fun MatchCheckButton(
     size: Dp,
     modifier: Modifier,
-    status: OmokRoomStatus,
+    status: MatchStatus,
     onClickButton: () -> Unit
 ) {
     Box(
@@ -122,14 +122,14 @@ private fun OmokCheckButton(
             .background(
                 shape = CircleShape,
                 color = when (status) {
-                    OmokRoomStatus.Done -> ColorToken.UI_PRIMARY.color()
-                    OmokRoomStatus.Todo -> ColorToken.UI_DISABLE_01.color()
+                    MatchStatus.Done -> ColorToken.UI_PRIMARY.color()
+                    MatchStatus.Todo -> ColorToken.UI_DISABLE_01.color()
                     else -> ColorToken.UI_DISABLE_02.color()
                 }
             )
             .run {
                 when (status) {
-                    OmokRoomStatus.Todo -> {
+                    MatchStatus.Todo -> {
                         val stroke = Stroke(
                             width = 10f,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
@@ -149,7 +149,7 @@ private fun OmokCheckButton(
         contentAlignment = Alignment.Center
     ) {
         when (status) {
-            OmokRoomStatus.Done -> {
+            MatchStatus.Done -> {
                 OImage(
                     image = OImageRes.Checked,
                     size = 24.dp,
@@ -157,7 +157,7 @@ private fun OmokCheckButton(
                 )
             }
 
-            OmokRoomStatus.Todo -> {
+            MatchStatus.Todo -> {
                 OText(
                     text = "완료하기",
                     style = OTextStyle.Subtitle1,
@@ -178,14 +178,14 @@ private fun OmokCheckButton(
 
 @Preview
 @Composable
-fun OmokItemPreview() {
+fun OmokMatchItemPreview() {
     Column(
         Modifier.background(Color.White)
     ) {
-        OmokRoomStatus.entries.forEach { status ->
-            OmokRoomItem(
+        MatchStatus.entries.forEach { status ->
+            OmokMatchItem(
                 modifier = Modifier.size(192.dp),
-                omokRoom = OmokRoom(
+                match = OmokMatch(
                     id = "",
                     status = status,
                     title = "아침 달리기 하기",
@@ -194,7 +194,7 @@ fun OmokItemPreview() {
                     isLocked = false,
                 ),
                 size = 192.dp,
-                onClickOmokRoom = {},
+                onClickOmokMatch = {},
                 onClickButton = {}
             )
         }

@@ -1,6 +1,6 @@
 package com.begin_a_gain.domain.enum
 
-enum class OmokRoomStatus {
+enum class MatchStatus {
     None,
     Todo,
     Done,
