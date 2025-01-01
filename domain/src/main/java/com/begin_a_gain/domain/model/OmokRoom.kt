@@ -1,6 +1,6 @@
-package com.begin_a_gain.domain.repository.model
+package com.begin_a_gain.domain.model
 
-import com.begin_a_gain.library.core.type.OmokRoomStatus
+import com.begin_a_gain.domain.enum.OmokRoomStatus
 
 data class OmokRoom(
     val id: String = "",

@@ -1,7 +1,7 @@
-package com.begin_a_gain.feature.main.omoklist
+package com.begin_a_gain.feature.main.omok_list
 
-import com.begin_a_gain.domain.repository.model.OmokRoom
-import com.begin_a_gain.library.core.type.OmokRoomStatus
+import com.begin_a_gain.domain.model.OmokRoom
+import com.begin_a_gain.domain.enum.OmokRoomStatus
 import org.joda.time.DateTime
 
 data class OmokListState(

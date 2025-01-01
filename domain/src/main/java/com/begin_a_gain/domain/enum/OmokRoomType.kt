@@ -1,4 +1,4 @@
-package com.begin_a_gain.library.core.type
+package com.begin_a_gain.domain.enum
 
 enum class OmokRoomStatus {
     None,

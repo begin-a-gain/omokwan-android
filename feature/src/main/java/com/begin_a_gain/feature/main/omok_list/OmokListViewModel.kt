@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omoklist
+package com.begin_a_gain.feature.main.omok_list
 
 import androidx.lifecycle.ViewModel
 import org.joda.time.DateTime

@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omoklist
+package com.begin_a_gain.feature.main.omok_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,9 +31,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.domain.repository.model.OmokRoom
-import com.begin_a_gain.feature.main.omoklist.util.OmokRoomItem
-import com.begin_a_gain.library.core.type.OmokRoomStatus
+import com.begin_a_gain.domain.model.OmokRoom
+import com.begin_a_gain.domain.enum.OmokRoomStatus
 import com.begin_a_gain.library.core.util.DateTimeFormat
 import com.begin_a_gain.library.core.util.DateTimeUtil.isToday
 import com.begin_a_gain.library.core.util.DateTimeUtil.toString

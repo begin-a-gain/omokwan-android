@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.omoklist.util
+package com.begin_a_gain.feature.main.omok_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.repository.model.OmokRoom
+import com.begin_a_gain.domain.model.OmokRoom
 import com.begin_a_gain.library.core.constant.MAX_ROOM_MEMBER
-import com.begin_a_gain.library.core.type.OmokRoomStatus
+import com.begin_a_gain.domain.enum.OmokRoomStatus
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
