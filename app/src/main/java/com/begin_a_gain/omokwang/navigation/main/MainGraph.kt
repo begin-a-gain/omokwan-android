@@ -37,7 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.begin_a_gain.feature.main.MyPageScreen
-import com.begin_a_gain.feature.main.omok_list.OmokListScreen
+import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
 import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.button.OIconButton
@@ -162,7 +162,7 @@ fun MainGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<OmokList> {
-                OmokListScreen()
+                OmokMatchListScreen()
             }
             composable<MyPage> {
                 MyPageScreen()
@@ -204,7 +204,7 @@ fun AddMatchBottomSheet(
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            AddMatchType.values().forEach { type ->
+            AddMatchType.entries.forEach { type ->
                 val isSelected = selectedType == type
                 Column(
                     modifier = Modifier
