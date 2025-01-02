@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.button.OButton
@@ -34,6 +36,7 @@ fun OBottomSheet(
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    heightRatio: Double = 0.5,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(
@@ -55,7 +58,9 @@ fun OBottomSheet(
         containerColor = ColorToken.UI_BG.color()
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(LocalConfiguration.current.screenHeightDp.times(heightRatio).dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OText(

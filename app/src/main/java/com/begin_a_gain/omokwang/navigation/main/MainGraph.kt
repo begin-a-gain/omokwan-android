@@ -2,12 +2,12 @@ package com.begin_a_gain.omokwang.navigation.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -62,7 +62,7 @@ fun MainGraph(
 
 ) {
     val navController = rememberNavController()
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(true)
     var showAddMatchBottomSheet by rememberSaveable {
         mutableStateOf(false)
     }
@@ -201,43 +201,53 @@ fun AddMatchBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            AddMatchType.entries.forEach { type ->
-                val isSelected = selectedType == type
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(
-                            width = 1.dp,
-                            shape = RoundedCornerShape(20.dp),
-                            color = if (isSelected) {
-                                ColorToken.STROKE_PRIMARY.color()
-                            } else {
-                                ColorToken.STROKE_02.color()
-                            }
+        Column {
+            Row(
+                modifier = Modifier.weight(1f).padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                AddMatchType.entries.forEach { type ->
+                    val isSelected = selectedType == type
+                    Column(
+                        modifier = Modifier.weight(1f)
+                            .clip(RoundedCornerShape(20.dp))
+                            .border(
+                                width = 1.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                color = if (isSelected) {
+                                    ColorToken.STROKE_PRIMARY.color()
+                                } else {
+                                    ColorToken.STROKE_02.color()
+                                }
+                            )
+                            .padding(24.dp)
+                            .noRippleClickable {
+                                selectedType = type
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .background(ColorToken.UI_DISABLE_01.color())
                         )
-                        .padding(24.dp)
-                        .clickable {
-                            selectedType = type
-                        }
-                ) {
-                    Spacer(modifier = Modifier
-                        .fillMaxSize()
-                        .background(ColorToken.UI_DISABLE_01.color()))
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OText(text = type.title, style = OTextStyle.Title2)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OText(
+                            text = type.title,
+                            style = OTextStyle.Title2,
+                            color = if (isSelected) ColorToken.TEXT_01 else ColorToken.TEXT_02
+                        )
+                    }
                 }
             }
-        }
-        OButton(
-            modifier = Modifier.padding(16.dp),
-            text = "확인"
-        ) {
-            onDismissRequest()
-            onSelect(selectedType)
+
+            OButton(
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                text = "확인"
+            ) {
+                onDismissRequest()
+                onSelect(selectedType)
+            }
         }
     }
 }
