@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.begin_a_gain.feature.create_match.CreateMatchScreen
-import com.begin_a_gain.feature.join_match.JoinMatchScreen
+import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
+import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
 @Serializable object SignUpDone
 
 @Serializable object Main
-@Serializable object OmokList
+@Serializable object MatchList
 @Serializable object MyPage
 
 @Serializable object CreateMatch
@@ -51,7 +51,10 @@ fun OmokwanGraph(
         }
 
         composable<Main> {
-            MainGraph()
+            MainGraph(
+                navigateToCreateMatch = { navController.navigate(CreateMatch) },
+                navigateToJoinMatch = { navController.navigate(JoinMatch) }
+            )
         }
 
         composable<CreateMatch> {

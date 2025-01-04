@@ -50,16 +50,15 @@ import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.advanceShadow
 import com.begin_a_gain.library.design.util.noRippleClickable
-import com.begin_a_gain.omokwang.navigation.CreateMatch
-import com.begin_a_gain.omokwang.navigation.JoinMatch
+import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
-import com.begin_a_gain.omokwang.navigation.OmokList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 fun MainGraph(
-
+    navigateToCreateMatch: () -> Unit = {},
+    navigateToJoinMatch: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
@@ -149,7 +148,7 @@ fun MainGraph(
                         Spacer(modifier = Modifier.height(4.dp))
                     }
 
-                    if (bottomNavigation.route == OmokList) {
+                    if (bottomNavigation.route == MatchList) {
                         Spacer(modifier = Modifier.width(20.dp))
                     }
                 }
@@ -158,10 +157,10 @@ fun MainGraph(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = OmokList,
+            startDestination = MatchList,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable<OmokList> {
+            composable<MatchList> {
                 OmokMatchListScreen()
             }
             composable<MyPage> {
@@ -176,10 +175,10 @@ fun MainGraph(
             ) { type ->
                 when (type) {
                     AddMatchType.CreateMatch -> {
-                        navController.navigate(CreateMatch)
+                        navigateToCreateMatch()
                     }
                     AddMatchType.JoinMatch -> {
-                        navController.navigate(JoinMatch)
+                        navigateToJoinMatch()
                     }
                 }
             }
