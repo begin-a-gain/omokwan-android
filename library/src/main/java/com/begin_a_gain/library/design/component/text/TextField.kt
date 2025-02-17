@@ -52,9 +52,9 @@ enum class TextFieldStatus {
 @Composable
 fun OTextField(
     text: String,
-    hint: String,
     modifier: Modifier = Modifier,
     label: String? = null,
+    hint: String? = null,
     message: String? = null,
     singleLine: Boolean = true,
     maxCount: Int = Int.MAX_VALUE,
