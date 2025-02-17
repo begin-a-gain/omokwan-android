@@ -1,13 +1,183 @@
 package com.begin_a_gain.feature.match.create_match
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.begin_a_gain.library.design.component.ODivider
+import com.begin_a_gain.library.design.component.image.OImage
+import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.library.design.component.selection.OSwitch
+import com.begin_a_gain.library.design.component.text.OText
+import com.begin_a_gain.library.design.component.text.OTextField
+import com.begin_a_gain.library.design.theme.ColorToken
+import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
 
+@Preview
 @Composable
 fun CreateMatchScreen() {
     OScreen(
-        title = "Create Match"
+        title = "대국 만들기"
     ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            OTextField(
+                label = "대국 이름",
+                hint = "대국 이름을 적어주세요.",
+                text = ""
+            ) {
 
+            }
+
+            SettingBox(
+                modifier = Modifier.fillMaxWidth(),
+                label = "기본 설정"
+            ) {
+                SettingRow(
+                    title = "반복 요일",
+                    value = "직접 선택"
+                ) {
+                    
+                }
+                ODivider(colorToken = ColorToken.STROKE_02)
+                SettingRow(
+                    title = "최대 인원 수",
+                    value = "5"
+                ) {
+
+                }
+            }
+
+            SettingBox(
+                modifier = Modifier.fillMaxWidth(),
+                label = "기타 설정"
+            ) {
+                SettingRow(
+                    title = "대국 카테고리",
+                    value = "운동"
+                ) {
+
+                }
+                ODivider(colorToken = ColorToken.STROKE_02)
+                SettingRow(
+                    title = "리마인드 알림",
+                    value = "",
+                    showSwitch = true,
+                    switchChecked = false,
+                    onCheckedChanged = {
+
+                    }
+                ) {
+
+                }
+                ODivider(colorToken = ColorToken.STROKE_02)
+                SettingRow(
+                    title = "비공개",
+                    value = "",
+                    showSwitch = true,
+                    switchChecked = false,
+                    onCheckedChanged = {
+
+                    }
+                ) {
+
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingBox(
+    label: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column {
+        OText(
+            modifier = Modifier.padding(start = 16.dp),
+            text = label,
+            style = OTextStyle.Subtitle2
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = ColorToken.STROKE_02.color(),
+                    shape = RoundedCornerShape(8.dp)
+                )
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun SettingRow(
+    title: String,
+    value: String,
+    showSwitch: Boolean = false,
+    switchChecked: Boolean = false,
+    onCheckedChanged: () -> Unit = {},
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .clickable { onClick() }
+                .height(64.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            OText(text = title, style = OTextStyle.Subtitle3)
+            Spacer(modifier = Modifier.weight(1f))
+            OText(text = value, style = OTextStyle.Body2, color = ColorToken.TEXT_02)
+            if (!showSwitch) {
+                Spacer(modifier = Modifier.width(8.dp))
+                OImage(image = OImageRes.ArrowRight, size = 14.dp)
+                Spacer(modifier = Modifier.width(16.dp))
+            } else {
+                Spacer(modifier = Modifier.width(12.dp))
+            }
+        }
+        if (showSwitch) {
+            OSwitch(checked = switchChecked) {
+                onCheckedChanged()
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun SettingRowPreview() {
+    OScreen {
+        SettingRow("Test1", "Value1", false, false, {}, {})
+        SettingRow("Test2", "Value2", true, true, {}, {})
+        SettingRow("Test3", "", true, false, {}, {})
+        SettingRow("Test4", "Value4", false, true, {}, {})
     }
 }
