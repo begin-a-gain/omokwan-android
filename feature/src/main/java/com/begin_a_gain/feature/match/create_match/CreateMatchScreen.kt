@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.ODivider
+import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.selection.OSwitch
@@ -32,9 +33,15 @@ import com.begin_a_gain.library.design.util.OScreen
 @Composable
 fun CreateMatchScreen() {
     OScreen(
-        title = "대국 만들기"
+        title = "대국 만들기",
+        bottomButtonText = "대국 시작하기",
+        bottomButtonType = ButtonType.Disable,
+        onBottomButtonClick = {
+
+        }
     ) {
         Column(
+            Modifier.padding(vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             OTextField(
