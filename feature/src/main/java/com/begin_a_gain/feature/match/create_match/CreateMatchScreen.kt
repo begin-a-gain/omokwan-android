@@ -1,8 +1,15 @@
 package com.begin_a_gain.feature.match.create_match
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -10,11 +17,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.ODivider
@@ -62,6 +72,18 @@ fun CreateMatchScreen() {
                 ) {
                     
                 }
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn() + expandIn(),
+                    exit = shrinkOut() + fadeOut()
+                ) {
+                    DaySelection(
+                        selectedDays = listOf(0, 1)
+                    ) {
+
+                    }
+                }
+
                 ODivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "최대 인원 수",
@@ -174,6 +196,50 @@ fun SettingRow(
                 onCheckedChanged()
             }
             Spacer(modifier = Modifier.width(16.dp))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun DaySelection(
+    selectedDays: List<Int> = listOf(0, 1),
+    onClick: (Int) -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 16.dp)
+    ) {
+        listOf("일", "월", "화", "수", "목", "금", "토").forEachIndexed { index, day ->
+            val selected = selectedDays.contains(index)
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.dp,
+                        shape = CircleShape,
+                        color = if (selected) ColorToken.STROKE_PRIMARY.color() else ColorToken.STROKE_02.color()
+                    )
+                    .background(
+                        if (selected) ColorToken.UI_PRIMARY.color() else ColorToken.UI_BG.color()
+                    )
+                    .clickable {
+                        onClick(index)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                OText(
+                    text = day,
+                    style = OTextStyle.Subtitle2,
+                    color = if (selected) ColorToken.TEXT_ON_01 else ColorToken.TEXT_02
+                )
+            }
+            if (index < 6) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
     }
 }
