@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,63 +19,75 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.AppColors
 import com.begin_a_gain.library.design.theme.OTextStyle
+import com.begin_a_gain.library.design.util.fadingEdge
 
 val pickerItemHeight = 40.dp
 
 @Composable
 fun OPicker(
     options: List<String>,
+    selectedIndex: Int,
     modifier: Modifier = Modifier,
     onSelect: (Int) -> Unit
 ) {
-    val pickerState = rememberLazyListState()
+    val pickerState = rememberLazyListState(0)
     val selectedIndex by remember {
         derivedStateOf { pickerState.firstVisibleItemIndex }
     }
 
-    Box(
-        contentAlignment = Alignment.Center
-    ) {
+    Column {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(pickerItemHeight)
-                .drawBehind {
-                    drawLine(
-                        color = AppColors.Gray300,
-                        strokeWidth = 1.dp.toPx(),
-                        start = Offset(0f, 0f),
-                        end = Offset(size.width, 0f)
-                    )
-                    drawLine(
-                        color = AppColors.Gray300,
-                        strokeWidth = 1.dp.toPx(),
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height)
-                    )
-                }
-        )
-
-        LazyColumn(
-            modifier = modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(0.dp, pickerItemHeight * 2),
-            flingBehavior = rememberSnapFlingBehavior(pickerState)
+            contentAlignment = Alignment.Center
         ) {
-            items(options) { option ->
-                Box(
-                    modifier = Modifier
-                        .height(pickerItemHeight)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    OText(text = option, style = OTextStyle.Subtitle3)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(pickerItemHeight)
+                    .drawBehind {
+                        drawLine(
+                            color = AppColors.Gray300,
+                            strokeWidth = 1.dp.toPx(),
+                            start = Offset(0f, 0f),
+                            end = Offset(size.width, 0f)
+                        )
+                        drawLine(
+                            color = AppColors.Gray300,
+                            strokeWidth = 1.dp.toPx(),
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height)
+                        )
+                    }
+            )
+
+            LazyColumn(
+                state = pickerState,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fadingEdge(),
+                contentPadding = PaddingValues(0.dp, pickerItemHeight * 2),
+                flingBehavior = rememberSnapFlingBehavior(lazyListState = pickerState)
+            ) {
+                items(options) { option ->
+                    Box(
+                        modifier = Modifier
+                            .height(pickerItemHeight)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        OText(text = option, style = OTextStyle.Subtitle3)
+                    }
                 }
             }
         }
@@ -97,9 +108,9 @@ fun OPickerPreview() {
         ) {
             OPicker(
                 options = (1..10).toList().map { "$it" },
+                selectedIndex = 0,
                 onSelect = {}
             )
         }
     }
-
 }
