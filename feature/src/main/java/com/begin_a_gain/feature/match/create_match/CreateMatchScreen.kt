@@ -22,9 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -35,10 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.feature.match.create_match.util.RepeatDayType
+import com.begin_a_gain.feature.match.common.MatchCategoryGrid
+import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.library.design.component.ODivider
+import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.library.design.component.bottom_sheet.OPickerBottomSheet
 import com.begin_a_gain.library.design.component.button.ButtonType
+import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.selection.OSwitch
@@ -168,6 +173,49 @@ fun CreateMatchScreen(
                 onDismissRequest = { showMaxParticipantsPicker = false }
             ) {
                 viewModel.setMaximumParticipants(it + 1)
+            }
+        }
+
+        if (showCategoryBottomSheet) {
+            CategoryBottomSheet(
+                sheetState = bottomSheetState,
+                selectedIndex = state.selectedCategoryIndex,
+                onDismissRequest = { showCategoryBottomSheet = false },
+                onSelected = {
+                    viewModel.setCategory(it)
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryBottomSheet(
+    sheetState: SheetState,
+    selectedIndex: Int,
+    onDismissRequest: () -> Unit,
+    onSelected: (Int) -> Unit
+) {
+    var currentIndex by rememberSaveable { mutableIntStateOf(selectedIndex) }
+
+    OBottomSheet(
+        title = "대국 카테고리",
+        sheetState = sheetState,
+        onDismissRequest = onDismissRequest
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
+        ) {
+            MatchCategoryGrid(selectedIndex) {
+                currentIndex = it
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            OButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "확인"
+            ) {
+                onSelected(currentIndex)
             }
         }
     }

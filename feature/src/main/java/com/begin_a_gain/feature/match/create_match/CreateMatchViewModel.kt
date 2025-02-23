@@ -1,7 +1,7 @@
 package com.begin_a_gain.feature.match.create_match
 
 import androidx.lifecycle.ViewModel
-import com.begin_a_gain.feature.match.create_match.util.RepeatDayType
+import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -36,8 +36,8 @@ class CreateMatchViewModel(
         reduce { state.copy(maxParticipantsCount = value) }
     }
 
-    fun setCategory(value: String) = intent {
-
+    fun setCategory(selectedIndex: Int) = intent {
+        reduce { state.copy(selectedCategoryIndex = selectedIndex) }
     }
 
     fun setAlarmOn(value: Boolean) = intent {
