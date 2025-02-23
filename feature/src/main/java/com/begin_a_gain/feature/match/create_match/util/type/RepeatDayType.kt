@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.create_match.util
+package com.begin_a_gain.feature.match.create_match.util.type
 
 enum class RepeatDayType(
     val title: String
