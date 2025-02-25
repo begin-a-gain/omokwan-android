@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.AppColors
@@ -58,6 +60,7 @@ fun OPicker(
                 state = lazyListState,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .nestedScroll(rememberNestedScrollInteropConnection())
                     .fadingEdge(),
                 contentPadding = PaddingValues(0.dp, pickerItemHeight * 2),
                 flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
