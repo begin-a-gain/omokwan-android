@@ -2,6 +2,7 @@ package com.begin_a_gain.library.design.component.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -57,6 +58,8 @@ fun OTextField(
     hint: String? = null,
     message: String? = null,
     singleLine: Boolean = true,
+    textAlign: TextAlign = TextAlign.Start,
+    cursorColor: Color = ColorToken.TEXT_01.color(),
     maxCount: Int = Int.MAX_VALUE,
     status: TextFieldStatus = TextFieldStatus.Default,
     keyboardOptions: KeyboardOptions? = null,
@@ -139,7 +142,7 @@ fun OTextField(
             } else {
                 KeyboardOptions.Default.copy(imeAction = ImeAction.None)
             },
-            cursorBrush = SolidColor(ColorToken.TEXT_01.color()),
+            cursorBrush = SolidColor(cursorColor),
             textStyle = TextStyle(
                 fontSize = OTextStyle.Body2.typography.fontSize,
                 fontWeight = OTextStyle.Body2.typography.fontWeight,
@@ -149,11 +152,11 @@ fun OTextField(
                 },
                 letterSpacing = OTextStyle.Body2.typography.letteringSpacing,
                 lineHeight = OTextStyle.Body2.typography.lineHeight,
-                textAlign = TextAlign.Start
+                textAlign = textAlign
             ),
             decorationBox = { innerTextField ->
                 Row(
-                    verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top,
+                    verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top
                 ) {
                     TextFieldLeadingIcon(
                         leadingIcon = leadingIcon,
@@ -165,7 +168,8 @@ fun OTextField(
                     TextFieldWithHint(
                         text = text,
                         hint = hint,
-                        focus = isFocused
+                        focus = isFocused,
+                        textAlign = textAlign
                     ) {
                         innerTextField()
                     }
@@ -175,7 +179,7 @@ fun OTextField(
                         color = trailingIconColor
                             ?: if (status == TextFieldStatus.Disabled) ColorToken.ICON_ON_DISABLE
                             else null,
-                        onTrailingIconClick
+                        onTrailingIconClick = onTrailingIconClick
                     )
                 }
             }
@@ -212,24 +216,33 @@ private fun TextFieldWithHint(
     text: String,
     hint: String?,
     focus: Boolean,
+    textAlign: TextAlign,
     innerTextField: @Composable () -> Unit
 ) {
-    if (text.isEmpty() && !focus) {
-        OText(
-            modifier = Modifier.fillMaxWidth(),
-            text = hint ?: "",
-            style = OTextStyle.Body2,
-            color = ColorToken.TEXT_DISABLE,
-            textAlign = TextAlign.Start,
-        )
-    }
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = when (textAlign) {
+            TextAlign.Center -> Alignment.Center
+            else -> Alignment.CenterStart
+        }
+    ) {
+        if (text.isEmpty() && !focus) {
+            OText(
+                modifier = Modifier.fillMaxWidth(),
+                text = hint ?: "",
+                style = OTextStyle.Body2,
+                color = ColorToken.TEXT_DISABLE,
+                textAlign = textAlign,
+            )
+        }
 
-    val customTextSelectionColors = TextSelectionColors(
-        handleColor = ColorToken.UI_PRIMARY.color(),
-        backgroundColor = ColorToken.UI_PRIMARY.color()
-    )
-    CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-        innerTextField()
+        val customTextSelectionColors = TextSelectionColors(
+            handleColor = ColorToken.UI_PRIMARY.color(),
+            backgroundColor = ColorToken.UI_PRIMARY.color()
+        )
+        CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+            innerTextField()
+        }
     }
 }
 
