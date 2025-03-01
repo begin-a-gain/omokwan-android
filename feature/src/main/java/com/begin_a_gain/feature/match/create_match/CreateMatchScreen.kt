@@ -241,6 +241,7 @@ fun CreateMatchScreen(
 
         if (showCodeDialog) {
             MatchCodeDialog(
+                code = state.code,
                 onConfirmClick = { code ->
                     viewModel.setPrivate(true, code)
                 },

@@ -43,6 +43,7 @@ fun CodeTextField(
 
 @Composable
 fun MatchCodeDialog(
+    code: String = "",
     onConfirmClick: (String) -> Unit,
     onCancelClick: () -> Unit,
     onDismissRequest: () -> Unit
@@ -55,16 +56,21 @@ fun MatchCodeDialog(
     val focusRequester3 = remember { FocusRequester() }
     val focusRequester4 = remember { FocusRequester() }
 
-    var code1 by rememberSaveable { mutableStateOf("") }
-    var code2 by rememberSaveable { mutableStateOf("") }
-    var code3 by rememberSaveable { mutableStateOf("") }
-    var code4 by rememberSaveable { mutableStateOf("") }
+    var code1 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[0]}") }
+    var code2 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[1]}") }
+    var code3 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[2]}") }
+    var code4 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[3]}") }
 
     ODialog(
         title = "대국 코드 설정",
         buttonText = "확인",
         onButtonClick = {
-            onConfirmClick("$code1$code2$code3$code4")
+            val code = "$code1$code2$code3$code4"
+            if (code.length == 4) {
+                onConfirmClick(code)
+            } else {
+                onDismissRequest()
+            }
         },
         additionalButtonText = "취소",
         onAdditionalButtonClick = onCancelClick,
