@@ -63,11 +63,13 @@ fun OBottomSheet(
                 .height(LocalConfiguration.current.screenHeightDp.times(heightRatio).dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OText(
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = title,
-                style = OTextStyle.Title2
-            )
+            if (title.isNotBlank()) {
+                OText(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    text = title,
+                    style = OTextStyle.Title2
+                )
+            }
             content()
         }
     }

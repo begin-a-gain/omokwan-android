@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.match.create_match
 
 import androidx.lifecycle.ViewModel
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
+import org.joda.time.LocalTime
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -13,6 +14,16 @@ class CreateMatchViewModel(
     override val container: Container<CreateMatchState, CreateMatchSideEffect> =
         container(CreateMatchState())
 
+    init {
+        intent {
+            reduce {
+                state.copy(
+                    alarmHour = LocalTime.now().hourOfDay,
+                    alarmMin = LocalTime.now().minuteOfHour
+                )
+            }
+        }
+    }
 
     fun setMatchTitle(value: String) = blockingIntent {
         reduce { state.copy(title = value) }
@@ -40,8 +51,8 @@ class CreateMatchViewModel(
         reduce { state.copy(selectedCategoryIndex = selectedIndex) }
     }
 
-    fun setAlarmOn(value: Boolean) = intent {
-        reduce { state.copy(alarmOn = value) }
+    fun setAlarmOn(value: Boolean, hour: Int? = null, min: Int? = null) = intent {
+        reduce { state.copy(alarmOn = value, alarmHour = hour?: 0, alarmMin = min?: 0) }
     }
 
     fun setPrivate(value: Boolean, code: String? = null) = intent {

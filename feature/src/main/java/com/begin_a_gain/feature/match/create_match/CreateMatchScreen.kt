@@ -1,5 +1,10 @@
 package com.begin_a_gain.feature.match.create_match
 
+import android.Manifest
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
@@ -20,23 +25,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.MatchCodeDialog
+import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
 import com.begin_a_gain.library.design.component.ODivider
 import com.begin_a_gain.library.design.component.bottom_sheet.OPickerBottomSheet
 import com.begin_a_gain.library.design.component.button.ButtonType
+import com.begin_a_gain.library.design.component.dialog.OTimePickerDialog
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.selection.OSwitch
@@ -46,20 +58,48 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Preview
 @Composable
 fun CreateMatchScreen(
     viewModel: CreateMatchViewModel = hiltViewModel()
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val bottomSheetState = rememberModalBottomSheetState()
     var showRepeatDayTypePicker by rememberSaveable { mutableStateOf(false) }
     var showMaxParticipantsPicker by rememberSaveable { mutableStateOf(false) }
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCodeDialog by rememberSaveable { mutableStateOf(false) }
+
+    val notificationPermission =
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    var showNotificationPermissionBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showNotificationTimeDialog by rememberSaveable { mutableStateOf(false) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                if (showNotificationPermissionBottomSheet) {
+                    showNotificationPermissionBottomSheet = false
+                    showNotificationTimeDialog = true
+                }
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     OScreen(
         title = "대국 만들기",
@@ -125,12 +165,26 @@ fun CreateMatchScreen(
                 ODivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "리마인드 알림",
-                    value = if (state.alarmOn) "" else "",
+                    value = if (state.alarmOn) {
+                        if (state.alarmHour > 12) "오후 ${state.alarmHour - 12}:${state.alarmMin}"
+                        else "오전 ${state.alarmHour}:${state.alarmMin}"
+                    } else "",
                     showSwitch = true,
-                    switchChecked = false,
+                    switchChecked = state.alarmOn,
                     onCheckedChanged = {
-                        // Todo : add permission
-                        viewModel.setAlarmOn(!state.alarmOn)
+                        if (notificationPermission.status.isGranted) {
+                            if (state.alarmOn) {
+                                viewModel.setAlarmOn(false)
+                            } else {
+                                showNotificationTimeDialog = true
+                            }
+                        } else {
+                            if (notificationPermission.status.shouldShowRationale) {
+                                showNotificationPermissionBottomSheet = true
+                            } else {
+                                notificationPermission.launchPermissionRequest()
+                            }
+                        }
                     }
                 ) { }
                 ODivider(colorToken = ColorToken.STROKE_02)
@@ -193,6 +247,32 @@ fun CreateMatchScreen(
                 onCancelClick = { showCodeDialog = false }
             ) {
                 showCodeDialog = false
+            }
+        }
+
+        if (showNotificationPermissionBottomSheet) {
+            NotificationPermissionBottomSheet(
+                sheetState = bottomSheetState,
+                onAgreeClick = {
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    }
+                    context.startActivity(intent)
+                }
+            ) {
+                showNotificationPermissionBottomSheet = false
+            }
+        }
+
+        if (showNotificationTimeDialog) {
+            OTimePickerDialog(
+                initialHour = state.alarmHour,
+                initialMinute = state.alarmMin,
+                onSelected = { hour, minute ->
+                    viewModel.setAlarmOn(true, hour, minute)
+                }
+            ) {
+                showNotificationTimeDialog = false
             }
         }
     }
