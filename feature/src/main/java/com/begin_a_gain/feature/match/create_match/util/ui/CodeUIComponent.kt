@@ -42,10 +42,11 @@ fun CodeTextField(
     }
 }
 
-@Preview
 @Composable
 fun MatchCodeDialog(
-    onDismissRequest: () -> Unit = {}
+    onConfirmClick: (String) -> Unit,
+    onCancelClick: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -63,9 +64,11 @@ fun MatchCodeDialog(
     ODialog(
         title = "대국 코드 설정",
         buttonText = "확인",
-        onButtonClick = { /*TODO*/ },
+        onButtonClick = {
+            onConfirmClick("$code1$code2$code3$code4")
+        },
         additionalButtonText = "취소",
-        onAdditionalButtonClick = { /*TODO*/ },
+        onAdditionalButtonClick = onCancelClick,
         content = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)

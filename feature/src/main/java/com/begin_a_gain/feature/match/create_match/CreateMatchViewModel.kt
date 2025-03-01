@@ -44,7 +44,7 @@ class CreateMatchViewModel(
         reduce { state.copy(alarmOn = value) }
     }
 
-    fun setPrivate(value: Boolean) = intent {
-        reduce { state.copy(isPrivate = value) }
+    fun setPrivate(value: Boolean, code: String? = null) = intent {
+        reduce { state.copy(isPrivate = value, code = code?: "") }
     }
 }

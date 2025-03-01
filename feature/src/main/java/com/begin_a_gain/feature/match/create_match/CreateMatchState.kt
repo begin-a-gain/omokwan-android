@@ -9,7 +9,8 @@ data class CreateMatchState(
     val maxParticipantsCount: Int = 5,
     val selectedCategoryIndex: Int = -1,
     val alarmOn: Boolean = false,
-    val isPrivate: Boolean = false
+    val isPrivate: Boolean = false,
+    val code: String = ""
 )
 
 interface CreateMatchSideEffect {
