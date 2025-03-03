@@ -68,7 +68,8 @@ import com.google.accompanist.permissions.shouldShowRationale
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun CreateMatchScreen(
-    viewModel: CreateMatchViewModel
+    viewModel: CreateMatchViewModel,
+    navigateToMain: () -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -105,9 +106,8 @@ fun CreateMatchScreen(
         title = "대국 만들기",
         bottomButtonText = "대국 시작하기",
         bottomButtonType = ButtonType.Disable,
-        onBottomButtonClick = {
-
-        }
+        onBottomButtonClick = { },
+        onBackButtonClick = navigateToMain
     ) {
         Column(
             Modifier.padding(vertical = 24.dp),
@@ -177,23 +177,18 @@ fun CreateMatchScreen(
                     onCheckedChanged = {
                         when {
                             notificationPermission.status.isGranted -> {
-                                Log.d("junyoung", "isGranted")
                                 if (state.alarmOn) {
-                                    Log.d("junyoung", "alarmOn")
                                     viewModel.setAlarmOn(false)
                                 } else {
-                                    Log.d("junyoung", "!alarmOn")
                                     showNotificationTimeDialog = true
                                 }
                             }
 
                             notificationPermission.status.shouldShowRationale -> {
-                                Log.d("junyoung", "shouldShowRationale")
                                 showNotificationPermissionBottomSheet = true
                             }
 
                             else -> {
-                                Log.d("junyoung", "Denied")
                                 notificationPermission.launchPermissionRequest()
                             }
                         }

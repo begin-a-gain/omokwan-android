@@ -21,6 +21,7 @@ import com.begin_a_gain.library.design.util.OScreen
 @Composable
 fun MatchCategoryScreen(
     viewModel: CreateMatchViewModel = hiltViewModel(),
+    navigateToMain: () -> Unit,
     navigateToCreateMatch: () -> Unit
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
@@ -28,9 +29,8 @@ fun MatchCategoryScreen(
     OScreen(
         bottomButtonText = "다음",
         bottomButtonType = if (state.selectedCategoryIndex == -1) ButtonType.Disable else ButtonType.Primary,
-        onBottomButtonClick = {
-            navigateToCreateMatch()
-        }
+        onBottomButtonClick = navigateToCreateMatch,
+        onBackButtonClick = navigateToMain
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
