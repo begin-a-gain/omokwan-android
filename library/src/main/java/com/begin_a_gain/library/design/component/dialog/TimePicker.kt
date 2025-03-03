@@ -14,6 +14,7 @@ import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 @Composable
 @Preview
 fun OTimePickerDialog(
+    title: String = "리마인드 알림",
     initialHour: Int = 0,
     initialMinute: Int = 0,
     onSelected: (Int, Int) -> Unit = { _, _ -> },
@@ -26,7 +27,7 @@ fun OTimePickerDialog(
     )
 
     ODialog(
-        title = "리마인드 알림",
+        title = title,
         buttonText = "선택",
         onButtonClick = {
             onSelected(state.hour, state.minute)

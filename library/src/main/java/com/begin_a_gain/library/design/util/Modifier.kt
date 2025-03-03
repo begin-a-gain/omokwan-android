@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.BlurMaskFilter
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -84,3 +85,5 @@ fun Modifier.fadingEdge(
         drawContent()
         drawRect(brush = brush, blendMode = BlendMode.DstIn)
     }
+
+fun Modifier.oDefaultPadding() = this.padding(vertical = 16.dp, horizontal = 20.dp)

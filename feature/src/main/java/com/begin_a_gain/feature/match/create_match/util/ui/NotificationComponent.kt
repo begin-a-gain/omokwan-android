@@ -3,6 +3,7 @@ package com.begin_a_gain.feature.match.create_match.util.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,10 +44,17 @@ fun NotificationPermissionBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OButton(text = "동의하기") {
+            OButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "동의하기"
+            ) {
                 onAgreeClick()
             }
-            OButton(text = "다음에", style = ButtonStyle.None) {
+            OButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "다음에",
+                style = ButtonStyle.None
+            ) {
                 onDismissRequest()
             }
         }

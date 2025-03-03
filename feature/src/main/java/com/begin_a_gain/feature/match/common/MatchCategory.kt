@@ -3,7 +3,10 @@ package com.begin_a_gain.feature.match.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
@@ -32,16 +33,20 @@ import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
+import com.begin_a_gain.library.design.util.oDefaultPadding
 
 @Preview(showSystemUi = true)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MatchCategoryGrid(
+    modifier: Modifier = Modifier,
     selectedIndex: Int = -1,
     onSelect: (Int) -> Unit = {}
 ) {
-    CustomHorizontalStaggeredGrid(
-        verticalSpacing = 12.dp,
-        horizontalSpacing = 12.dp
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         categories.forEachIndexed { index, (emoji, text) ->
             CategoryChip(
@@ -52,32 +57,6 @@ fun MatchCategoryGrid(
                     onSelect(index)
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun CustomHorizontalStaggeredGrid(
-    horizontalSpacing: Dp,
-    verticalSpacing: Dp,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Layout(content = content , modifier = modifier) { measurables, constraints ->
-        val placeable = measurables.map { measurable ->
-            measurable.measure(constraints)
-        }
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            var x = 0
-            var y = 0
-            placeable.forEach {
-                if (x + it.width > constraints.maxWidth) {
-                    x = 0
-                    y += it.height + verticalSpacing.roundToPx()
-                }
-                it.placeRelative(x, y)
-                x += it.width + horizontalSpacing.roundToPx()
-            }
         }
     }
 }
@@ -136,15 +115,18 @@ fun CategoryBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest
     ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
-        ) {
-            MatchCategoryGrid(selectedIndex) {
+        Column {
+            MatchCategoryGrid(
+                modifier = Modifier.oDefaultPadding(),
+                selectedIndex = currentIndex
+            ) {
                 currentIndex = it
             }
             Spacer(modifier = Modifier.weight(1f))
             OButton(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .oDefaultPadding()
+                    .fillMaxWidth(),
                 text = "확인"
             ) {
                 onSelected(currentIndex)

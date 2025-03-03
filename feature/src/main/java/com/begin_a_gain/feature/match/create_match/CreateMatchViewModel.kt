@@ -2,12 +2,15 @@ package com.begin_a_gain.feature.match.create_match
 
 import androidx.lifecycle.ViewModel
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.joda.time.LocalTime
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
+import javax.inject.Inject
 
-class CreateMatchViewModel(
+@HiltViewModel
+class CreateMatchViewModel @Inject constructor(
 
 ) : ViewModel(), ContainerHost<CreateMatchState, CreateMatchSideEffect> {
 
@@ -48,7 +51,11 @@ class CreateMatchViewModel(
     }
 
     fun setCategory(selectedIndex: Int) = intent {
-        reduce { state.copy(selectedCategoryIndex = selectedIndex) }
+        reduce {
+            state.copy(
+                selectedCategoryIndex = if (state.selectedCategoryIndex == selectedIndex) -1 else selectedIndex
+            )
+        }
     }
 
     fun setAlarmOn(value: Boolean, hour: Int? = null, min: Int? = null) = intent {

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
@@ -35,12 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
+import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.MatchCodeDialog
@@ -65,15 +66,14 @@ import com.google.accompanist.permissions.shouldShowRationale
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
-@Preview
 @Composable
 fun CreateMatchScreen(
-    viewModel: CreateMatchViewModel = hiltViewModel()
+    viewModel: CreateMatchViewModel
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberModalBottomSheetState(true)
     var showRepeatDayTypePicker by rememberSaveable { mutableStateOf(false) }
     var showMaxParticipantsPicker by rememberSaveable { mutableStateOf(false) }
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -158,10 +158,12 @@ fun CreateMatchScreen(
             ) {
                 SettingRow(
                     title = "대국 카테고리",
-                    value = ""
+                    value = if (categories.getOrNull(state.selectedCategoryIndex) == null) ""
+                    else categories[state.selectedCategoryIndex].second
                 ) {
                     showCategoryBottomSheet = true
                 }
+
                 ODivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "리마인드 알림",
@@ -170,37 +172,54 @@ fun CreateMatchScreen(
                         else "오전 ${state.alarmHour}:${state.alarmMin}"
                     } else "",
                     showSwitch = true,
+                    isRowClickable = state.alarmOn,
                     switchChecked = state.alarmOn,
                     onCheckedChanged = {
-                        if (notificationPermission.status.isGranted) {
-                            if (state.alarmOn) {
-                                viewModel.setAlarmOn(false)
-                            } else {
-                                showNotificationTimeDialog = true
+                        when {
+                            notificationPermission.status.isGranted -> {
+                                Log.d("junyoung", "isGranted")
+                                if (state.alarmOn) {
+                                    Log.d("junyoung", "alarmOn")
+                                    viewModel.setAlarmOn(false)
+                                } else {
+                                    Log.d("junyoung", "!alarmOn")
+                                    showNotificationTimeDialog = true
+                                }
                             }
-                        } else {
-                            if (notificationPermission.status.shouldShowRationale) {
+
+                            notificationPermission.status.shouldShowRationale -> {
+                                Log.d("junyoung", "shouldShowRationale")
                                 showNotificationPermissionBottomSheet = true
-                            } else {
+                            }
+
+                            else -> {
+                                Log.d("junyoung", "Denied")
                                 notificationPermission.launchPermissionRequest()
                             }
                         }
                     }
-                ) { }
+                ) {
+                    if (state.alarmOn) {
+                        showNotificationTimeDialog = true
+                    }
+                }
+
                 ODivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "비공개",
                     value = if (state.isPrivate) "코드 : ${state.code}" else "",
                     showSwitch = true,
                     switchChecked = state.isPrivate,
+                    isRowClickable = state.isPrivate,
                     onCheckedChanged = {
-                        if (state.isPrivate) {
-                            viewModel.setPrivate(false)
-                        } else {
-                            showCodeDialog = true
-                        }
+                        if (state.isPrivate) viewModel.setPrivate(false)
+                        else showCodeDialog = true
                     }
-                ) {}
+                ) {
+                    if (state.isPrivate) {
+                        showCodeDialog = true
+                    }
+                }
             }
         }
 
@@ -234,6 +253,7 @@ fun CreateMatchScreen(
                 selectedIndex = state.selectedCategoryIndex,
                 onDismissRequest = { showCategoryBottomSheet = false },
                 onSelected = {
+                    showCategoryBottomSheet = false
                     viewModel.setCategory(it)
                 }
             )
@@ -267,6 +287,7 @@ fun CreateMatchScreen(
 
         if (showNotificationTimeDialog) {
             OTimePickerDialog(
+                title = "리마인드 알람",
                 initialHour = state.alarmHour,
                 initialMinute = state.alarmMin,
                 onSelected = { hour, minute ->
@@ -312,6 +333,7 @@ fun SettingRow(
     value: String,
     showSwitch: Boolean = false,
     switchChecked: Boolean = false,
+    isRowClickable: Boolean = true,
     onCheckedChanged: () -> Unit = {},
     onClick: () -> Unit
 ) {
@@ -322,7 +344,13 @@ fun SettingRow(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onClick() }
+                .run {
+                    if (isRowClickable) {
+                        this.clickable { onClick() }
+                    } else {
+                        this
+                    }
+                }
                 .height(64.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -351,9 +379,9 @@ fun SettingRow(
 @Composable
 fun SettingRowPreview() {
     OScreen {
-        SettingRow("Test1", "Value1", false, false, {}, {})
-        SettingRow("Test2", "Value2", true, true, {}, {})
-        SettingRow("Test3", "", true, false, {}, {})
-        SettingRow("Test4", "Value4", false, true, {}, {})
+        SettingRow("Test1", "Value1", false, true, false, {}, {})
+        SettingRow("Test2", "Value2", true, true, true, {}, {})
+        SettingRow("Test3", "", true, true, false, {}, {})
+        SettingRow("Test4", "Value4", false, true, true, {}, {})
     }
 }
