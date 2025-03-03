@@ -241,7 +241,7 @@ fun AddMatchBottomSheet(
             }
 
             OButton(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp).fillMaxWidth(),
                 text = "확인"
             ) {
                 onDismissRequest()

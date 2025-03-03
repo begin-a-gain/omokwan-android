@@ -1,10 +1,15 @@
 package com.begin_a_gain.omokwang.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
+import com.begin_a_gain.feature.match.create_match.CreateMatchViewModel
+import com.begin_a_gain.feature.match.create_match.MatchCategoryScreen
 import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
@@ -20,10 +25,12 @@ import kotlinx.serialization.Serializable
 @Serializable object MatchList
 @Serializable object MyPage
 
+@Serializable object MatchCategory
 @Serializable object CreateMatch
 @Serializable object JoinMatch
 @Serializable object Alarm
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun OmokwanGraph(
     navController: NavHostController,
@@ -52,13 +59,26 @@ fun OmokwanGraph(
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.navigate(CreateMatch) },
+                navigateToCreateMatch = { navController.navigate(MatchCategory) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) }
             )
         }
 
+        composable<MatchCategory> {
+            val backStackEntry = navController.getBackStackEntry(MatchCategory)
+            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
+            MatchCategoryScreen(
+                viewModel = matchViewModel,
+                navigateToCreateMatch = { navController.navigate(CreateMatch) }
+            )
+        }
+
         composable<CreateMatch> {
-            CreateMatchScreen()
+            val backStackEntry = navController.getBackStackEntry(MatchCategory)
+            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
+            CreateMatchScreen(
+                viewModel = matchViewModel
+            )
         }
 
         composable<JoinMatch> {
