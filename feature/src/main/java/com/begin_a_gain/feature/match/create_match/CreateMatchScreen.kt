@@ -43,7 +43,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
 import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
+import com.begin_a_gain.feature.match.create_match.util.ui.CreateMatchDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
+import com.begin_a_gain.feature.match.create_match.util.ui.LeaveCreateMatchDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.MatchCodeDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
 import com.begin_a_gain.library.design.component.ODivider
@@ -79,6 +81,10 @@ fun CreateMatchScreen(
     var showMaxParticipantsPicker by rememberSaveable { mutableStateOf(false) }
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCodeDialog by rememberSaveable { mutableStateOf(false) }
+    var showCreateMatchDialog by rememberSaveable { mutableStateOf(false) }
+    var showLeaveWithoutSavingDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val notificationPermission =
         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
@@ -106,8 +112,12 @@ fun CreateMatchScreen(
         title = "대국 만들기",
         bottomButtonText = "대국 시작하기",
         bottomButtonType = ButtonType.Disable,
-        onBottomButtonClick = { },
-        onBackButtonClick = navigateToMain
+        onBottomButtonClick = {
+            showCreateMatchDialog = true
+        },
+        onBackButtonClick = {
+            showLeaveWithoutSavingDialog = true
+        }
     ) {
         Column(
             Modifier.padding(vertical = 24.dp),
@@ -290,6 +300,23 @@ fun CreateMatchScreen(
                 }
             ) {
                 showNotificationTimeDialog = false
+            }
+        }
+
+        if (showCreateMatchDialog) {
+            CreateMatchDialog(
+                matchTitle = state.title,
+                onConfirmClick = { /*TODO*/ }
+            ) {
+                showCreateMatchDialog = false
+            }
+        }
+
+        if (showLeaveWithoutSavingDialog) {
+            LeaveCreateMatchDialog(
+                onConfirmClick = navigateToMain
+            ) {
+                showLeaveWithoutSavingDialog = false
             }
         }
     }
