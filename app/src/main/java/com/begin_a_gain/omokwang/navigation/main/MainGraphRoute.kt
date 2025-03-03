@@ -2,7 +2,7 @@ package com.begin_a_gain.omokwang.navigation.main
 
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.omokwang.navigation.MyPage
-import com.begin_a_gain.omokwang.navigation.OmokList
+import com.begin_a_gain.omokwang.navigation.MatchList
 
 data class MainGraphRoute<T: Any>(
     val name: String,
@@ -11,7 +11,7 @@ data class MainGraphRoute<T: Any>(
 )
 
 val bottomNavigationRoutes = listOf(
-    MainGraphRoute("My 대국", OmokList, OImageRes.PlaceHolder),
+    MainGraphRoute("My 대국", MatchList, OImageRes.PlaceHolder),
     MainGraphRoute("마이페이지", MyPage, OImageRes.PlaceHolder),
 )
 
