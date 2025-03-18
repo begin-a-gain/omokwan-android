@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.create_match.util.ui
+package com.begin_a_gain.feature.match.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
