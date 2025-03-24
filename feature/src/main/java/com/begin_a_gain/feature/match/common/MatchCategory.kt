@@ -40,7 +40,7 @@ import com.begin_a_gain.library.design.util.oDefaultPadding
 @Composable
 fun MatchCategoryGrid(
     modifier: Modifier = Modifier,
-    selectedIndex: Int = -1,
+    selectedIndex: List<Int> = emptyList(),
     onSelect: (Int) -> Unit = {}
 ) {
     FlowRow(
@@ -52,7 +52,7 @@ fun MatchCategoryGrid(
             CategoryChip(
                 emoji = emoji,
                 text = text,
-                isSelected = selectedIndex == index,
+                isSelected = selectedIndex.contains(index),
                 onSelect = {
                     onSelect(index)
                 }
@@ -118,7 +118,7 @@ fun CategoryBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = currentIndex
+                selectedIndex = listOf(currentIndex)
             ) {
                 currentIndex = it
             }

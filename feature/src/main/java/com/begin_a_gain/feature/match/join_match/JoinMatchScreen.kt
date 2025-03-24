@@ -3,7 +3,6 @@ package com.begin_a_gain.feature.match.join_match
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +11,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,10 +26,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.feature.match.common.MatchCategoryGrid
 import com.begin_a_gain.feature.match.common.MatchCodeDialog
+import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.dialog.ODialog
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
@@ -44,15 +47,22 @@ import com.begin_a_gain.library.design.util.oDefaultPadding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun JoinMatchScreen() {
+fun JoinMatchScreen(
+    viewModel: JoinMatchViewModel = hiltViewModel()
+) {
     OScreen(
         title = "대국 참여하기",
         useDefaultPadding = false
     ) {
         val scope = rememberCoroutineScope()
+        val bottomSheetState = rememberModalBottomSheetState(true)
+
+        val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
         var keyword by rememberSaveable { mutableStateOf("") }
+        var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
         var showJoinMatchDialog by rememberSaveable { mutableStateOf(false) }
         var showMatchCodeDialog by rememberSaveable { mutableStateOf(false) }
         var selectedMatch by remember {
@@ -61,17 +71,32 @@ fun JoinMatchScreen() {
 
         Column {
             JoinMatchHeader(
-                keyword = "",
+                keyword = keyword,
                 onKeywordChanged = { keyword = it },
-                selectedCategoryCount = 0,
+                selectedCategoryCount = state.categoryFilter.size,
                 onAvailableMatchChipClick = {},
-                onCategoryChipClick = {}
+                onCategoryChipClick = {
+                    showCategoryBottomSheet = true
+                }
             )
-            JoinMatchList { match ->
+            JoinMatchList(
+                matchItems = state.matchList
+            ) { match ->
                 selectedMatch = match
                 if (!match.alreadyJoined && match.maximumParticipants != match.currentParticipants) {
                     showJoinMatchDialog = true
                 }
+            }
+        }
+
+        if (showCategoryBottomSheet) {
+            CategoryFilterBottomSheet(
+                sheetState = bottomSheetState,
+                selectedIndexList = state.categoryFilter,
+                onDismissRequest = { showCategoryBottomSheet = false }
+            ) {
+                showCategoryBottomSheet = false
+                viewModel.setCategoryFilter(it)
             }
         }
 
@@ -175,6 +200,7 @@ fun JoinMatchHeader(
 @Preview
 @Composable
 fun JoinMatchList(
+    matchItems: List<MatchInfo> = testMatchList,
     onJoinMatchClick: (MatchInfo) -> Unit = {}
 ) {
     Column(
@@ -193,7 +219,7 @@ fun JoinMatchList(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(
-                items = testMatchList
+                items = matchItems
             ) { index, match ->
                 JoinMatchItem(
                     match = match,
@@ -202,6 +228,47 @@ fun JoinMatchList(
                 ) {
                     onJoinMatchClick(match)
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryFilterBottomSheet(
+    sheetState: SheetState,
+    selectedIndexList: List<Int>,
+    onDismissRequest: () -> Unit,
+    onSelected: (List<Int>) -> Unit
+) {
+    var currentIndexList by rememberSaveable { mutableStateOf(selectedIndexList) }
+
+    OBottomSheet(
+        title = "대국 카테고리",
+        sheetState = sheetState,
+        onDismissRequest = onDismissRequest
+    ) {
+        Column {
+            MatchCategoryGrid(
+                modifier = Modifier.oDefaultPadding(),
+                selectedIndex = currentIndexList
+            ) {
+                if (currentIndexList.contains(it)) {
+                    val newList = currentIndexList.filter { index -> index != it }
+                    currentIndexList = newList
+                } else {
+                    val newList = currentIndexList + listOf(it)
+                    currentIndexList = newList
+                }
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            OButton(
+                modifier = Modifier
+                    .oDefaultPadding()
+                    .fillMaxWidth(),
+                text = "확인"
+            ) {
+                onSelected(currentIndexList)
             }
         }
     }
