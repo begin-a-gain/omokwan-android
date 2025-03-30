@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.match.join_match
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,7 +75,9 @@ fun JoinMatchScreen(
                 keyword = keyword,
                 onKeywordChanged = { keyword = it },
                 selectedCategoryCount = state.categoryFilter.size,
-                onAvailableMatchChipClick = {},
+                onAvailableMatchChipClick = {
+                    viewModel.setAvailableMatchFilter()
+                },
                 onCategoryChipClick = {
                     showCategoryBottomSheet = true
                 }
@@ -154,17 +157,19 @@ fun JoinMatchHeader(
         ) {
             OImage(image = OImageRes.Search)
             Spacer(modifier = Modifier.width(4.dp))
-            if (keyword.isEmpty()) {
-                OText(
-                    text = "대국 이름, 대국방 ID, 방장으로 검색하기",
-                    style = OTextStyle.Body1,
-                    color = ColorToken.TEXT_02
-                )
-            } else {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 BasicTextField(
                     value = keyword,
-                    onValueChange = onKeywordChanged
+                    onValueChange = onKeywordChanged,
+                    singleLine = true
                 )
+                if (keyword.isEmpty()) {
+                    OText(
+                        text = "대국 이름, 대국방 ID, 방장으로 검색하기",
+                        style = OTextStyle.Body1,
+                        color = ColorToken.TEXT_02
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(16.dp))

@@ -18,4 +18,8 @@ class JoinMatchViewModel @Inject constructor(
     fun setCategoryFilter(indexList: List<Int>) = intent {
         reduce { state.copy(categoryFilter = indexList) }
     }
+
+    fun setAvailableMatchFilter() = intent {
+        reduce { state.copy(availableMatchFilterSelected = !state.availableMatchFilterSelected) }
+    }
 }

@@ -2,7 +2,8 @@ package com.begin_a_gain.feature.match.join_match
 
 data class JoinMatchState(
     val matchList: List<MatchInfo> = testMatchList,
-    val categoryFilter: List<Int> = listOf()
+    val categoryFilter: List<Int> = listOf(),
+    val availableMatchFilterSelected: Boolean = false
 )
 
 sealed interface JoinMatchSideEffect {
