@@ -26,4 +26,6 @@ enum class OImageRes(val res: Int) {
     PrimaryOmokMatch(R.drawable.omok_primary),
     GrayOmokMatch(R.drawable.omok_gray),
     OmokMatchGrid(R.drawable.omok_grid),
+
+    Search(R.drawable.search)
 }

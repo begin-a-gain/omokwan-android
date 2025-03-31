@@ -88,6 +88,7 @@ dependencies {
 
     ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
+    implementation(libs.bundles.mvi.orbit)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.login.kakao)

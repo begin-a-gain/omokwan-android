@@ -32,10 +32,11 @@ import com.begin_a_gain.library.design.util.OPreview
 
 @Composable
 fun ODialog(
-    message: String,
+    title: String,
     buttonText: String,
     onButtonClick: () -> Unit,
-    title: String? = null,
+    message: String? = null,
+    content: @Composable (() -> Unit)? = null,
     additionalButtonText: String? = null,
     onAdditionalButtonClick: (() -> Unit)? = null,
     onDismissRequest: () -> Unit
@@ -50,12 +51,12 @@ fun ODialog(
                 modifier = Modifier
                     .background(ColorToken.UI_BG.color())
                     .fillMaxWidth()
-                    .padding(20.dp),
+                    .padding(horizontal = 20.dp, vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (title == null) {
+                if (message == null && content == null) {
                     OText(
-                        text = message,
+                        text = title,
                         style = OTextStyle.Title2,
                         textAlign = TextAlign.Center
                     )
@@ -66,11 +67,15 @@ fun ODialog(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    OText(
-                        text = message,
-                        style = OTextStyle.Body2,
-                        textAlign = TextAlign.Center
-                    )
+                    if (message != null) {
+                        OText(
+                            text = message,
+                            style = OTextStyle.Body2,
+                            textAlign = TextAlign.Center
+                        )
+                    } else if (content != null) {
+                        content()
+                    }
                 }
             }
 
@@ -167,7 +172,7 @@ fun ODialogPreview() {
 
     if (showDialog3) {
         ODialog(
-            message = LoremIpsum(8).values.first(),
+            title = LoremIpsum(8).values.first(),
             buttonText = "확인",
             onButtonClick = { showDialog3 = false },
             additionalButtonText = "취소",

@@ -65,4 +65,5 @@ dependencies {
     implementation(libs.login.kakao)
 
     implementation(libs.util.jodatime)
+    implementation(libs.util.accompanist.permission)
 }
