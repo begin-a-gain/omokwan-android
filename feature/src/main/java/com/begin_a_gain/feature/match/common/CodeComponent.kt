@@ -64,9 +64,9 @@ fun MatchCodeDialog(
         title = "대국 코드 설정",
         buttonText = "확인",
         onButtonClick = {
-            val code = "$code1$code2$code3$code4"
-            if (code.length == 4) {
-                onConfirmClick(code)
+            val fullCode = "$code1$code2$code3$code4"
+            if (fullCode.length == 4) {
+                onConfirmClick(fullCode)
                 onDismissRequest()
             } else {
                 onDismissRequest()
