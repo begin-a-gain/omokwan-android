@@ -74,6 +74,7 @@ fun JoinMatchScreen(
             JoinMatchHeader(
                 keyword = keyword,
                 onKeywordChanged = { keyword = it },
+                isAvailableMatchFilterSelected = state.availableMatchFilterSelected,
                 selectedCategoryCount = state.categoryFilter.size,
                 onAvailableMatchChipClick = {
                     viewModel.setAvailableMatchFilter()
@@ -112,23 +113,28 @@ fun JoinMatchScreen(
                     onButtonClick = { /*TODO*/ },
                     additionalButtonText = "취소",
                     onAdditionalButtonClick = {
+                        showJoinMatchDialog = false
+                    }
+                ) {
+                    if (it.isPrivate) {
                         scope.launch {
                             showJoinMatchDialog = false
                             delay(250L)
                             showMatchCodeDialog = true
                         }
+                    } else {
+                        showJoinMatchDialog = false
+                        // Todo : navigate to match
                     }
-                ) {
-                    showJoinMatchDialog = false
                 }
             }
         }
 
         if (showMatchCodeDialog) {
             MatchCodeDialog(
-                onConfirmClick = {},
-                onCancelClick = {
-                    showMatchCodeDialog = false
+                code = state.selectedMatchCode,
+                onConfirmClick = {
+                    viewModel.setCode(it)
                 }
             ) {
                 showMatchCodeDialog = false
@@ -141,6 +147,7 @@ fun JoinMatchScreen(
 fun JoinMatchHeader(
     keyword: String = "",
     onKeywordChanged: (String) -> Unit,
+    isAvailableMatchFilterSelected: Boolean,
     selectedCategoryCount: Int,
     onAvailableMatchChipClick: () -> Unit,
     onCategoryChipClick: () -> Unit
@@ -178,7 +185,7 @@ fun JoinMatchHeader(
         ) {
             OChip(
                 text = "참여 가능한 방",
-                isSelected = false
+                isSelected = isAvailableMatchFilterSelected
             ) {
                 onAvailableMatchChipClick()
             }

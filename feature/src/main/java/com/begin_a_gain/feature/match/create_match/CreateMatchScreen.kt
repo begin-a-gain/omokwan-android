@@ -40,12 +40,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
+import com.begin_a_gain.feature.match.common.MatchCodeDialog
 import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.CreateMatchDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.LeaveCreateMatchDialog
-import com.begin_a_gain.feature.match.common.MatchCodeDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
 import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.bottom_sheet.OPickerBottomSheet
@@ -268,8 +268,7 @@ fun CreateMatchScreen(
                 code = state.code,
                 onConfirmClick = { code ->
                     viewModel.setPrivate(true, code)
-                },
-                onCancelClick = { showCodeDialog = false }
+                }
             ) {
                 showCodeDialog = false
             }

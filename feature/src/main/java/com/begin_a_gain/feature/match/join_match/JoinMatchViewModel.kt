@@ -22,4 +22,8 @@ class JoinMatchViewModel @Inject constructor(
     fun setAvailableMatchFilter() = intent {
         reduce { state.copy(availableMatchFilterSelected = !state.availableMatchFilterSelected) }
     }
+
+    fun setCode(code: String) = blockingIntent {
+        reduce { state.copy(selectedMatchCode = code) }
+    }
 }

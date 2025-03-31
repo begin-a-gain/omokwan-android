@@ -45,7 +45,6 @@ fun CodeTextField(
 fun MatchCodeDialog(
     code: String = "",
     onConfirmClick: (String) -> Unit,
-    onCancelClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -68,12 +67,13 @@ fun MatchCodeDialog(
             val code = "$code1$code2$code3$code4"
             if (code.length == 4) {
                 onConfirmClick(code)
+                onDismissRequest()
             } else {
                 onDismissRequest()
             }
         },
         additionalButtonText = "취소",
-        onAdditionalButtonClick = onCancelClick,
+        onAdditionalButtonClick = onDismissRequest,
         content = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
