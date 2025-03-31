@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.create_match.util.ui
+package com.begin_a_gain.feature.match.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -45,7 +45,6 @@ fun CodeTextField(
 fun MatchCodeDialog(
     code: String = "",
     onConfirmClick: (String) -> Unit,
-    onCancelClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -65,15 +64,16 @@ fun MatchCodeDialog(
         title = "대국 코드 설정",
         buttonText = "확인",
         onButtonClick = {
-            val code = "$code1$code2$code3$code4"
-            if (code.length == 4) {
-                onConfirmClick(code)
+            val fullCode = "$code1$code2$code3$code4"
+            if (fullCode.length == 4) {
+                onConfirmClick(fullCode)
+                onDismissRequest()
             } else {
                 onDismissRequest()
             }
         },
         additionalButtonText = "취소",
-        onAdditionalButtonClick = onCancelClick,
+        onAdditionalButtonClick = onDismissRequest,
         content = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)

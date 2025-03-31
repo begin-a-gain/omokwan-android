@@ -28,6 +28,7 @@ fun Modifier.initScreen(usePadding: Boolean = true) = this
 fun OScreen(
     modifier: Modifier = Modifier,
     title: String? = null,
+    useDefaultPadding: Boolean = true,
     showBackButton: Boolean = true,
     onBackButtonClick: () -> Unit = {},
     bottomButtonText: String? = null,
@@ -45,7 +46,7 @@ fun OScreen(
             onClickStart = onBackButtonClick
         )
         Column(
-            modifier.initScreen()
+            modifier.initScreen(useDefaultPadding)
         ){
             Column(
                 modifier = Modifier.weight(1f)

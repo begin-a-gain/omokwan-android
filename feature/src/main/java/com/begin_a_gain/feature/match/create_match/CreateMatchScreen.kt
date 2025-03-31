@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
@@ -41,14 +40,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
+import com.begin_a_gain.feature.match.common.MatchCodeDialog
 import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.CreateMatchDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.LeaveCreateMatchDialog
-import com.begin_a_gain.feature.match.create_match.util.ui.MatchCodeDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
-import com.begin_a_gain.library.design.component.ODivider
+import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.bottom_sheet.OPickerBottomSheet
 import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.dialog.OTimePickerDialog
@@ -153,7 +152,7 @@ fun CreateMatchScreen(
                     }
                 }
 
-                ODivider(colorToken = ColorToken.STROKE_02)
+                OVerticalDivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "최대 인원 수",
                     value = "${state.maxParticipantsCount}"
@@ -174,7 +173,7 @@ fun CreateMatchScreen(
                     showCategoryBottomSheet = true
                 }
 
-                ODivider(colorToken = ColorToken.STROKE_02)
+                OVerticalDivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "리마인드 알림",
                     value = if (state.alarmOn) {
@@ -209,7 +208,7 @@ fun CreateMatchScreen(
                     }
                 }
 
-                ODivider(colorToken = ColorToken.STROKE_02)
+                OVerticalDivider(colorToken = ColorToken.STROKE_02)
                 SettingRow(
                     title = "비공개",
                     value = if (state.isPrivate) "코드 : ${state.code}" else "",
@@ -269,8 +268,7 @@ fun CreateMatchScreen(
                 code = state.code,
                 onConfirmClick = { code ->
                     viewModel.setPrivate(true, code)
-                },
-                onCancelClick = { showCodeDialog = false }
+                }
             ) {
                 showCodeDialog = false
             }
