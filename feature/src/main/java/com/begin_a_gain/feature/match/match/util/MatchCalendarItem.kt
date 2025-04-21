@@ -1,12 +1,16 @@
 package com.begin_a_gain.feature.match.match.util
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,9 +19,11 @@ import androidx.compose.ui.unit.dp
 import com.begin_a_gain.domain.enum.MatchStatus
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.AppColors
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.advanceShadow
 import com.begin_a_gain.library.design.util.noRippleClickable
 
@@ -49,7 +55,9 @@ fun MatchCalendarItem(
                     .advanceShadow(
                         color = when (status) {
                             MatchCalendarStatus.Combo -> {
-                                if (isMine) ColorToken.UI_PRIMARY.color().copy(alpha = 0.3f)
+                                if (isMine) ColorToken.UI_PRIMARY
+                                    .color()
+                                    .copy(alpha = 0.3f)
                                 else AppColors.OmokGrayShadow.copy(alpha = 0.4f)
                             }
 
@@ -72,6 +80,55 @@ fun MatchCalendarItem(
                     MatchCalendarStatus.Done -> OImageRes.CalendarDone
                     else -> OImageRes.CalendarNew
                 }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun MatchCalendarRow(
+    today: Boolean = true,
+    day: String = "금",
+    date: Int = 30,
+    statusList: List<MatchCalendarStatus> = listOf(MatchCalendarStatus.None, MatchCalendarStatus.None),
+    size: Dp = 58.dp
+) {
+    Row {
+        Box(
+            modifier = Modifier
+                .background(ColorToken.UI_02.color())
+                .size(width = size + 6.dp, height = size)
+                .padding(horizontal = 13.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier
+                    .run {
+                        if (today) {
+                            background(
+                                color = ColorToken.UI_BG.color(),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        } else this
+                    }
+                    .matchParentSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (today) {
+                    OText(text = day, style = OTextStyle.Subtitle3)
+                    OText(text = "$date", style = OTextStyle.Headline)
+                } else {
+                    OText(text = "$date", style = OTextStyle.Subtitle3)
+                }
+            }
+        }
+        (0 .. 4).map { index ->
+            MatchCalendarItem(
+                isMine = index == 0 ,
+                status = statusList.getOrNull(index) ?: MatchCalendarStatus.None,
+                size = size
             )
         }
     }
