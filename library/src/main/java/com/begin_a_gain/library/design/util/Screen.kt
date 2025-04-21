@@ -28,6 +28,8 @@ fun Modifier.initScreen(usePadding: Boolean = true) = this
 fun OScreen(
     modifier: Modifier = Modifier,
     title: String? = null,
+    trailingIcon: OImageRes? = null,
+    onTrailingIconClick: () -> Unit = {},
     useDefaultPadding: Boolean = true,
     showBackButton: Boolean = true,
     onBackButtonClick: () -> Unit = {},
@@ -43,7 +45,9 @@ fun OScreen(
         OTopBar(
             title = title?: "",
             startIcon = if (showBackButton) OImageRes.ArrowLeft else null,
-            onClickStart = onBackButtonClick
+            onClickStart = onBackButtonClick,
+            endIcon = trailingIcon,
+            onClickEnd = onTrailingIconClick
         )
         Column(
             modifier.initScreen(useDefaultPadding)
