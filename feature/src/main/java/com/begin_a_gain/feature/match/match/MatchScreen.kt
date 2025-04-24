@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
+import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
@@ -51,18 +53,37 @@ fun MatchScreen() {
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
             // Todo : navigate to menu screen
-        }
+        },
+        bottomButtonText = "오목두기",
+        bottomButtonType = ButtonType.Primary
     ) {
-        MatchCalendar(calendarItemSize)
-
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            MatchCalendar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)),
+                itemSize = calendarItemSize
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            MatchMembers()
+            Spacer(modifier = Modifier.height(20.dp))
+        }
     }
 }
 
 @Preview
 @Composable
-fun MatchCalendar(itemSize: Dp = 58.dp) {
+fun MatchCalendar(
+    modifier: Modifier = Modifier,
+    itemSize: Dp = 58.dp
+) {
     val startDate = DateTime.now().minusDays(5)
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier
+    ) {
         items(30) {
             MatchCalendarRow(
                 today = it == 4,
