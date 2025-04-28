@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
+import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
@@ -102,18 +104,33 @@ fun MatchScreen() {
 
 @Preview
 @Composable
-fun CalendarStickyHeader(header: String = "2025. 4월") {
+fun CalendarStickyHeader(
+    header: String = "2025. 4월",
+    isSticky: Boolean = false
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(ColorToken.UI_02.color())
-            .padding(vertical = 8.dp),
+            .run {
+                if (isSticky) {
+                    this
+                        .padding(horizontal = 20.dp)
+                        .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                } else this
+            }
+            .background(ColorToken.UI_02.color()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OText(
+            modifier = Modifier.padding(vertical = 8.dp),
             text = header,
             style = OTextStyle.Title2,
             textAlign = TextAlign.Center
+        )
+        OVerticalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            colorToken = ColorToken.STROKE_02,
+            height = 2.dp
         )
     }
 }
@@ -132,12 +149,18 @@ fun MatchCalendar(
 ) {
     val startDate = DateTime.now()
     val startMonth = startDate.monthOfYear
+    val lazyState = rememberLazyListState()
+
     LazyColumn(
+        state = lazyState,
         modifier = modifier
     ) {
         (startMonth - 2..startMonth + 2).reversed().map { month ->
             stickyHeader {
-                CalendarStickyHeader("${startDate.year}. ${month}월")
+                CalendarStickyHeader(
+                    header = "${startDate.year}. ${month}월",
+                    isSticky = true
+                )
             }
             val days: List<Int> = (1..getLastDayOfMonth(startDate.year, month)).map { it }.reversed()
             items(days) { day ->
@@ -147,6 +170,9 @@ fun MatchCalendar(
                     date = day,
                     size = itemSize
                 )
+                if (day == 1) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
             }
         }
     }

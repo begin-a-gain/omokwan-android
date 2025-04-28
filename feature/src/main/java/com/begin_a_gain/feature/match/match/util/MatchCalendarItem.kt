@@ -5,20 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.enum.MatchStatus
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
@@ -96,8 +93,17 @@ fun MatchCalendarRow(
     statusList: List<MatchCalendarStatus> = listOf(MatchCalendarStatus.None, MatchCalendarStatus.None),
     size: Dp = 58.dp
 ) {
-    Row {
-        Spacer(modifier = Modifier.width(20.dp))
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .run {
+                if (date == 1) {
+                    clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
+                } else {
+                    this
+                }
+            }
+    ) {
         Box(
             modifier = Modifier
                 .background(ColorToken.UI_02.color())
@@ -134,7 +140,6 @@ fun MatchCalendarRow(
                 size = size
             )
         }
-        Spacer(modifier = Modifier.width(20.dp))
     }
 }
 
