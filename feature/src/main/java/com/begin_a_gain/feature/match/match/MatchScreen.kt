@@ -73,7 +73,7 @@ fun MatchScreen() {
                 itemSize = calendarItemSize
             )
             Spacer(modifier = Modifier.height(8.dp))
-            MatchMembers()
+            MatchMembers(itemWidth = calendarItemSize)
             Spacer(modifier = Modifier.height(20.dp))
             Column(
                 modifier = Modifier
@@ -186,7 +186,6 @@ fun MatchMembers(
 ) {
     Row(
         modifier = Modifier
-            .background(Color.White)
             .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.width(itemWidth + 6.dp))
