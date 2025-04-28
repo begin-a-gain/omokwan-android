@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.match
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -29,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
-import com.begin_a_gain.library.design.component.button.ButtonType
+import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.OText
@@ -38,14 +40,16 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.library.design.util.advanceShadow
 import org.joda.time.DateTime
+import org.joda.time.YearMonth
 
 @Preview
 @Composable
 fun MatchScreen() {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
-    val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(5)
+    val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
 
     OScreen(
         title = "대국방 이름",
@@ -54,8 +58,7 @@ fun MatchScreen() {
         onTrailingIconClick = {
             // Todo : navigate to menu screen
         },
-        bottomButtonText = "오목두기",
-        bottomButtonType = ButtonType.Primary
+        useDefaultPadding = false
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -70,27 +73,81 @@ fun MatchScreen() {
             Spacer(modifier = Modifier.height(8.dp))
             MatchMembers()
             Spacer(modifier = Modifier.height(20.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .advanceShadow(
+                        color = ColorToken.UI_PRIMARY
+                            .color()
+                            .copy(0.3f),
+                        blurRadius = 20.dp,
+                    )
+                    .background(
+                        color = ColorToken.UI_BG.color(),
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                    )
+                    .padding(16.dp)
+
+            ) {
+                OButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "오목두기"
+                ) {
+                    
+                }
+            }
         }
     }
 }
 
 @Preview
 @Composable
+fun CalendarStickyHeader(header: String = "2025. 4월") {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(ColorToken.UI_02.color())
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OText(
+            text = header,
+            style = OTextStyle.Title2,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+fun getLastDayOfMonth(year: Int, month: Int): Int {
+    val yearMonth = YearMonth(year, month)
+    return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue().dayOfMonth
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview
+@Composable
 fun MatchCalendar(
     modifier: Modifier = Modifier,
     itemSize: Dp = 58.dp
 ) {
-    val startDate = DateTime.now().minusDays(5)
+    val startDate = DateTime.now()
+    val startMonth = startDate.monthOfYear
     LazyColumn(
         modifier = modifier
     ) {
-        items(30) {
-            MatchCalendarRow(
-                today = it == 4,
-                day = startDate.plusDays(it).dayOfWeek().asText.take(1),
-                date = startDate.plusDays(it).dayOfMonth,
-                size = itemSize
-            )
+        (startMonth - 2..startMonth + 2).reversed().map { month ->
+            stickyHeader {
+                CalendarStickyHeader("${startDate.year}. ${month}월")
+            }
+            val days: List<Int> = (1..getLastDayOfMonth(startDate.year, month)).map { it }.reversed()
+            items(days) { day ->
+                MatchCalendarRow(
+                    today = startDate.monthOfYear == month && startDate.dayOfMonth == day,
+                    day = startDate.plusDays(day).dayOfWeek().asText.take(1),
+                    date = day,
+                    size = itemSize
+                )
+            }
         }
     }
 }
@@ -104,6 +161,7 @@ fun MatchMembers(
     Row(
         modifier = Modifier
             .background(Color.White)
+            .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.width(itemWidth + 6.dp))
         (0..4).forEach { index ->

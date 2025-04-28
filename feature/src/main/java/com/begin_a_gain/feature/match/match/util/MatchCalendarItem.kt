@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -95,6 +97,7 @@ fun MatchCalendarRow(
     size: Dp = 58.dp
 ) {
     Row {
+        Spacer(modifier = Modifier.width(20.dp))
         Box(
             modifier = Modifier
                 .background(ColorToken.UI_02.color())
@@ -131,6 +134,7 @@ fun MatchCalendarRow(
                 size = size
             )
         }
+        Spacer(modifier = Modifier.width(20.dp))
     }
 }
 
