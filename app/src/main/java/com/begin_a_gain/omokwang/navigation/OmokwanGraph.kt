@@ -11,6 +11,7 @@ import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
 import com.begin_a_gain.feature.match.create_match.CreateMatchViewModel
 import com.begin_a_gain.feature.match.create_match.MatchCategoryScreen
 import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
+import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
@@ -30,6 +31,8 @@ object Main
 object MatchList
 @Serializable
 object MyPage
+@Serializable
+object Match
 
 @Serializable
 object MatchCategory
@@ -70,7 +73,8 @@ fun OmokwanGraph(
         composable<Main> {
             MainGraph(
                 navigateToCreateMatch = { navController.navigate(MatchCategory) },
-                navigateToJoinMatch = { navController.navigate(JoinMatch) }
+                navigateToJoinMatch = { navController.navigate(JoinMatch) },
+                navigateToMatch = { navController.navigate(Match) }
             )
         }
 
@@ -97,6 +101,10 @@ fun OmokwanGraph(
 
         composable<JoinMatch> {
             JoinMatchScreen()
+        }
+
+        composable<Match> {
+            MatchScreen()
         }
     }
 }
