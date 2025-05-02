@@ -38,6 +38,7 @@ fun InitialText(
     fullTextModifier: Modifier = Modifier.width(itemWidth),
     backgroundColor: Color = ColorToken.UI_03.color(),
     showFullText: Boolean = true,
+    isClickable: Boolean = true,
     onClick: () -> Unit
 ) {
     Column(
@@ -48,7 +49,7 @@ fun InitialText(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .clip(CircleShape)
-                .clickable {
+                .clickable(isClickable) {
                     onClick()
                 }
         ) {

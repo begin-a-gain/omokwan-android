@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +35,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.begin_a_gain.domain.model.MemberHistory
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import com.begin_a_gain.library.design.component.OVerticalDivider
+import com.begin_a_gain.library.design.component.button.ButtonSize
+import com.begin_a_gain.library.design.component.button.ButtonStyle
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
@@ -293,4 +297,78 @@ fun AddMemberButton(
         maxLines = 1,
         color = ColorToken.TEXT_DISABLE
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+fun MemberProfileBottomSheet(
+//    sheetState: SheetState,
+    isMine: Boolean = false,
+    isOwner: Boolean = true,
+    member: MemberHistory = MemberHistory(
+        id = "",
+        name = "가나다라",
+        combo = 0,
+        omok = 0,
+        days = 0
+    ),
+    onSendOmokClick: () -> Unit = {},
+    onOutMemberClick: () -> Unit = {},
+    onDismissRequest: () -> Unit = {}
+) {
+//    OBottomSheet(
+//        title = if (isMine) "나" else "${member.name} 님" + "의 프로필",
+//        sheetState = sheetState,
+//        onDismissRequest = onDismissRequest
+//    ) {
+//
+//    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(ColorToken.UI_BG.color())
+            .padding(vertical = 16.dp, horizontal = 20.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 16.dp)
+        ) {
+            InitialText(
+                text = "${member.name} 님",
+                itemWidth = 96.dp,
+                fullTextModifier = Modifier.fillMaxWidth(),
+                fullTextStyle = OTextStyle.Subtitle3,
+                verticalSpace = 10.dp,
+                isClickable = false
+            ) { }
+            Spacer(modifier = Modifier.height(24.dp))
+            Row {
+
+            }
+        }
+
+        Column(
+            modifier = Modifier.padding(vertical = 16.dp)
+        ) {
+            if (!isMine) {
+                OButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "오목알 튕기기"
+                ) {
+                    onSendOmokClick()
+                }
+            }
+            if (isOwner) {
+                Spacer(modifier = Modifier.height(16.dp))
+                OButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "내보내기",
+                    style = ButtonStyle.None
+                ) {
+                    onSendOmokClick()
+                }
+            }
+        }
+    }
 }
