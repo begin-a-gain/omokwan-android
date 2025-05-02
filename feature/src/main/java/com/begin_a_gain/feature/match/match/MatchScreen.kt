@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +39,7 @@ import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.library.design.component.text.InitialText
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.AppColors
 import com.begin_a_gain.library.design.theme.ColorToken
@@ -43,6 +47,7 @@ import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
 import com.begin_a_gain.library.design.util.advanceShadow
+import com.begin_a_gain.library.design.util.noRippleClickable
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
 
@@ -52,6 +57,9 @@ fun MatchScreen() {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
+
+    var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showOthersProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     OScreen(
         title = "대국방 이름",
@@ -73,7 +81,16 @@ fun MatchScreen() {
                 itemSize = calendarItemSize
             )
             Spacer(modifier = Modifier.height(8.dp))
-            MatchMembers(itemWidth = calendarItemSize)
+            MatchMembers(
+                itemWidth = calendarItemSize,
+                onMemberClick = { index ->
+                    if (index == 0) showMyProfileBottomSheet = true
+                    else showOthersProfileBottomSheet = true
+                },
+                onAddMemberClick = {
+
+                }
+            )
             Spacer(modifier = Modifier.height(20.dp))
             Column(
                 modifier = Modifier
@@ -95,9 +112,17 @@ fun MatchScreen() {
                     modifier = Modifier.fillMaxWidth(),
                     text = "오목두기"
                 ) {
-                    
+
                 }
             }
+        }
+
+        if (showMyProfileBottomSheet) {
+
+        }
+
+        if (showOthersProfileBottomSheet) {
+
         }
     }
 }
@@ -182,7 +207,9 @@ fun MatchCalendar(
 @Composable
 fun MatchMembers(
     members: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱", "연날리기"),
-    itemWidth: Dp = 58.dp
+    itemWidth: Dp = 58.dp,
+    onMemberClick: (Int) -> Unit = {},
+    onAddMemberClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -197,70 +224,73 @@ fun MatchMembers(
                         .padding(horizontal = 5.dp, vertical = 8.dp)
                 ) {
                     if (index == members.size) {
-                        Box(
-                            modifier = Modifier
-                                .size(itemWidth - 10.dp)
-                                .run {
-                                    val stroke = Stroke(
-                                        width = 6f,
-                                        pathEffect = PathEffect.dashPathEffect(
-                                            floatArrayOf(
-                                                10f,
-                                                10f
-                                            ), 10f
-                                        )
-                                    )
-                                    drawBehind {
-                                        drawCircle(
-                                            color = AppColors.Gray400,
-                                            style = stroke
-                                        )
-                                    }
-                                },
-                            contentAlignment = Alignment.Center
+                        AddMemberButton(
+                            itemWidth = itemWidth
                         ) {
-                            OImage(
-                                image = OImageRes.Plus,
-                                size = 24.dp,
-                                color = ColorToken.ICON_DISABLE.color()
-                            )
+                            onAddMemberClick()
                         }
                     } else {
-                        Box(contentAlignment = Alignment.Center) {
-                            Spacer(
-                                modifier = Modifier
-                                    .size(itemWidth - 10.dp)
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = if (index == 0) ColorToken.UI_PRIMARY.color()
-                                        else if (index == members.size) Color.Transparent
-                                        else ColorToken.UI_03.color()
-                                    )
-                            )
-                            OText(
-                                text = members[index][0].toString(),
-                                textAlign = TextAlign.Center,
-                                style = OTextStyle.Display,
-                                color = if (index == 0) ColorToken.TEXT_ON_01 else ColorToken.TEXT_01
-                            )
+                        InitialText(
+                            text = members[index],
+                            itemWidth = itemWidth,
+                            initialTextColor = if (index == 0) ColorToken.TEXT_ON_01 else ColorToken.TEXT_01,
+                            backgroundColor = if (index == 0) ColorToken.UI_PRIMARY.color()
+                            else if (index == members.size) Color.Transparent
+                            else ColorToken.UI_03.color()
+                        ) {
+                            onMemberClick(index)
                         }
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OText(
-                        modifier = Modifier.width(itemWidth),
-                        text = if (index == members.size) "멤버 추가" else members[index],
-                        style = OTextStyle.Subtitle1,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                        color = if (index == 0) ColorToken.TEXT_PRIMARY
-                        else if (index == members.size) ColorToken.TEXT_DISABLE
-                        else ColorToken.TEXT_01
-                    )
                 }
             } else {
                 Spacer(modifier = Modifier.width(itemWidth))
             }
         }
     }
+}
+
+@Composable
+fun AddMemberButton(
+    itemWidth: Dp,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(itemWidth - 10.dp)
+            .run {
+                val stroke = Stroke(
+                    width = 6f,
+                    pathEffect = PathEffect.dashPathEffect(
+                        floatArrayOf(
+                            10f,
+                            10f
+                        ), 10f
+                    )
+                )
+                drawBehind {
+                    drawCircle(
+                        color = AppColors.Gray400,
+                        style = stroke
+                    )
+                }
+            }
+            .noRippleClickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        OImage(
+            image = OImageRes.Plus,
+            size = 24.dp,
+            color = ColorToken.ICON_DISABLE.color()
+        )
+    }
+    Spacer(modifier = Modifier.height(4.dp))
+    OText(
+        modifier = Modifier.width(itemWidth),
+        text = "멤버 추가",
+        style = OTextStyle.Subtitle1,
+        textAlign = TextAlign.Center,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        color = ColorToken.TEXT_DISABLE
+    )
 }
