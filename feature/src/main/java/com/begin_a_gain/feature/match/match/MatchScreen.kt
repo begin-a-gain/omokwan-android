@@ -22,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,8 +43,11 @@ import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import com.begin_a_gain.library.design.component.OHorizontalDivider
 import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.library.design.component.button.BottomModalButton
 import com.begin_a_gain.library.design.component.button.ButtonStyle
+import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.button.OButton
+import com.begin_a_gain.library.design.component.dialog.ODialog
 import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.text.InitialTextLayout
@@ -53,8 +57,9 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
-import com.begin_a_gain.library.design.util.advanceShadow
 import com.begin_a_gain.library.design.util.noRippleClickable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
 
@@ -66,9 +71,11 @@ fun MatchScreen() {
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
 
+    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showOthersProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
 
     OScreen(
         title = "대국방 이름",
@@ -77,8 +84,9 @@ fun MatchScreen() {
         onTrailingIconClick = {
             // Todo : navigate to menu screen
         },
-        useDefaultPadding = false
-    ) {
+        useDefaultPadding = false,
+        snackBarBottomPadding = 104.dp
+    ) { showSnackBar ->
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -101,28 +109,10 @@ fun MatchScreen() {
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .advanceShadow(
-                        color = ColorToken.UI_PRIMARY
-                            .color()
-                            .copy(0.3f),
-                        blurRadius = 20.dp,
-                    )
-                    .background(
-                        color = ColorToken.UI_BG.color(),
-                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                    )
-                    .padding(16.dp)
-
+            BottomModalButton(
+                "오목두기"
             ) {
-                OButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "오목두기"
-                ) {
-
-                }
+                showSnackBar("오늘의 오목두기를 완료하였습니다.")
             }
         }
 
@@ -139,9 +129,39 @@ fun MatchScreen() {
             MemberProfileBottomSheet(
                 sheetState = sheetState,
                 isMine = false,
-                isOwner = true // todo : update
+                isOwner = true,
+                onSendOmokClick = {
+                    showSnackBar("‘0000’님에게 오목알을 튕겼습니다.")
+                    // Todo : update
+                },
+                onOutMemberClick = {
+                    scope.launch {
+                        showOthersProfileBottomSheet = false
+                        delay(200L)
+                        showMemberOutDialog = true
+                    }
+                }
             ) {
                 showOthersProfileBottomSheet = false
+            }
+        }
+
+        if (showMemberOutDialog) {
+            ODialog(
+                title = "이 멤버를 내보내시겠습니까?",
+                message = "해당 멤버는 대국에 대한 모든 정보가 사라지며 복구할 수 없습니다.",
+                buttonText = "내보내기",
+                buttonType = ButtonType.Alert,
+                onButtonClick = {
+                    // Todo : update
+                    showMemberOutDialog = false
+                },
+                additionalButtonText = "취소",
+                onAdditionalButtonClick = {
+                    showMemberOutDialog = false
+                }
+            ) {
+               showMemberOutDialog = false
             }
         }
     }
