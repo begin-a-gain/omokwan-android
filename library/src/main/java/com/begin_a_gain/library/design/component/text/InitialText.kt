@@ -26,18 +26,17 @@ import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OPreview
 
 @Composable
-fun InitialText(
+fun InitialTextLayout(
     text: String,
     itemWidth: Dp,
     modifier: Modifier = Modifier,
     verticalSpace: Dp = 4.dp,
     initialTextStyle: OTextStyle = OTextStyle.Display,
     initialTextColor: ColorToken = ColorToken.TEXT_01,
+    backgroundColor: Color = ColorToken.UI_03.color(),
     fullTextStyle: OTextStyle = OTextStyle.Subtitle1,
     fullTextColor: ColorToken = ColorToken.TEXT_01,
     fullTextModifier: Modifier = Modifier.width(itemWidth),
-    backgroundColor: Color = ColorToken.UI_03.color(),
-    showFullText: Boolean = true,
     isClickable: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -45,41 +44,60 @@ fun InitialText(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
+        InitialText(
+            text = text,
+            itemWidth = itemWidth,
+            initialTextStyle = initialTextStyle,
+            initialTextColor = initialTextColor,
+            backgroundColor = backgroundColor,
+            isClickable = isClickable,
+            onClick = onClick
+        )
+        Spacer(modifier = Modifier.height(verticalSpace))
+        OText(
+            modifier = fullTextModifier,
+            text = text,
+            style = fullTextStyle,
+            textAlign = TextAlign.Center,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            color = fullTextColor
+        )
+    }
+}
+
+@Composable
+fun InitialText(
+    text: String,
+    itemWidth: Dp,
+    initialTextStyle: OTextStyle = OTextStyle.Display,
+    initialTextColor: ColorToken = ColorToken.TEXT_01,
+    backgroundColor: Color = ColorToken.UI_03.color(),
+    isClickable: Boolean = true,
+    onClick: () -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable(isClickable) {
+                onClick()
+            }
+    ) {
+        Spacer(
             modifier = Modifier
+                .size(itemWidth - 10.dp)
                 .clip(CircleShape)
-                .clickable(isClickable) {
-                    onClick()
-                }
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .size(itemWidth - 10.dp)
-                    .clip(CircleShape)
-                    .background(
-                        color = backgroundColor
-                    )
-            )
-            OText(
-                text = text.first().toString(),
-                textAlign = TextAlign.Center,
-                style = initialTextStyle,
-                color = initialTextColor
-            )
-        }
-        if (showFullText) {
-            Spacer(modifier = Modifier.height(verticalSpace))
-            OText(
-                modifier = fullTextModifier,
-                text = text,
-                style = fullTextStyle,
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-                color = fullTextColor
-            )
-        }
+                .background(
+                    color = backgroundColor
+                )
+        )
+        OText(
+            text = text.first().toString(),
+            textAlign = TextAlign.Center,
+            style = initialTextStyle,
+            color = initialTextColor
+        )
     }
 }
 
@@ -87,9 +105,9 @@ fun InitialText(
 @Composable
 fun InitialTextPreview() {
     OPreview {
+        InitialTextLayout(text = "안녕하세요", itemWidth = 50.dp) {}
         InitialText(text = "안녕하세요", itemWidth = 50.dp) {}
-        InitialText(text = "안녕하세요", itemWidth = 50.dp, showFullText = false) {}
-        InitialText(
+        InitialTextLayout(
             text = "안녕하세요안녕하세요안녕하세요",
             itemWidth = 50.dp,
             verticalSpace = 10.dp,
