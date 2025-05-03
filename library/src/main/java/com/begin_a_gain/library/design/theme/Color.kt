@@ -33,6 +33,7 @@ object AppColors {
 
 enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {
     UI_BG(AppColors.White),
+    UI_BG2(AppColors.Gray900),
     UI_BG_MODAL(AppColors.Black.copy(alpha = 0.2f)),
     UI_01(AppColors.Gray50),
     UI_02(AppColors.Gray100),
