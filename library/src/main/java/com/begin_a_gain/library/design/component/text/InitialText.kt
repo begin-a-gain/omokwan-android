@@ -38,7 +38,7 @@ fun InitialTextLayout(
     fullTextColor: ColorToken = ColorToken.TEXT_01,
     fullTextModifier: Modifier = Modifier.width(itemWidth),
     isClickable: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier,

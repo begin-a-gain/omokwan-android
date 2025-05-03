@@ -37,7 +37,7 @@ fun OBottomSheet(
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    heightRatio: Double = 0.5,
+    heightRatio: Double? = 0.5,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(
@@ -61,7 +61,11 @@ fun OBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(LocalConfiguration.current.screenHeightDp.times(heightRatio).dp)
+                .run {
+                    if (heightRatio != null) {
+                        this.height(LocalConfiguration.current.screenHeightDp.times(heightRatio).dp)
+                    } else this
+                }
                 .navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
