@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.theme.ColorToken
@@ -35,6 +36,7 @@ fun ODialog(
     title: String,
     buttonText: String,
     onButtonClick: () -> Unit,
+    buttonType: ButtonType = ButtonType.Primary,
     message: String? = null,
     content: @Composable (() -> Unit)? = null,
     additionalButtonText: String? = null,
@@ -106,7 +108,13 @@ fun ODialog(
                     modifier = Modifier
                         .weight(1f)
                         .height(52.dp)
-                        .background(ColorToken.UI_PRIMARY.color())
+                        .background(
+                            when (buttonType) {
+                                ButtonType.Primary -> ColorToken.UI_PRIMARY.color()
+                                ButtonType.Alert -> ColorToken.UI_ALERT.color()
+                                ButtonType.Disable -> ColorToken.UI_DISABLE_01.color()
+                            }
+                        )
                         .clickable {
                             onDismissRequest()
                             onButtonClick()
@@ -116,7 +124,12 @@ fun ODialog(
                     OText(
                         text = buttonText,
                         style = OTextStyle.Title2,
-                        color = ColorToken.TEXT_ON_01
+                        color = when (buttonType) {
+                            ButtonType.Primary,
+                            ButtonType.Alert -> ColorToken.TEXT_ON_01
+                            
+                            ButtonType.Disable -> ColorToken.TEXT_ON_DISABLE
+                        }
                     )
                 }
             }
