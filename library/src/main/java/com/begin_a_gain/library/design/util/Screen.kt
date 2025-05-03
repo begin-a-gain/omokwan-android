@@ -5,16 +5,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.library.design.component.button.ButtonStyle
 import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.button.OButton
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.navigation.OTopBar
+import com.begin_a_gain.library.design.component.notification.OSnackBar
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
+import kotlinx.coroutines.launch
 
 val ScreenHorizontalPadding = 20.dp
 
@@ -36,28 +46,51 @@ fun OScreen(
     bottomButtonText: String? = null,
     bottomButtonStyle: ButtonStyle = ButtonStyle.Solid,
     bottomButtonType: ButtonType = ButtonType.Disable,
+    snackBarBottomPadding: Dp = 0.dp,
     onBottomButtonClick: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable (showSnackBar: (String) -> Unit) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            OTopBar(
+                title = title ?: "",
+                startIcon = if (showBackButton) OImageRes.ArrowLeft else null,
+                onClickStart = onBackButtonClick,
+                endIcon = trailingIcon,
+                onClickEnd = onTrailingIconClick
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+                modifier = Modifier.padding(bottom = snackBarBottomPadding)
+            ) { snackBarData ->
+                OSnackBar(message = snackBarData.visuals.message)
+            }
+        }
     ) {
-        OTopBar(
-            title = title?: "",
-            startIcon = if (showBackButton) OImageRes.ArrowLeft else null,
-            onClickStart = onBackButtonClick,
-            endIcon = trailingIcon,
-            onClickEnd = onTrailingIconClick
-        )
         Column(
-            modifier.initScreen(useDefaultPadding)
-        ){
+            modifier
+                .padding(it)
+                .initScreen(useDefaultPadding)
+        ) {
             Column(
                 modifier = Modifier.weight(1f)
-            ){
-                content()
+            ) {
+                content { snackBarMessage ->
+                    scope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = snackBarMessage,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
             }
-            bottomButtonText?.let{
+            bottomButtonText?.let {
                 OButton(
                     modifier = Modifier
                         .fillMaxWidth()

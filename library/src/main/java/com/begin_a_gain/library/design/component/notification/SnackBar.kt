@@ -32,6 +32,7 @@ fun OSnackBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 20.dp)
             .background(
                 color = ColorToken.UI_BG2.color(),
                 shape = RoundedCornerShape(8.dp)
