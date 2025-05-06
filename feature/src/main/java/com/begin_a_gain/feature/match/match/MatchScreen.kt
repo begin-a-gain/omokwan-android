@@ -385,6 +385,7 @@ fun MemberProfileBottomSheet(
                 InitialTextLayout(
                     text = "${member.name} 님",
                     itemWidth = 96.dp,
+                    initialTextStyle = OTextStyle.Display2,
                     fullTextModifier = Modifier.fillMaxWidth(),
                     fullTextStyle = OTextStyle.Subtitle3,
                     verticalSpace = 10.dp,
