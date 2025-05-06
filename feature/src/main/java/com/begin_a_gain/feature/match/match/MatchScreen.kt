@@ -94,7 +94,7 @@ fun MatchScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .clip(shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)),
+                    .clip(shape = RoundedCornerShape(12.dp)),
                 itemSize = calendarItemSize
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -131,8 +131,12 @@ fun MatchScreen() {
                 isMine = false,
                 isOwner = true,
                 onSendOmokClick = {
-                    showSnackBar("‘0000’님에게 오목알을 튕겼습니다.")
                     // Todo : update
+                    scope.launch {
+                        showOthersProfileBottomSheet = false
+                        delay(200L)
+                        showSnackBar("‘0000’님에게 오목알을 튕겼습니다.")
+                    }
                 },
                 onOutMemberClick = {
                     scope.launch {
@@ -154,7 +158,11 @@ fun MatchScreen() {
                 buttonType = ButtonType.Alert,
                 onButtonClick = {
                     // Todo : update
-                    showMemberOutDialog = false
+                    scope.launch {
+                        showMemberOutDialog = false
+                        delay(200L)
+                        showSnackBar("‘0000’님을 내보내셨습니다.")
+                    }
                 },
                 additionalButtonText = "취소",
                 onAdditionalButtonClick = {
@@ -173,30 +181,36 @@ fun CalendarStickyHeader(
     header: String = "2025. 4월",
     isSticky: Boolean = false
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .run {
-                if (isSticky) {
-                    this
-                        .padding(horizontal = 20.dp)
-                        .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                } else this
-            }
-            .background(ColorToken.UI_02.color()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        OText(
-            modifier = Modifier.padding(vertical = 8.dp),
-            text = header,
-            style = OTextStyle.Title2,
-            textAlign = TextAlign.Center
+    Box {
+        Spacer(modifier = Modifier
+            .background(ColorToken.UI_BG.color())
+            .matchParentSize()
         )
-        OVerticalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            colorToken = ColorToken.STROKE_02,
-            height = 2.dp
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .run {
+                    if (isSticky) {
+                        this
+                            .padding(horizontal = 20.dp)
+                            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    } else this
+                }
+                .background(ColorToken.UI_02.color()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OText(
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = header,
+                style = OTextStyle.Title2,
+                textAlign = TextAlign.Center
+            )
+            OVerticalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                colorToken = ColorToken.STROKE_02,
+                height = 2.dp
+            )
+        }
     }
 }
 
@@ -232,7 +246,7 @@ fun MatchCalendar(
             items(days) { day ->
                 MatchCalendarRow(
                     today = startDate.monthOfYear == month && startDate.dayOfMonth == day,
-                    day = startDate.plusDays(day).dayOfWeek().asText.take(1),
+                    day = startDate.dayOfWeek().asText.take(1),
                     date = day,
                     size = itemSize
                 )
