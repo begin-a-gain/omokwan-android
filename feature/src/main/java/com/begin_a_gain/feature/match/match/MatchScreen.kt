@@ -82,7 +82,7 @@ fun MatchScreen() {
         showBackButton = true,
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
-            // Todo : navigate to menu screen
+
         },
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp
