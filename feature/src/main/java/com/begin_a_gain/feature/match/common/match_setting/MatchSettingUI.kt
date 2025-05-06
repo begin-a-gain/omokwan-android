@@ -50,6 +50,7 @@ import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.selection.OSwitch
 import com.begin_a_gain.library.design.component.text.OText
 import com.begin_a_gain.library.design.component.text.OTextField
+import com.begin_a_gain.library.design.component.text.TextFieldStatus
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
@@ -62,6 +63,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun MatchSettingCommonLayout(
+    type: MatchSettingUiType = MatchSettingUiType.NewMatch,
     state: MatchSettingUiState
 ) {
     val context = LocalContext.current
@@ -101,7 +103,13 @@ fun MatchSettingCommonLayout(
         OTextField(
             label = "대국 이름",
             hint = "대국 이름을 적어주세요.",
-            text = state.title
+            text = state.title,
+            status = when (type) {
+                MatchSettingUiType.NewMatch,
+                MatchSettingUiType.MatchLeader -> TextFieldStatus.Default
+
+                MatchSettingUiType.MatchMember -> TextFieldStatus.ReadOnly
+            }
         ) {
             state.setMatchTitle(it)
         }
@@ -110,6 +118,24 @@ fun MatchSettingCommonLayout(
             modifier = Modifier.fillMaxWidth(),
             label = "기본 설정"
         ) {
+            if (type != MatchSettingUiType.NewMatch) {
+                SettingRow(
+                    title = "대국 진행 일 수",
+                    value = "+${state.daysInProgress}일 째"
+                ) {
+                    showRepeatDayTypePicker = true
+                }
+                OVerticalDivider(colorToken = ColorToken.STROKE_02)
+
+                SettingRow(
+                    title = "대국코드",
+                    value = state.code
+                ) {
+                    showRepeatDayTypePicker = true
+                }
+                OVerticalDivider(colorToken = ColorToken.STROKE_02)
+            }
+
             SettingRow(
                 title = "반복 요일",
                 value = state.selectedRepeatDayType.title
@@ -131,7 +157,8 @@ fun MatchSettingCommonLayout(
             OVerticalDivider(colorToken = ColorToken.STROKE_02)
             SettingRow(
                 title = "최대 인원 수",
-                value = "${state.maxParticipantsCount}"
+                value = "${state.maxParticipantsCount}",
+                isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showMaxParticipantsPicker = true
             }
@@ -144,7 +171,8 @@ fun MatchSettingCommonLayout(
             SettingRow(
                 title = "대국 카테고리",
                 value = if (categories.getOrNull(state.selectedCategoryIndex) == null) ""
-                else categories[state.selectedCategoryIndex].second
+                else categories[state.selectedCategoryIndex].second,
+                isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showCategoryBottomSheet = true
             }
@@ -194,7 +222,8 @@ fun MatchSettingCommonLayout(
                 onCheckedChanged = {
                     if (state.isPrivate) state.setPrivate(false, null)
                     else showCodeDialog = true
-                }
+                },
+                isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 if (state.isPrivate) {
                     showCodeDialog = true
@@ -342,7 +371,7 @@ fun SettingRow(
                 Spacer(modifier = Modifier.width(12.dp))
             }
         }
-        if (showSwitch) {
+        if (showSwitch && isEditable) {
             OSwitch(checked = switchChecked) {
                 onCheckedChanged()
             }
@@ -359,5 +388,6 @@ fun SettingRowPreview() {
         SettingRow("Test2", "Value2", true, true, true, true, {}, {})
         SettingRow("Test3", "", true, true, true, false, {}, {})
         SettingRow("Test4", "Value4", false, false, true, true, {}, {})
+        SettingRow("Test2", "Value2", false, true, true, true, {}, {})
     }
 }

@@ -5,6 +5,7 @@ import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 data class MatchSettingUiState(
     val title: String = "",
     val setMatchTitle: (String) -> Unit = {},
+    val daysInProgress: Int = 1,
     val selectedRepeatDayType: RepeatDayType = RepeatDayType.Weekday,
     val setRepeatDayType: (RepeatDayType) -> Unit = {},
     val setRepeatDay: (Int) -> Unit = {},
