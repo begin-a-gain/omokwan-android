@@ -35,6 +35,7 @@ import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
 import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.library.design.util.ScreenBottomButtonType
 import com.begin_a_gain.library.design.util.noRippleClickable
 
 @Preview
@@ -46,12 +47,16 @@ fun InviteMemberScreen() {
         onBackButtonClick = {
 
         },
-        useDefaultPadding = false
+        bottomButtonUiType = ScreenBottomButtonType.Modal,
+        bottomButtonText = "초대하기",
+        onBottomButtonClick = {
+
+        }
     ) {
         Column {
             SelectedInvitees()
             SearchBar(
-                modifier = Modifier.padding(20.dp),
+                modifier = Modifier.padding(vertical = 20.dp),
                 keyword = "",
                 hint = "이름으로 검색하기"
             ) {
@@ -76,12 +81,6 @@ fun InviteMemberScreen() {
 
                     }
                 }
-            }
-            BottomModalButton(
-                buttonText = "초대하기",
-                enable = false
-            ) {
-
             }
         }
     }
@@ -137,7 +136,7 @@ fun SelectedInvitees(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 20.dp)
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
