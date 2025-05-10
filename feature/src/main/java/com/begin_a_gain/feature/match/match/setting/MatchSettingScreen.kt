@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +24,7 @@ import com.begin_a_gain.feature.match.common.match_setting.SettingRow
 import com.begin_a_gain.library.design.component.OVerticalDivider
 import com.begin_a_gain.library.design.component.button.ButtonType
 import com.begin_a_gain.library.design.component.button.OButton
+import com.begin_a_gain.library.design.component.dialog.ODialog
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.util.OScreen
@@ -30,6 +35,8 @@ fun MatchSettingScreen(
     isLeader: Boolean = false,
 ) {
     val scroll = rememberScrollState()
+
+    var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
 
     OScreen(
         title = "대국 설정",
@@ -97,9 +104,28 @@ fun MatchSettingScreen(
                 type = ButtonType.Alert,
                 text = "대국 나가기"
             ) {
-                
+                showCheckLeavingDialog = true
             }
             Spacer(modifier = Modifier.height(80.dp))
+        }
+
+        if (showCheckLeavingDialog) {
+            ODialog(
+                title = "대국에서 나가시겠습니까?",
+                message = "대국에 대한 모든 정보가 사라지며 복구할 수 없습니다.",
+                buttonText = "나가기",
+                buttonType = ButtonType.Alert,
+                onButtonClick = {
+                    // Todo : update
+                    showCheckLeavingDialog = false
+                },
+                additionalButtonText = "취소",
+                onAdditionalButtonClick = {
+                    showCheckLeavingDialog = false
+                }
+            ) {
+                showCheckLeavingDialog = false
+            }
         }
     }
 }
