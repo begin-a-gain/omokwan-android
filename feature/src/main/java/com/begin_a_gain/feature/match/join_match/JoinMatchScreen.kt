@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ import com.begin_a_gain.library.design.component.image.OImage
 import com.begin_a_gain.library.design.component.image.OImageRes
 import com.begin_a_gain.library.design.component.selection.OChip
 import com.begin_a_gain.library.design.component.text.OText
+import com.begin_a_gain.library.design.component.text.SearchBar
 import com.begin_a_gain.library.design.theme.ColorToken
 import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.library.design.theme.OTextStyle
@@ -155,29 +157,11 @@ fun JoinMatchHeader(
     Column(
         modifier = Modifier.oDefaultPadding()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = ColorToken.UI_03.color(), shape = RoundedCornerShape(8.dp))
-                .padding(vertical = 8.dp, horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        SearchBar(
+            keyword = keyword,
+            hint = "대국 이름, 대국방 ID, 방장으로 검색하기"
         ) {
-            OImage(image = OImageRes.Search)
-            Spacer(modifier = Modifier.width(4.dp))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                BasicTextField(
-                    value = keyword,
-                    onValueChange = onKeywordChanged,
-                    singleLine = true
-                )
-                if (keyword.isEmpty()) {
-                    OText(
-                        text = "대국 이름, 대국방 ID, 방장으로 검색하기",
-                        style = OTextStyle.Body1,
-                        color = ColorToken.TEXT_02
-                    )
-                }
-            }
+            onKeywordChanged(it)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -219,16 +203,10 @@ fun JoinMatchList(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorToken.UI_02.color())
-            .padding(
-                start = 20.dp,
-                end = 20.dp
-            )
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(ColorToken.UI_BG.color(), shape = RoundedCornerShape(8.dp)),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(bottom = 60.dp, start = 20.dp, end = 20.dp)
         ) {
             itemsIndexed(
                 items = matchItems
@@ -239,6 +217,12 @@ fun JoinMatchList(
                     isLast = index == testMatchList.size - 1
                 ) {
                     onJoinMatchClick(match)
+                }
+                if (index != matchItems.size - 1) {
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .background(ColorToken.UI_BG.color()))
                 }
             }
         }
