@@ -121,7 +121,8 @@ fun MatchSettingCommonLayout(
             if (type != MatchSettingUiType.NewMatch) {
                 SettingRow(
                     title = "대국 진행 일 수",
-                    value = "+${state.daysInProgress}일 째"
+                    value = "+${state.daysInProgress}일 째",
+                    isEditable = false
                 ) {
                     showRepeatDayTypePicker = true
                 }
@@ -129,7 +130,8 @@ fun MatchSettingCommonLayout(
 
                 SettingRow(
                     title = "대국코드",
-                    value = state.code
+                    value = state.code,
+                    isEditable = type == MatchSettingUiType.NewMatch
                 ) {
                     showRepeatDayTypePicker = true
                 }
@@ -138,7 +140,8 @@ fun MatchSettingCommonLayout(
 
             SettingRow(
                 title = "반복 요일",
-                value = state.selectedRepeatDayType.title
+                value = state.selectedRepeatDayType.title,
+                isEditable = type == MatchSettingUiType.NewMatch
             ) {
                 showRepeatDayTypePicker = true
             }
