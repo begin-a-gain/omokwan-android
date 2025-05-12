@@ -15,6 +15,7 @@ data class OTypography(
 enum class OTextStyle(
     val typography: OTypography,
 ) {
+    Display2(OTypography(FontWeight.Bold, 32.sp, 40.sp)),
     Display(OTypography(FontWeight.Bold, 24.sp, 32.sp)),
     Headline(OTypography(FontWeight.Bold, 20.sp, 28.sp)),
 

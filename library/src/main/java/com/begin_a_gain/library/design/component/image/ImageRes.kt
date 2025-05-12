@@ -27,5 +27,13 @@ enum class OImageRes(val res: Int) {
     GrayOmokMatch(R.drawable.omok_gray),
     OmokMatchGrid(R.drawable.omok_grid),
 
-    Search(R.drawable.search)
+    Search(R.drawable.search),
+    Menu(R.drawable.menu),
+
+    CalendarDone(R.drawable.calendar_done),
+    CalendarMyCombo(R.drawable.combo_mine),
+    CalendarOthersCombo(R.drawable.combo_other),
+    CalendarMyNone(R.drawable.calendar_my_none),
+    CalendarOthersNone(R.drawable.calendar_others_none),
+    CalendarNew(R.drawable.calendar_new)
 }
