@@ -74,7 +74,7 @@ fun InitialText(
     initialTextColor: ColorToken = ColorToken.TEXT_01,
     backgroundColor: Color = ColorToken.UI_03.color(),
     isClickable: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
