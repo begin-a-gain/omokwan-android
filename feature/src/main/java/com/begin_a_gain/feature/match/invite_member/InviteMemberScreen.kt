@@ -40,15 +40,18 @@ import com.begin_a_gain.library.design.util.noRippleClickable
 
 @Preview
 @Composable
-fun InviteMemberScreen() {
+fun InviteMemberScreen(
+    onNavigateToSetting: () -> Unit = {}
+) {
     OScreen(
         title = "대국 초대하기",
         showBackButton = true,
         onBackButtonClick = {
-
+            onNavigateToSetting()
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "초대하기",
+        useDefaultPadding = false,
         onBottomButtonClick = {
 
         }
@@ -56,7 +59,7 @@ fun InviteMemberScreen() {
         Column {
             SelectedInvitees()
             SearchBar(
-                modifier = Modifier.padding(vertical = 20.dp),
+                modifier = Modifier.padding(20.dp),
                 keyword = "",
                 hint = "이름으로 검색하기"
             ) {
@@ -137,6 +140,7 @@ fun SelectedInvitees(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp)
+            .padding(horizontal = 20.dp)
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {

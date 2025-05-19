@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -332,6 +333,7 @@ fun SettingBox(
                     color = ColorToken.STROKE_02.color(),
                     shape = RoundedCornerShape(8.dp)
                 )
+                .clip(RoundedCornerShape(8.dp))
         ) {
             content()
         }

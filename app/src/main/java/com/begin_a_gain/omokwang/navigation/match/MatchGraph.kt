@@ -8,6 +8,8 @@ import com.begin_a_gain.feature.match.invite_member.InviteMemberScreen
 import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.change_leader.ChangeLeaderScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
+import com.begin_a_gain.omokwang.navigation.Main
+import com.begin_a_gain.omokwang.navigation.cleanUpTo
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -43,6 +45,9 @@ fun NavGraphBuilder.matchGraph(
 
         composable<MatchSetting> {
             MatchSettingScreen(
+                onNavigateToMatch = {
+                    navController.cleanUpTo(Match)
+                },
                 onNavigateToInvite = {
                     navController.navigate(InviteMatch)
                 },
@@ -53,11 +58,19 @@ fun NavGraphBuilder.matchGraph(
         }
 
         composable<InviteMatch> {
-            InviteMemberScreen()
+            InviteMemberScreen(
+                onNavigateToSetting = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable<ChangeLeader> {
-            ChangeLeaderScreen()
+            ChangeLeaderScreen(
+                onNavigateToSetting = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

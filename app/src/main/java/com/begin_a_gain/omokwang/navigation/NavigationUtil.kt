@@ -1,8 +1,8 @@
 package com.begin_a_gain.omokwang.navigation
 
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 
-fun NavHostController.cleanUpTo(route: Any) {
+fun NavController.cleanUpTo(route: Any) {
     this.navigate(route) {
         popUpTo(route) { inclusive = true }
     }

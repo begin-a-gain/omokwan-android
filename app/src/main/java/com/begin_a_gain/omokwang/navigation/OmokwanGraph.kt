@@ -19,6 +19,7 @@ import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.Match
 import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
+import com.begin_a_gain.omokwang.navigation.match.matchGraph
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -78,13 +79,17 @@ fun OmokwanGraph(
         createMatchGraph(
             navController = navController,
             onNavigateToMain = { navController.cleanUpTo(Main) },
-            onNavigateToMatch = {}
+            onNavigateToMatch = { }
         )
 
         composable<JoinMatch> {
             JoinMatchScreen()
         }
 
+        matchGraph(
+            navController = navController,
+            onNavigateToMain = { navController.cleanUpTo(Main) }
+        )
     }
 }
 

@@ -32,7 +32,8 @@ import com.begin_a_gain.library.design.util.OScreen
 @Preview
 @Composable
 fun MatchSettingScreen(
-    isLeader: Boolean = false,
+    isLeader: Boolean = true,
+    onNavigateToMatch: () -> Unit = {},
     onNavigateToInvite: () -> Unit = {},
     onNavigateToChangeLeader: () -> Unit = {}
 ) {
@@ -45,7 +46,7 @@ fun MatchSettingScreen(
         showBackButton = false,
         trailingIcon = OImageRes.Cancel,
         onTrailingIconClick = {
-            // Todo : dismiss
+
         }
     ) {
         Column(
@@ -86,7 +87,7 @@ fun MatchSettingScreen(
                     title = "초대하기",
                     value = ""
                 ) {
-
+                    onNavigateToInvite()
                 }
 
                 if (isLeader) {
@@ -95,7 +96,7 @@ fun MatchSettingScreen(
                         title = "방장 변경하기",
                         value = ""
                     ) {
-
+                        onNavigateToChangeLeader()
                     }
                 }
             }
