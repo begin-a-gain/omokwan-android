@@ -66,7 +66,10 @@ import org.joda.time.YearMonth
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun MatchScreen() {
+fun MatchScreen(
+    onNavigateToMain: () -> Unit = {},
+    onNavigateToSetting: () -> Unit = {}
+) {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
@@ -82,7 +85,7 @@ fun MatchScreen() {
         showBackButton = true,
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
-
+            onNavigateToSetting()
         },
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp

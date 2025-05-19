@@ -33,6 +33,8 @@ import com.begin_a_gain.library.design.util.OScreen
 @Composable
 fun MatchSettingScreen(
     isLeader: Boolean = false,
+    onNavigateToInvite: () -> Unit = {},
+    onNavigateToChangeLeader: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
 
@@ -84,13 +86,16 @@ fun MatchSettingScreen(
                     title = "초대하기",
                     value = ""
                 ) {
+
                 }
+
                 if (isLeader) {
                     OVerticalDivider(colorToken = ColorToken.STROKE_02)
                     SettingRow(
                         title = "방장 변경하기",
                         value = ""
                     ) {
+
                     }
                 }
             }

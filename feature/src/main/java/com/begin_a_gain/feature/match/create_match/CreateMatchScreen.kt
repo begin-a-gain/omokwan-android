@@ -19,7 +19,8 @@ import com.begin_a_gain.library.design.util.OScreen
 @Composable
 fun CreateMatchScreen(
     viewModel: CreateMatchViewModel,
-    navigateToMain: () -> Unit,
+    onNavigateToMain: () -> Unit,
+    onNavigateToMatch: () -> Unit
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     var showCreateMatchDialog by rememberSaveable { mutableStateOf(false) }
@@ -71,7 +72,7 @@ fun CreateMatchScreen(
 
         if (showLeaveWithoutSavingDialog) {
             LeaveCreateMatchDialog(
-                onConfirmClick = navigateToMain
+                onConfirmClick = onNavigateToMain
             ) {
                 showLeaveWithoutSavingDialog = false
             }

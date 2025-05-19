@@ -16,6 +16,9 @@ import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
+import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
+import com.begin_a_gain.omokwang.navigation.match.Match
+import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,13 +34,7 @@ object Main
 object MatchList
 @Serializable
 object MyPage
-@Serializable
-object Match
 
-@Serializable
-object MatchCategory
-@Serializable
-object CreateMatch
 @Serializable
 object JoinMatch
 @Serializable
@@ -72,40 +69,22 @@ fun OmokwanGraph(
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.navigate(MatchCategory) },
+                navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { navController.navigate(Match) }
             )
         }
 
-        composable<MatchCategory> {
-            val backStackEntry = navController.getBackStackEntry(Main)
-            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
-            MatchCategoryScreen(
-                viewModel = matchViewModel,
-                navigateToCreateMatch = { navController.navigate(CreateMatch) },
-                navigateToMain = {
-                    navController.cleanUpTo(Main)
-                }
-            )
-        }
-
-        composable<CreateMatch> {
-            val backStackEntry = navController.getBackStackEntry(Main)
-            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
-            CreateMatchScreen(
-                viewModel = matchViewModel,
-                navigateToMain = { navController.cleanUpTo(Main) }
-            )
-        }
+        createMatchGraph(
+            navController = navController,
+            onNavigateToMain = { navController.cleanUpTo(Main) },
+            onNavigateToMatch = {}
+        )
 
         composable<JoinMatch> {
             JoinMatchScreen()
         }
 
-        composable<Match> {
-            MatchScreen()
-        }
     }
 }
 
