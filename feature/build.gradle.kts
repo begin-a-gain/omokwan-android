@@ -44,7 +44,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.library)
+    implementation(projects.library.design)
+    implementation(projects.library.core)
     implementation(projects.domain)
 
     implementation(libs.androidx.core.ktx)

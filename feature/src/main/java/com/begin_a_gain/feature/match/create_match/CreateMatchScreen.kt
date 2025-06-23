@@ -12,8 +12,8 @@ import com.begin_a_gain.feature.match.common.match_setting.MatchSettingCommonLay
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.create_match.util.ui.CreateMatchDialog
 import com.begin_a_gain.feature.match.create_match.util.ui.LeaveCreateMatchDialog
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.util.OScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable

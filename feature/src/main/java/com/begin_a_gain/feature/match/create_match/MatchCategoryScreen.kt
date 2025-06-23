@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.MatchCategoryGrid
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.button.OTextButton
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OTextButton
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 
 @Composable
 fun MatchCategoryScreen(

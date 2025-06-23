@@ -8,14 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.library.core.util.ValidationState
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.component.text.OTextField
-import com.begin_a_gain.library.design.component.text.TextFieldStatus
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.core.util.ValidationState
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.component.text.OTextField
+import com.begin_a_gain.design.component.text.TextFieldStatus
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 
 @Composable
 fun SignUpScreen(
@@ -31,7 +31,7 @@ fun SignUpScreen(
         },
         bottomButtonText = "다음",
         bottomButtonType = when (state.nicknameValidation) {
-            ValidationState.Success -> ButtonType.Primary
+            com.begin_a_gain.core.util.ValidationState.Success -> ButtonType.Primary
             else -> ButtonType.Disable
         },
         onBottomButtonClick = {
@@ -53,8 +53,8 @@ fun SignUpScreen(
             maxCount = 10,
             message = state.nicknameFailCase?.message,
             status = when (state.nicknameValidation) {
-                ValidationState.Normal,
-                ValidationState.Success -> TextFieldStatus.Default
+                com.begin_a_gain.core.util.ValidationState.Normal,
+                com.begin_a_gain.core.util.ValidationState.Success -> TextFieldStatus.Default
 
                 else -> TextFieldStatus.Error
             }

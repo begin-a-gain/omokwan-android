@@ -17,17 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.library.design.component.OHorizontalDivider
-import com.begin_a_gain.library.design.component.button.ButtonSize
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.button.OButton
-import com.begin_a_gain.library.design.component.image.OImage
-import com.begin_a_gain.library.design.component.image.OImageRes
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.button.ButtonSize
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.image.OImage
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 
 @Composable
 fun JoinMatchItem(

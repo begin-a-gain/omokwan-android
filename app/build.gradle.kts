@@ -71,7 +71,8 @@ fun getLocalProperties(key: String): String {
 
 dependencies {
     implementation(projects.feature)
-    implementation(projects.library)
+    implementation(projects.library.core)
+    implementation(projects.library.design)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

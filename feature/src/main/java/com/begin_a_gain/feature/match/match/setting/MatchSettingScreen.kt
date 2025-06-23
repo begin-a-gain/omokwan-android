@@ -21,13 +21,13 @@ import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiType
 import com.begin_a_gain.feature.match.common.match_setting.SettingBox
 import com.begin_a_gain.feature.match.common.match_setting.SettingRow
-import com.begin_a_gain.library.design.component.OVerticalDivider
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.button.OButton
-import com.begin_a_gain.library.design.component.dialog.ODialog
-import com.begin_a_gain.library.design.component.image.OImageRes
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.OVerticalDivider
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.util.OScreen
 
 @Preview
 @Composable
