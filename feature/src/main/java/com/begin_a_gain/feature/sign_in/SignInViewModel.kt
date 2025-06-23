@@ -1,6 +1,7 @@
 package com.begin_a_gain.feature.sign_in
 
 import androidx.lifecycle.ViewModel
+import com.begin_a_gain.core.util.SocialSignInUtil
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,16 +12,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-
+    private val socialSignInUtil: SocialSignInUtil
 ) : ViewModel(), ContainerHost<SignInState, SignInSideEffect> {
 
     override val container: Container<SignInState, SignInSideEffect> = container(SignInState())
 
-    fun failedToKakaoSignUp(throwable: Throwable) = intent {
+    fun signInWithKakao() {
+        socialSignInUtil.signInWithKakao(
+            kakaoSignInCallBack = { token, error ->
+                if (error != null) {
+                    failedToKakaoSignUp(error)
+                } else if (token != null) {
+                    successToKakaoSignUp(token)
+                }
+            },
+            onSuccess = { token ->
+                successToKakaoSignUp(token)
+            }
+        )
+    }
+
+    private fun failedToKakaoSignUp(throwable: Throwable) = intent {
         postSideEffect(SignInSideEffect.SignInFailed)
     }
 
-    fun successToKakaoSignUp(token: OAuthToken) = intent {
+    private fun successToKakaoSignUp(token: OAuthToken) = intent {
         reduce { state.copy(accessToken = token.accessToken) }
         if (AuthApiClient.instance.hasToken()) {
             postSideEffect(SignInSideEffect.NavigateToMain)

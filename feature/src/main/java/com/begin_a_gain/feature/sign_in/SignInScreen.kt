@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.sign_in
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,10 +23,6 @@ import com.begin_a_gain.design.theme.AppColors
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.initScreen
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
@@ -37,16 +31,6 @@ fun SignInScreen(
     navigateToMain: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
-    val kakaoSignInCallBack: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            viewModel.failedToKakaoSignUp(error)
-        } else if (token != null) {
-            viewModel.successToKakaoSignUp(token)
-        }
-    }
-
     Column(
         modifier = Modifier.initScreen(),
         verticalArrangement = Arrangement.Bottom,
@@ -59,7 +43,7 @@ fun SignInScreen(
                 .size(60.dp)
                 .background(AppColors.Kakao)
                 .clickable {
-                    signInWithKakao(context, kakaoSignInCallBack, viewModel::successToKakaoSignUp)
+                    viewModel.signInWithKakao()
                 }
         ) {
 
@@ -101,30 +85,5 @@ fun SignInScreen(
                 navigateToMain()
             }
         }
-    }
-}
-
-fun signInWithKakao(
-    context: Context,
-    kakaoSignInCallBack: (OAuthToken?, Throwable?) -> Unit,
-    onSuccess: (OAuthToken) -> Unit,
-) {
-    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-            if (error != null) {
-                if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                    return@loginWithKakaoTalk
-                }
-
-                UserApiClient.instance.loginWithKakaoAccount(
-                    context = context,
-                    callback = kakaoSignInCallBack
-                )
-            } else if (token != null) {
-                onSuccess(token)
-            }
-        }
-    } else {
-        UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoSignInCallBack)
     }
 }
