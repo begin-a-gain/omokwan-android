@@ -1,6 +1,6 @@
 package com.begin_a_gain.feature.sign_up
 
-import com.begin_a_gain.core.util.ValidationState
+import com.begin_a_gain.core.type.ValidationState
 
 enum class NicknameFailCase(val message: String) {
     Duplicated("이미 사용중인 아이디 입니다."),
@@ -9,7 +9,7 @@ enum class NicknameFailCase(val message: String) {
 
 data class SignUpState(
     val nickname: String = "",
-    val nicknameValidation: com.begin_a_gain.core.util.ValidationState = com.begin_a_gain.core.util.ValidationState.Normal,
+    val nicknameValidation: ValidationState = ValidationState.Normal,
     val nicknameFailCase: NicknameFailCase? = null
 )
 

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.core.util.ValidationState
+import com.begin_a_gain.core.type.ValidationState
 import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.text.OText
 import com.begin_a_gain.design.component.text.OTextField
@@ -31,7 +31,7 @@ fun SignUpScreen(
         },
         bottomButtonText = "다음",
         bottomButtonType = when (state.nicknameValidation) {
-            com.begin_a_gain.core.util.ValidationState.Success -> ButtonType.Primary
+            ValidationState.Success -> ButtonType.Primary
             else -> ButtonType.Disable
         },
         onBottomButtonClick = {
@@ -53,8 +53,8 @@ fun SignUpScreen(
             maxCount = 10,
             message = state.nicknameFailCase?.message,
             status = when (state.nicknameValidation) {
-                com.begin_a_gain.core.util.ValidationState.Normal,
-                com.begin_a_gain.core.util.ValidationState.Success -> TextFieldStatus.Default
+                ValidationState.Normal,
+                ValidationState.Success -> TextFieldStatus.Default
 
                 else -> TextFieldStatus.Error
             }

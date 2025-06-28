@@ -1,4 +1,4 @@
-package com.begin_a_gain.core.util
+package com.begin_a_gain.core.type
 
 enum class ValidationState {
     Normal,
