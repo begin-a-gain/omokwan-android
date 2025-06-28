@@ -70,6 +70,7 @@ fun getLocalProperties(key: String): String {
 }
 
 dependencies {
+    implementation(projects.data)
     implementation(projects.feature)
     implementation(projects.library.core)
     implementation(projects.library.design)

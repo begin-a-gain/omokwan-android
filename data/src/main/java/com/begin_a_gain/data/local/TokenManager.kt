@@ -35,7 +35,7 @@ class TokenManager @Inject constructor(
         saveRefreshToken(refreshToken = refreshToken)
     }
 
-    private fun saveAccessToken(accessToken: String) {
+    fun saveAccessToken(accessToken: String) {
         preferences?.edit()?.putString(ACCESS_TOKEN, accessToken)?.apply()
     }
 
