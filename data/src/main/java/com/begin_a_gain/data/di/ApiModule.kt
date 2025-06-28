@@ -1,7 +1,8 @@
 package com.begin_a_gain.data.di
 
 import android.util.Log
-import com.begin_a_gain.data.constant.NETWORK_TIME_OUT
+import com.begin_a_gain.data.local.TokenManager
+import com.begin_a_gain.data.remote.constant.NETWORK_TIME_OUT
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +11,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -24,7 +27,6 @@ import kotlinx.serialization.json.Json
 import javax.inject.Named
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
@@ -32,7 +34,8 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideHttpClient(
-        @Named("BASE_URL") baseUrl: String
+        @Named("BASE_URL") baseUrl: String,
+        tokenManager: TokenManager
     ): HttpClient {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -69,6 +72,14 @@ object ApiModule {
                 url(baseUrl)
                 accept(ContentType.Application.Json)
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
+            }
+
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        null
+                    }
+                }
             }
         }
     }

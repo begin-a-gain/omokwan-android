@@ -38,6 +38,8 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
@@ -45,4 +47,5 @@ dependencies {
     implementation(libs.bundles.di.hilt)
 
     implementation(libs.bundles.data.ktor)
+    implementation(libs.bundles.data.local)
 }
