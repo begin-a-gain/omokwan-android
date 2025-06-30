@@ -7,12 +7,12 @@ import io.ktor.http.HttpStatusCode
 import java.io.IOException
 
 inline fun <reified T, reified R> callApi(
-    call: () -> Response<T>?,
+    call: () -> T?,
     handleResponse: (T?) -> R?
 ): Result<R> {
     return try {
         val response = call() ?: return Result.failure(SourceException.InvalidResponse)
-        val result = handleResponse(response.data) ?: return Result.failure(SourceException.InvalidResponse)
+        val result = handleResponse(response) ?: return Result.failure(SourceException.InvalidResponse)
         return Result.success(result)
     } catch (e: ClientRequestException) {
         when(e.response.status) {

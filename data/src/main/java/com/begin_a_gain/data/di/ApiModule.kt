@@ -62,6 +62,10 @@ object ApiModule {
                 }
             }
 
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true })
+            }
+
             install(ResponseObserver) {
                 onResponse { response ->
                     Log.d("HTTP status:", "${response.status.value}")

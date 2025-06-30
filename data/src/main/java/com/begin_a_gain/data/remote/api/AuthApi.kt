@@ -15,9 +15,9 @@ class AuthApi @Inject constructor(
     private val client: HttpClient
 ) {
 
-    suspend fun kakaoSignIn(signInRequest: SignInRequest): Response<SignInResponse> {
+    suspend fun kakaoSignIn(signInRequest: SignInRequest): SignInResponse {
         return client.post(ApiEndPoint.Auth.kakaoSignIn()) {
             setBody(signInRequest)
-        }.body<Response<SignInResponse>>()
+        }.body<SignInResponse>()
     }
 }
