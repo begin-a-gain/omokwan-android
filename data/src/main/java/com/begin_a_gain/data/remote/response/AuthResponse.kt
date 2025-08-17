@@ -7,3 +7,8 @@ data class SignInResponse(
     val accessToken: String,
     val signUpComplete: Boolean
 )
+
+@Serializable
+data class TokenResponse(
+    val accessToken: String?
+)
