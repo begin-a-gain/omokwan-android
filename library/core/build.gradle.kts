@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.bundles.android.lifecycle)
     ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
+    implementation(libs.bundles.mvi.orbit)
 
     implementation(libs.login.kakao)
     implementation(libs.util.jodatime)
