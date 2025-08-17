@@ -1,15 +1,13 @@
 package com.begin_a_gain.feature.sign_in
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.core.util.SocialSignInUtil
 import com.begin_a_gain.domain.model.request.SignInRequest
 import com.begin_a_gain.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
@@ -17,7 +15,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val socialSignInUtil: SocialSignInUtil,
     private val authRepository: AuthRepository
-) : ViewModel(), ContainerHost<SignInState, SignInSideEffect> {
+) : BaseViewModel<SignInState, SignInSideEffect>() {
 
     override val container: Container<SignInState, SignInSideEffect> = container(SignInState())
 
@@ -27,13 +25,13 @@ class SignInViewModel @Inject constructor(
                 if (error != null) {
                     failedToKakaoSignUp(error)
                 } else if (token != null) {
-                    viewModelScope.launch {
+                    viewModelScope.withLoading {
                         signIn(token.accessToken)
                     }
                 }
             },
             onSuccess = { token ->
-                viewModelScope.launch {
+                viewModelScope.withLoading {
                     signIn(token.accessToken)
                 }
             }
@@ -52,7 +50,7 @@ class SignInViewModel @Inject constructor(
                 }
             }
         }.onFailure {
-            Log.d("junyoung", "$it")
+            // Todo
         }
     }
 

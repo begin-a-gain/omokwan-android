@@ -18,10 +18,9 @@ class AuthRepositoryImpl @Inject constructor(
                 authApi.kakaoSignIn(signInRequest)
             },
             handleResponse = { response ->
-                if (response == null) null
-                else {
-                    tokenManager.saveAccessToken(response.accessToken)
-                    response.signUpComplete
+                response?.data?.let {
+                    tokenManager.saveAccessToken(it.accessToken)
+                    it.signUpComplete
                 }
             }
         )
