@@ -20,26 +20,34 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object SignIn
+
 @Serializable
 object SignUp
+
 @Serializable
 object SignUpDone
 
 @Serializable
 object Main
+
 @Serializable
 object MatchList
+
 @Serializable
 object MyPage
+
 @Serializable
 object Match
 
 @Serializable
 object MatchCategory
+
 @Serializable
 object CreateMatch
+
 @Serializable
 object JoinMatch
+
 @Serializable
 object Alarm
 
@@ -52,7 +60,13 @@ fun OmokwanGraph(
     NavHost(navController = navController, startDestination = startDestination) {
         composable<SignIn> {
             SignInScreen(
-                navigateToSignUp = { navController.navigate(SignUp) },
+                navigateToSignUp = {
+                    navController.navigate(SignUp) {
+                        popUpTo(SignIn) {
+                            inclusive = true
+                        }
+                    }
+                },
                 navigateToMain = { navController.navigate(Main) }
             )
         }

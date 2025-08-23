@@ -8,6 +8,6 @@ sealed class ApiEndPoint(val endPoint: String) {
 
     data object User : ApiEndPoint("users")
     fun User.info() = this.endPoint + "/info"
-    fun User.updateNickName() = this.endPoint + "/nicknames"
-    fun User.nickNameValidation() = this.endPoint + "/nicknames/validations"
+    fun User.nickname() = this.endPoint + "/nicknames"
+    fun User.nicknameValidation() = this.endPoint + "/nicknames/validations"
 }

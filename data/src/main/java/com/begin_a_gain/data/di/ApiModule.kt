@@ -6,10 +6,7 @@ import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.tokenRefresh
 import com.begin_a_gain.data.remote.constant.NETWORK_TIME_OUT
-import com.begin_a_gain.data.remote.response.SignInResponse
 import com.begin_a_gain.data.remote.response.TokenResponse
-import com.begin_a_gain.domain.exception.SourceException
-import com.begin_a_gain.domain.model.request.RefreshTokenRequest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,11 +28,8 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.cookie
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
 import io.ktor.http.parseServerSetCookieHeader
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -72,7 +66,7 @@ object ApiModule {
                 level = LogLevel.ALL
                 logger = object : Logger {
                     override fun log(message: String) {
-                        Log.d("Network", message)
+                        Log.i("Network", message)
                     }
                 }
             }
@@ -83,7 +77,7 @@ object ApiModule {
 
             install(ResponseObserver) {
                 onResponse { response ->
-                    Log.d("HTTP status:", "${response.status.value}")
+                    Log.i("Network", "HTTP status: ${response.status.value}")
                 }
             }
 
