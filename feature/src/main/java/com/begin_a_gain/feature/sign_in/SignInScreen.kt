@@ -66,11 +66,11 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OTextButton("이용약관") {
-
+                // Todo
             }
 
             OTextButton("개인정보처리방침") {
-
+                // Todo
             }
         }
 

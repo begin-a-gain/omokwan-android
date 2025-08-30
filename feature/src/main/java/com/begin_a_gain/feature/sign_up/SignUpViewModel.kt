@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.core.type.ValidationState
 import com.begin_a_gain.domain.exception.SourceException
+import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val localRepository: LocalRepository
 ) : BaseViewModel<SignUpState, SignUpSideEffect>() {
 
     override val container: Container<SignUpState, SignUpSideEffect> = container(SignUpState())
@@ -73,6 +75,7 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {
+                    localRepository.saveIsSignUpCompleted(true)
                     postSideEffect(SignUpSideEffect.SignUpSuccess)
                 }
                 .onFailure {
