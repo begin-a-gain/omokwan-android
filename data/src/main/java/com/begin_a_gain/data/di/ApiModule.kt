@@ -100,8 +100,6 @@ object ApiModule {
                         var refreshToken = tokenManager.getRefreshToken()
                         val httpResponse = this.client.post(ApiEndPoint.Auth.tokenRefresh()) {
                             markAsRefreshTokenRequest()
-                            Log.d("junyoung", "refresh token : ${tokenManager.getRefreshToken()}")
-                            Log.d("junyoung", "access token : ${tokenManager.getAccessToken()}")
                             cookie("refresh_token", tokenManager.getRefreshToken())
                         }
 
