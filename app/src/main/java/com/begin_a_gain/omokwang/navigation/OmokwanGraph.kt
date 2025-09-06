@@ -1,6 +1,7 @@
 package com.begin_a_gain.omokwang.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,6 +18,7 @@ import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -65,42 +67,36 @@ fun OmokwanGraph(
 
         composable<Splash> {
             SplashScreen(
-                navigateToMain = { navController.navigate(Main) },
-                navigateToSignIn = { navController.navigate(SignIn) }
+                navigateToMain = { navController.popAndNavigate(Main) },
+                navigateToSignIn = { navController.popAndNavigate(SignIn) }
             )
         }
 
         composable<SignIn> {
             SignInScreen(
-                navigateToSignUp = {
-                    navController.navigate(SignUp) {
-                        popUpTo(SignIn) {
-                            inclusive = true
-                        }
-                    }
-                },
-                navigateToMain = { navController.navigate(Main) }
+                navigateToSignUp = { navController.popAndNavigate(SignUp) },
+                navigateToMain = { navController.popAndNavigate(Main) }
             )
         }
 
         composable<SignUp> {
             SignUpScreen(
-                navigateToSignUpDone = { navController.navigate(SignUpDone) },
+                navigateToSignUpDone = { navController.popAndNavigate(SignUpDone) },
                 popBack = { navController.popBackStack() }
             )
         }
 
         composable<SignUpDone> {
             SignUpDoneScreen(
-                navigateToMain = { navController.navigate(Main) }
+                navigateToMain = { navController.popAndNavigate(Main) }
             )
         }
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.navigate(MatchCategory) },
-                navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { navController.navigate(Match) }
+                navigateToCreateMatch = { navController.popAndNavigate(MatchCategory) },
+                navigateToJoinMatch = { navController.popAndNavigate(JoinMatch) },
+                navigateToMatch = { navController.popAndNavigate(Match) }
             )
         }
 
@@ -109,9 +105,9 @@ fun OmokwanGraph(
             val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
             MatchCategoryScreen(
                 viewModel = matchViewModel,
-                navigateToCreateMatch = { navController.navigate(CreateMatch) },
+                navigateToCreateMatch = { navController.popAndNavigate(CreateMatch) },
                 navigateToMain = {
-                    navController.cleanUpTo(Main)
+                    navController.popAndNavigate(Main)
                 }
             )
         }
@@ -121,7 +117,7 @@ fun OmokwanGraph(
             val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
             CreateMatchScreen(
                 viewModel = matchViewModel,
-                navigateToMain = { navController.cleanUpTo(Main) }
+                navigateToMain = { navController.popAndNavigate(Main) }
             )
         }
 

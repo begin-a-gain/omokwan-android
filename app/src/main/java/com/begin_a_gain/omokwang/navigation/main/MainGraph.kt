@@ -61,7 +61,8 @@ import com.begin_a_gain.omokwang.navigation.MyPage
 fun MainGraph(
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: () -> Unit = {}
+    navigateToMatch: () -> Unit = {},
+    popBack: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
