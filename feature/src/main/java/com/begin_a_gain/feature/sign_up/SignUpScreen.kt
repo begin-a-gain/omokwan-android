@@ -76,6 +76,10 @@ fun SignUpScreen(
             is SignUpSideEffect.SignUpSuccess -> {
                 navigateToSignUpDone()
             }
+
+            is SignUpSideEffect.NavigateToSignIn -> {
+                popBack()
+            }
         }
     }
 }

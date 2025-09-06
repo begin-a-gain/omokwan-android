@@ -76,10 +76,22 @@ class SignUpViewModel @Inject constructor(
             userRepository.postNickname(state.nickname)
                 .onSuccess {
                     localRepository.saveIsSignUpCompleted(true)
-                    postSideEffect(SignUpSideEffect.SignUpSuccess)
+                    getUserInfo()
                 }
                 .onFailure {
                     // Todo
+                }
+        }
+    }
+
+    private fun getUserInfo() = intent {
+        viewModelScope.withLoading {
+            userRepository.getUserInfo()
+                .onSuccess {
+                    postSideEffect(SignUpSideEffect.SignUpSuccess)
+                }
+                .onFailure {
+                    postSideEffect(SignUpSideEffect.NavigateToSignIn)
                 }
         }
     }

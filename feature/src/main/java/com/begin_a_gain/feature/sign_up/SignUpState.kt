@@ -19,4 +19,5 @@ data class SignUpState(
 
 sealed class SignUpSideEffect {
     object SignUpSuccess: SignUpSideEffect()
+    object NavigateToSignIn: SignUpSideEffect()
 }
