@@ -21,6 +21,7 @@ mviOrbit = "9.0.0"
 # Network / Data
 datastore = "1.1.1"
 securityCrypto = "1.0.0"
+tink = "1.7.0"
 ktor = "2.3.12"
 gson = "2.11.0"
 
@@ -80,6 +81,7 @@ mvi-orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.r
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+google-crypto-tink = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 
 # Network
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -158,7 +160,8 @@ data-ktor = [
 data-local = [
     "androidx-datastore",
     "androidx-datastore-core",
-    "androidx-security-crypto"
+    "androidx-security-crypto",
+    "google-crypto-tink"
 ]
 
 mvi-orbit = [

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -14,11 +15,12 @@ import javax.inject.Singleton
 
 @Singleton
 internal class DataStoreManager @Inject constructor(@ApplicationContext private val context: Context) {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "kr_des")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "omokwan")
     private val dataStore: DataStore<Preferences> = context.dataStore
 
     companion object {
         private val SIGN_UP = booleanPreferencesKey("sign_up")
+        private val NICKNAME = stringPreferencesKey("nickname")
     }
 
     val isSignUpCompleted = object : DataStoreData.BooleanData<Boolean>(SIGN_UP) {
@@ -26,6 +28,17 @@ internal class DataStoreManager @Inject constructor(@ApplicationContext private 
             get() = dataStore.getFlow(key, false)
 
         override var data: Boolean
+            get() = runBlocking { flow.first() }
+            set(value) = runBlocking { dataStore.update(key, value) }
+
+        override suspend fun remove() = dataStore.remove(key)
+    }
+
+    val nickname = object : DataStoreData.StringData<String>(NICKNAME) {
+        override val flow: Flow<String>
+            get() = dataStore.getFlow(key, "")
+
+        override var data: String
             get() = runBlocking { flow.first() }
             set(value) = runBlocking { dataStore.update(key, value) }
 

@@ -24,6 +24,7 @@ class TokenManager @Inject constructor(
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
     } catch (e: Exception) {
+        context.deleteSharedPreferences("encrypted_prefs")
         null
     }
 

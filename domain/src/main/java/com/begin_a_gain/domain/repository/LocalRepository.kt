@@ -4,4 +4,7 @@ interface LocalRepository {
 
     fun saveIsSignUpCompleted(value: Boolean)
     fun getIsSignUpCompleted(): Boolean
+
+    fun saveNickname(value: String)
+    fun getNickname(): String
 }

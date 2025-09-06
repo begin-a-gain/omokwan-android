@@ -5,6 +5,7 @@ import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.core.util.SocialSignInUtil
 import com.begin_a_gain.domain.model.request.SignInRequest
 import com.begin_a_gain.domain.repository.AuthRepository
+import com.begin_a_gain.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val socialSignInUtil: SocialSignInUtil,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : BaseViewModel<SignInState, SignInSideEffect>() {
 
     override val container: Container<SignInState, SignInSideEffect> = container(SignInState())
@@ -44,7 +46,12 @@ class SignInViewModel @Inject constructor(
         ).onSuccess { signUpComplete ->
             intent {
                 if (signUpComplete) {
-                    postSideEffect(SignInSideEffect.NavigateToMain)
+
+                    getUserInfo {
+                        intent {
+                            postSideEffect(SignInSideEffect.NavigateToMain)
+                        }
+                    }
                 } else {
                     postSideEffect(SignInSideEffect.NavigateToSignUp)
                 }
@@ -52,6 +59,11 @@ class SignInViewModel @Inject constructor(
         }.onFailure {
             // Todo
         }
+    }
+
+    private suspend fun getUserInfo(onSuccess: () -> Unit) {
+        userRepository.getUserInfo()
+            .onSuccess { onSuccess() }
     }
 
     private fun failedToKakaoSignUp(throwable: Throwable) = intent {

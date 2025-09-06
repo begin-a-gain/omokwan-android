@@ -15,4 +15,12 @@ class LocalRepositoryImpl @Inject internal constructor(
     override fun getIsSignUpCompleted(): Boolean {
         return dataStoreManager.isSignUpCompleted.data
     }
+
+    override fun saveNickname(value: String) {
+        dataStoreManager.nickname.data = value
+    }
+
+    override fun getNickname(): String {
+        return dataStoreManager.nickname.data
+    }
 }
