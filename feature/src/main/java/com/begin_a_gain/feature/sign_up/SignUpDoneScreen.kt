@@ -20,6 +20,7 @@ fun SignUpDoneScreen(
     navigateToMain: () -> Unit
 ) {
     OScreen(
+        showBackButton = false,
         bottomButtonText = "오목완 시작하기",
         bottomButtonType = ButtonType.Primary,
         onBottomButtonClick = {

@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.begin_a_gain.design.theme.OmokwangTheme
 import com.begin_a_gain.omokwang.navigation.OmokwanGraph
 import com.begin_a_gain.omokwang.navigation.SignIn
+import com.begin_a_gain.omokwang.navigation.Splash
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
                 darkTheme = false
             ) {
                 val navController = rememberNavController()
-                OmokwanGraph(navController = navController, startDestination = SignIn)
+                OmokwanGraph(navController = navController, startDestination = Splash)
             }
         }
     }

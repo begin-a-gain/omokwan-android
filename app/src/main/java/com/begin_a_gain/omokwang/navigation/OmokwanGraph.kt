@@ -15,31 +15,43 @@ import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
+import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import kotlinx.serialization.Serializable
 
 @Serializable
+object Splash
+
+@Serializable
 object SignIn
+
 @Serializable
 object SignUp
+
 @Serializable
 object SignUpDone
 
 @Serializable
 object Main
+
 @Serializable
 object MatchList
+
 @Serializable
 object MyPage
+
 @Serializable
 object Match
 
 @Serializable
 object MatchCategory
+
 @Serializable
 object CreateMatch
+
 @Serializable
 object JoinMatch
+
 @Serializable
 object Alarm
 
@@ -50,9 +62,23 @@ fun OmokwanGraph(
     startDestination: Any
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
+
+        composable<Splash> {
+            SplashScreen(
+                navigateToMain = { navController.navigate(Main) },
+                navigateToSignIn = { navController.navigate(SignIn) }
+            )
+        }
+
         composable<SignIn> {
             SignInScreen(
-                navigateToSignUp = { navController.navigate(SignUp) },
+                navigateToSignUp = {
+                    navController.navigate(SignUp) {
+                        popUpTo(SignIn) {
+                            inclusive = true
+                        }
+                    }
+                },
                 navigateToMain = { navController.navigate(Main) }
             )
         }

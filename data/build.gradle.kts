@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -38,6 +39,8 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
@@ -45,4 +48,6 @@ dependencies {
     implementation(libs.bundles.di.hilt)
 
     implementation(libs.bundles.data.ktor)
+    implementation(libs.bundles.data.local)
+    implementation(libs.kotlinx.serialization.json)
 }
