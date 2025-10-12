@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.text.OText
 import com.begin_a_gain.design.theme.OTextStyle
 import kotlinx.coroutines.delay
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun SplashScreen(
@@ -20,14 +21,14 @@ fun SplashScreen(
     navigateToMain: () -> Unit,
     navigateToSignIn: () -> Unit
 ) {
-    val isSignIn by viewModel.isSignIn.collectAsStateWithLifecycle()
-
-    LaunchedEffect(true) {
-        delay(500L)
-        if (isSignIn) {
-            navigateToMain()
-        } else {
-            navigateToSignIn()
+    viewModel.collectSideEffect {
+        when(it) {
+            SplashSideEffect.NotFinishedSignUp -> {
+                navigateToMain()
+            }
+            SplashSideEffect.LoggedIn -> {
+                navigateToSignIn()
+            }
         }
     }
 

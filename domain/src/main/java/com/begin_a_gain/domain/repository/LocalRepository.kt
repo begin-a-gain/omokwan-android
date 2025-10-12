@@ -4,8 +4,6 @@ import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 interface LocalRepository {
 
-    fun isLoggedOut(): Boolean
-
     fun saveIsSignUpCompleted(value: Boolean)
     fun getIsSignUpCompleted(): Boolean
 

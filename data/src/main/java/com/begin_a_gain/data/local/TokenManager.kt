@@ -58,5 +58,4 @@ class TokenManager @Inject constructor(
             ?.remove(REFRESH_TOKEN)
             ?.apply()
     }
-
 }

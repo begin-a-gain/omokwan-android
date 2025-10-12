@@ -2,6 +2,8 @@ package com.begin_a_gain.data.di
 
 import android.util.Log
 import com.begin_a_gain.data.local.TokenManager
+import com.begin_a_gain.data.remote.auth.AuthEvent
+import com.begin_a_gain.data.remote.auth.AuthEventBus
 import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.tokenRefresh
@@ -30,6 +32,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.parseServerSetCookieHeader
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -103,24 +106,30 @@ object ApiModule {
                             cookie("refresh_token", tokenManager.getRefreshToken())
                         }
 
-                        httpResponse.headers.getAll("Set-Cookie")
-                            ?.map { parseServerSetCookieHeader(it) }
-                            ?.find { it.name == "refresh_token" }
-                            ?.value?.let {
-                                tokenManager.saveRefreshToken(it)
-                                refreshToken = it
-                            }
+                        if (httpResponse.status == HttpStatusCode.Unauthorized) {
+                            tokenManager.clearTokens()
+                            AuthEventBus.send(AuthEvent.Logout)
+                            null
+                        } else {
+                            httpResponse.headers.getAll("Set-Cookie")
+                                ?.map { parseServerSetCookieHeader(it) }
+                                ?.find { it.name == "refresh_token" }
+                                ?.value?.let {
+                                    tokenManager.saveRefreshToken(it)
+                                    refreshToken = it
+                                }
 
-                        val tokens = httpResponse.body<Response<TokenResponse>>().data
-                        tokens?.let {
-                            tokenManager.saveTokens(
-                                accessToken = tokens.accessToken?: "",
-                                refreshToken = refreshToken
-                            )
-                            BearerTokens(
-                                accessToken = tokens.accessToken?: "",
-                                refreshToken = refreshToken
-                            )
+                            val tokens = httpResponse.body<Response<TokenResponse>>().data
+                            tokens?.let {
+                                tokenManager.saveTokens(
+                                    accessToken = tokens.accessToken ?: "",
+                                    refreshToken = refreshToken
+                                )
+                                BearerTokens(
+                                    accessToken = tokens.accessToken ?: "",
+                                    refreshToken = refreshToken
+                                )
+                            }
                         }
                     }
                 }

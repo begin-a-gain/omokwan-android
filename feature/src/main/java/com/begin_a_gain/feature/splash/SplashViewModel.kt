@@ -1,41 +1,39 @@
 package com.begin_a_gain.feature.splash
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.begin_a_gain.domain.repository.LocalRepository
+import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.repository.UserRepository
-import com.kakao.sdk.auth.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val localRepository: LocalRepository
-) : ViewModel() {
+    private val userRepository: UserRepository
+) : BaseViewModel<SplashState, SplashSideEffect>() {
 
-    private val _isSignIn = MutableStateFlow(false)
-    val isSignIn = _isSignIn.asStateFlow()
+    override val container: Container<SplashState, SplashSideEffect> = container(SplashState())
 
     init {
+        getUserInfo()
+    }
+
+    private fun getUserInfo() {
         viewModelScope.launch {
-            if (isSignUpCompleted()) {
-                getUserInfo()
-            }
+            userRepository.getUserInfo()
+                .onSuccess {
+                    if (it.nickname.isBlank()) {
+                        intent { postSideEffect(SplashSideEffect.NotFinishedSignUp) }
+                    } else {
+                        intent { postSideEffect(SplashSideEffect.LoggedIn) }
+                    }
+                }
+                .onFailure {
+                    delay(2_000L)
+                }
         }
-    }
-
-    private fun isSignUpCompleted(): Boolean {
-        val isSignUpCompleted = localRepository.getIsSignUpCompleted()
-        _isSignIn.value = isSignUpCompleted
-        return isSignUpCompleted
-    }
-
-    private suspend fun getUserInfo() {
-        userRepository.getUserInfo()
     }
 }
