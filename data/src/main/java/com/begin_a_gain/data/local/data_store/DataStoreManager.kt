@@ -21,6 +21,7 @@ internal class DataStoreManager @Inject constructor(@ApplicationContext private 
     companion object {
         private val SIGN_UP = booleanPreferencesKey("sign_up")
         private val NICKNAME = stringPreferencesKey("nickname")
+        private val CATEGORIES = stringPreferencesKey("categories")
     }
 
     val isSignUpCompleted = object : DataStoreData.BooleanData<Boolean>(SIGN_UP) {
@@ -35,6 +36,17 @@ internal class DataStoreManager @Inject constructor(@ApplicationContext private 
     }
 
     val nickname = object : DataStoreData.StringData<String>(NICKNAME) {
+        override val flow: Flow<String>
+            get() = dataStore.getFlow(key, "")
+
+        override var data: String
+            get() = runBlocking { flow.first() }
+            set(value) = runBlocking { dataStore.update(key, value) }
+
+        override suspend fun remove() = dataStore.remove(key)
+    }
+
+    val categoryList = object : DataStoreData.StringData<String>(CATEGORIES) {
         override val flow: Flow<String>
             get() = dataStore.getFlow(key, "")
 

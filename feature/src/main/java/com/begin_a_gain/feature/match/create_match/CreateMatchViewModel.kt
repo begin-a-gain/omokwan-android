@@ -1,6 +1,7 @@
 package com.begin_a_gain.feature.match.create_match
 
 import androidx.lifecycle.ViewModel
+import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.joda.time.LocalTime
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateMatchViewModel @Inject constructor(
-
+    private val localRepository: LocalRepository
 ) : ViewModel(), ContainerHost<CreateMatchState, CreateMatchSideEffect> {
 
     override val container: Container<CreateMatchState, CreateMatchSideEffect> =
@@ -21,6 +22,7 @@ class CreateMatchViewModel @Inject constructor(
         intent {
             reduce {
                 state.copy(
+                    categoryList = localRepository.getCategoryList(),
                     alarmHour = LocalTime.now().hourOfDay,
                     alarmMin = LocalTime.now().minuteOfHour
                 )

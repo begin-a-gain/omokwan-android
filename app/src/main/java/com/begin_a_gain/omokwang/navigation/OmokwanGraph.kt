@@ -94,7 +94,7 @@ fun OmokwanGraph(
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.popAndNavigate(MatchCategory) },
+                navigateToCreateMatch = { navController.navigate(MatchCategory) },
                 navigateToJoinMatch = { navController.popAndNavigate(JoinMatch) },
                 navigateToMatch = { navController.popAndNavigate(Match) }
             )
