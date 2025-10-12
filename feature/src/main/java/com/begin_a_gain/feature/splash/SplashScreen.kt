@@ -24,10 +24,10 @@ fun SplashScreen(
     viewModel.collectSideEffect {
         when(it) {
             SplashSideEffect.NotFinishedSignUp -> {
-                navigateToMain()
+                navigateToSignIn()
             }
             SplashSideEffect.LoggedIn -> {
-                navigateToSignIn()
+                navigateToMain()
             }
         }
     }

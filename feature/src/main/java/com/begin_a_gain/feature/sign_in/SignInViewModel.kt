@@ -46,7 +46,6 @@ class SignInViewModel @Inject constructor(
         ).onSuccess { signUpComplete ->
             intent {
                 if (signUpComplete) {
-
                     getUserInfo {
                         intent {
                             postSideEffect(SignInSideEffect.NavigateToMain)
