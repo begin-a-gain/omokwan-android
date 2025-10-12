@@ -28,7 +28,7 @@ fun MatchCategoryScreen(
 
     OScreen(
         bottomButtonText = "다음",
-        bottomButtonType = if (state.selectedCategoryIndex == -1) ButtonType.Disable else ButtonType.Primary,
+        bottomButtonType = if (state.selectedCategory == null) ButtonType.Disable else ButtonType.Primary,
         onBottomButtonClick = navigateToCreateMatch,
         onBackButtonClick = navigateToMain
     ) {
@@ -50,8 +50,7 @@ fun MatchCategoryScreen(
             Spacer(modifier = Modifier.height(32.dp))
             MatchCategoryGrid(
                 modifier = Modifier.fillMaxWidth(),
-                categoryList = state.categoryList,
-                selectedIndex = listOf(state.selectedCategoryIndex)
+                selectedItem = if (state.selectedCategory == null) emptyList() else listOf(state.selectedCategory!!)
             ) {
                 viewModel.setCategory(it)
             }
@@ -59,6 +58,7 @@ fun MatchCategoryScreen(
             OTextButton(
                 text = "건너뛰기"
             ) {
+                viewModel.setCategory(null)
                 navigateToCreateMatch()
             }
         }

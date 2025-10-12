@@ -18,16 +18,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.begin_a_gain.core.util.EmojiUtil
-import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.text.OText
@@ -41,23 +43,25 @@ import com.begin_a_gain.domain.model.match.MatchCategoryItem
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MatchCategoryGrid(
-    categoryList: List<MatchCategoryItem> = listOf(MatchCategoryItem("1", "Test1", "U+1FAE7")),
     modifier: Modifier = Modifier,
-    selectedIndex: List<Int> = emptyList(),
-    onSelect: (Int) -> Unit = {}
+    categoryViewModel: MatchCategoryViewModel = hiltViewModel(),
+    selectedItem: List<MatchCategoryItem> = emptyList(),
+    onSelect: (MatchCategoryItem) -> Unit = {}
 ) {
+    val categoryList by categoryViewModel.categoryList.collectAsState()
+
     FlowRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        categoryList.forEachIndexed { index, category ->
+        categoryList.forEach { category ->
             CategoryChip(
                 emoji = EmojiUtil.decodeEmoji(category.emoji),
                 text = category.name,
-                isSelected = selectedIndex.contains(index),
+                isSelected = selectedItem.contains(category),
                 onSelect = {
-                    onSelect(index)
+                    onSelect(category)
                 }
             )
         }
@@ -107,11 +111,11 @@ fun CategoryChip(
 @Composable
 fun CategoryBottomSheet(
     sheetState: SheetState,
-    selectedIndex: Int,
+    selectedItem: MatchCategoryItem?,
     onDismissRequest: () -> Unit,
-    onSelected: (Int) -> Unit
+    onSelected: (MatchCategoryItem) -> Unit
 ) {
-    var currentIndex by rememberSaveable { mutableIntStateOf(selectedIndex) }
+    var currentItem by remember { mutableStateOf(selectedItem) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -121,9 +125,9 @@ fun CategoryBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = listOf(currentIndex)
+                selectedItem = if (currentItem == null) emptyList() else listOf(currentItem!!)
             ) {
-                currentIndex = it
+                currentItem = it
             }
             Spacer(modifier = Modifier.weight(1f))
             OButton(
@@ -132,7 +136,9 @@ fun CategoryBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                onSelected(currentIndex)
+                currentItem?.let {
+                    onSelected(it)
+                }
             }
         }
     }

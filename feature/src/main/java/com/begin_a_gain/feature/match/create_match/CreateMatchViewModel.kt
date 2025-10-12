@@ -1,9 +1,20 @@
 package com.begin_a_gain.feature.match.create_match
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.begin_a_gain.core.base.BaseViewModel
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
+import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
+import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType.Companion.parseToMatchDayType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.joda.time.LocalTime
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -12,8 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateMatchViewModel @Inject constructor(
-    private val localRepository: LocalRepository
-) : ViewModel(), ContainerHost<CreateMatchState, CreateMatchSideEffect> {
+    private val localRepository: LocalRepository,
+    private val matchRepository: MatchRepository
+) : BaseViewModel<CreateMatchState, CreateMatchSideEffect>() {
 
     override val container: Container<CreateMatchState, CreateMatchSideEffect> =
         container(CreateMatchState())
@@ -29,6 +41,12 @@ class CreateMatchViewModel @Inject constructor(
             }
         }
     }
+
+    val isMatchCreatable: Flow<Boolean> = container.stateFlow
+        .map { state ->
+            state.title.isNotBlank() && state.selectedCategory != null
+        }
+        .distinctUntilChanged()
 
     fun setMatchTitle(value: String) = blockingIntent {
         reduce { state.copy(title = value) }
@@ -52,19 +70,44 @@ class CreateMatchViewModel @Inject constructor(
         reduce { state.copy(maxParticipantsCount = value) }
     }
 
-    fun setCategory(selectedIndex: Int) = intent {
+    fun setCategory(selectedItem: MatchCategoryItem?) = intent {
         reduce {
             state.copy(
-                selectedCategoryIndex = if (state.selectedCategoryIndex == selectedIndex) -1 else selectedIndex
+                selectedCategory = if (selectedItem == null) null
+                else if (state.selectedCategory == selectedItem) null else selectedItem
             )
         }
     }
 
     fun setAlarmOn(value: Boolean, hour: Int? = null, min: Int? = null) = intent {
-        reduce { state.copy(alarmOn = value, alarmHour = hour?: 0, alarmMin = min?: 0) }
+        reduce { state.copy(alarmOn = value, alarmHour = hour ?: 0, alarmMin = min ?: 0) }
     }
 
     fun setPrivate(value: Boolean, code: String? = null) = intent {
-        reduce { state.copy(isPrivate = value, code = code?: "") }
+        reduce { state.copy(isPrivate = value, code = code ?: "") }
+    }
+
+    fun createMatch() {
+        viewModelScope.withLoading {
+            val state = container.stateFlow.value
+            matchRepository.postCreateMatch(
+                request = CreateMatchRequest(
+                    name = state.title,
+                    maxParticipants = state.maxParticipantsCount,
+                    categoryCode = state.selectedCategory?.code ?: "",
+                    dayType = state.selectedRepeatDayType.parseToMatchDayType(state.selectedDay),
+                    password = if (state.isPrivate) state.code else null,
+                    isPublic = !state.isPrivate
+                )
+            ).onSuccess {
+                if (it != -1) {
+                    intent {
+                        postSideEffect(CreateMatchSideEffect.CreateSuccess)
+                    }
+                }
+            }.onFailure {
+                Log.d("junyoung", "failed")
+            }
+        }
     }
 }

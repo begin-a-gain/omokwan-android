@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.common.match_setting
 
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 
 data class MatchSettingUiState(
@@ -12,8 +13,8 @@ data class MatchSettingUiState(
     val selectedDay: List<Boolean> = listOf(false, false, false, false, false, false, false),
     val maxParticipantsCount: Int = 5,
     val setMaximumParticipants: (Int) -> Unit = {},
-    val selectedCategoryIndex: Int = -1,
-    val setCategory: (Int) -> Unit = {},
+    val selectedCategory: MatchCategoryItem? = null,
+    val setCategory: (MatchCategoryItem) -> Unit = {},
     val alarmOn: Boolean = false,
     val setAlarmOn: (value: Boolean, hour: Int?, min: Int?) -> Unit = { _, _, _ -> },
     val alarmHour: Int = 0,

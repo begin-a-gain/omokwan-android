@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,7 +67,9 @@ import org.joda.time.YearMonth
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun MatchScreen() {
+fun MatchScreen(
+    isInitial: Boolean = false
+) {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
@@ -87,6 +90,13 @@ fun MatchScreen() {
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp
     ) { showSnackBar ->
+
+        LaunchedEffect(Unit) {
+            if (isInitial) {
+                showSnackBar("새 대국을 만들었어요.")
+            }
+        }
+
         Column(
             modifier = Modifier.fillMaxSize()
         ) {

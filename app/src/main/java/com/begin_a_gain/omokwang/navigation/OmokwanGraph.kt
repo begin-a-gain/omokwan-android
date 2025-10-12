@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
 import com.begin_a_gain.feature.match.create_match.CreateMatchViewModel
 import com.begin_a_gain.feature.match.create_match.MatchCategoryScreen
@@ -43,7 +44,9 @@ object MatchList
 object MyPage
 
 @Serializable
-object Match
+data class Match(
+    val isInitial: Boolean = false
+)
 
 @Serializable
 object MatchCategory
@@ -117,7 +120,8 @@ fun OmokwanGraph(
             val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
             CreateMatchScreen(
                 viewModel = matchViewModel,
-                navigateToMain = { navController.popAndNavigate(Main) }
+                navigateToMain = { navController.popAndNavigate(Main) },
+                navigateToMatch = { navController.popAndNavigate(Match(isInitial = true)) }
             )
         }
 
@@ -125,8 +129,9 @@ fun OmokwanGraph(
             JoinMatchScreen()
         }
 
-        composable<Match> {
-            MatchScreen()
+        composable<Match> { backstackEntry ->
+            val match = backstackEntry.toRoute<Match>()
+            MatchScreen(match.isInitial)
         }
     }
 }
