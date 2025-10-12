@@ -28,7 +28,7 @@ fun MatchCategoryScreen(
 
     OScreen(
         bottomButtonText = "다음",
-        bottomButtonType = if (state.selectedCategoryIndex == -1) ButtonType.Disable else ButtonType.Primary,
+        bottomButtonType = if (state.selectedCategoryCode == "") ButtonType.Disable else ButtonType.Primary,
         onBottomButtonClick = navigateToCreateMatch,
         onBackButtonClick = navigateToMain
     ) {
@@ -51,7 +51,7 @@ fun MatchCategoryScreen(
             MatchCategoryGrid(
                 modifier = Modifier.fillMaxWidth(),
                 categoryList = state.categoryList,
-                selectedIndex = listOf(state.selectedCategoryIndex)
+                selectedCode = listOf(state.selectedCategoryCode)
             ) {
                 viewModel.setCategory(it)
             }

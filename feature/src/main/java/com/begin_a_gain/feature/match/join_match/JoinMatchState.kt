@@ -2,7 +2,7 @@ package com.begin_a_gain.feature.match.join_match
 
 data class JoinMatchState(
     val matchList: List<MatchInfo> = testMatchList,
-    val categoryFilter: List<Int> = listOf(),
+    val categoryFilter: List<String> = listOf(),
     val availableMatchFilterSelected: Boolean = false,
     val selectedMatchCode: String = ""
 )

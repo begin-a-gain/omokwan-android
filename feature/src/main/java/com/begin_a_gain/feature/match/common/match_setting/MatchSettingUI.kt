@@ -173,8 +173,7 @@ fun MatchSettingCommonLayout(
         ) {
             SettingRow(
                 title = "대국 카테고리",
-                value = if (categories.getOrNull(state.selectedCategoryIndex) == null) ""
-                else categories[state.selectedCategoryIndex].second,
+                value = "", // Todo update
                 isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showCategoryBottomSheet = true
@@ -262,7 +261,7 @@ fun MatchSettingCommonLayout(
     if (showCategoryBottomSheet) {
         CategoryBottomSheet(
             sheetState = bottomSheetState,
-            selectedIndex = state.selectedCategoryIndex,
+            selectedCode = state.selectedCategoryCode,
             onDismissRequest = { showCategoryBottomSheet = false },
             onSelected = {
                 showCategoryBottomSheet = false

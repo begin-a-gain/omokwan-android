@@ -98,7 +98,7 @@ fun JoinMatchScreen(
         if (showCategoryBottomSheet) {
             CategoryFilterBottomSheet(
                 sheetState = bottomSheetState,
-                selectedIndexList = state.categoryFilter,
+                selectedCodeList = state.categoryFilter,
                 onDismissRequest = { showCategoryBottomSheet = false }
             ) {
                 showCategoryBottomSheet = false
@@ -233,11 +233,11 @@ fun JoinMatchList(
 @Composable
 fun CategoryFilterBottomSheet(
     sheetState: SheetState,
-    selectedIndexList: List<Int>,
+    selectedCodeList: List<String>,
     onDismissRequest: () -> Unit,
-    onSelected: (List<Int>) -> Unit
+    onSelected: (List<String>) -> Unit
 ) {
-    var currentIndexList by rememberSaveable { mutableStateOf(selectedIndexList) }
+    var currentCodeList by rememberSaveable { mutableStateOf(selectedCodeList) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -247,14 +247,14 @@ fun CategoryFilterBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = currentIndexList
+                selectedCode = listOf()
             ) {
-                if (currentIndexList.contains(it)) {
-                    val newList = currentIndexList.filter { index -> index != it }
-                    currentIndexList = newList
+                if (currentCodeList.contains(it)) {
+                    val newList = currentCodeList.filter { code -> code != it }
+                    currentCodeList = newList
                 } else {
-                    val newList = currentIndexList + listOf(it)
-                    currentIndexList = newList
+                    val newList = currentCodeList + listOf(it)
+                    currentCodeList = newList
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -264,7 +264,7 @@ fun CategoryFilterBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                onSelected(currentIndexList)
+                onSelected(currentCodeList)
             }
         }
     }

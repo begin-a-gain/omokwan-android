@@ -48,7 +48,7 @@ fun CreateMatchScreen(
                 selectedDay = state.selectedDay,
                 maxParticipantsCount = state.maxParticipantsCount,
                 setMaximumParticipants = viewModel::setMaximumParticipants,
-                selectedCategoryIndex = state.selectedCategoryIndex,
+                selectedCategoryCode = state.selectedCategoryCode,
                 setCategory = viewModel::setCategory,
                 alarmOn = state.alarmOn,
                 setAlarmOn = viewModel::setAlarmOn,

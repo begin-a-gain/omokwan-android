@@ -15,7 +15,7 @@ class JoinMatchViewModel @Inject constructor(
     override val container: Container<JoinMatchState, JoinMatchSideEffect> =
         container(JoinMatchState())
 
-    fun setCategoryFilter(indexList: List<Int>) = intent {
+    fun setCategoryFilter(indexList: List<String>) = intent {
         reduce { state.copy(categoryFilter = indexList) }
     }
 

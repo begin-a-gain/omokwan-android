@@ -20,6 +20,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -43,8 +44,8 @@ import com.begin_a_gain.domain.model.match.MatchCategoryItem
 fun MatchCategoryGrid(
     categoryList: List<MatchCategoryItem> = listOf(MatchCategoryItem("1", "Test1", "U+1FAE7")),
     modifier: Modifier = Modifier,
-    selectedIndex: List<Int> = emptyList(),
-    onSelect: (Int) -> Unit = {}
+    selectedCode: List<String> = emptyList(),
+    onSelect: (String) -> Unit = {}
 ) {
     FlowRow(
         modifier = modifier,
@@ -55,9 +56,9 @@ fun MatchCategoryGrid(
             CategoryChip(
                 emoji = EmojiUtil.decodeEmoji(category.emoji),
                 text = category.name,
-                isSelected = selectedIndex.contains(index),
+                isSelected = selectedCode.contains(category.code),
                 onSelect = {
-                    onSelect(index)
+                    onSelect(category.code)
                 }
             )
         }
@@ -107,11 +108,11 @@ fun CategoryChip(
 @Composable
 fun CategoryBottomSheet(
     sheetState: SheetState,
-    selectedIndex: Int,
+    selectedCode: String,
     onDismissRequest: () -> Unit,
-    onSelected: (Int) -> Unit
+    onSelected: (String) -> Unit
 ) {
-    var currentIndex by rememberSaveable { mutableIntStateOf(selectedIndex) }
+    var currentCode by rememberSaveable { mutableStateOf(selectedCode) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -121,9 +122,9 @@ fun CategoryBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = listOf(currentIndex)
+                selectedCode = listOf("1")
             ) {
-                currentIndex = it
+                currentCode = it
             }
             Spacer(modifier = Modifier.weight(1f))
             OButton(
@@ -132,7 +133,7 @@ fun CategoryBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                onSelected(currentIndex)
+                onSelected(currentCode)
             }
         }
     }

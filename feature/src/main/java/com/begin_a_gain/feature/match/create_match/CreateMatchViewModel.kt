@@ -52,10 +52,10 @@ class CreateMatchViewModel @Inject constructor(
         reduce { state.copy(maxParticipantsCount = value) }
     }
 
-    fun setCategory(selectedIndex: Int) = intent {
+    fun setCategory(selectedCode: String) = intent {
         reduce {
             state.copy(
-                selectedCategoryIndex = if (state.selectedCategoryIndex == selectedIndex) -1 else selectedIndex
+                selectedCategoryCode = if (state.selectedCategoryCode == selectedCode) "" else selectedCode
             )
         }
     }

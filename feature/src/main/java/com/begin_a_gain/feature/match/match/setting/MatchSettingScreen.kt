@@ -64,7 +64,7 @@ fun MatchSettingScreen(
                     setMaximumParticipants = {
 
                     },
-                    selectedCategoryIndex = 1,
+                    selectedCategoryCode = "1",
                     setCategory = {
 
                     },
