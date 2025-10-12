@@ -94,14 +94,15 @@ fun OmokwanGraph(
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.popAndNavigate(MatchCategory) },
+                navigateToCreateMatch = { navController.navigate(MatchCategory) },
                 navigateToJoinMatch = { navController.popAndNavigate(JoinMatch) },
                 navigateToMatch = { navController.popAndNavigate(Match) }
             )
         }
 
         composable<MatchCategory> {
-            val matchViewModel: CreateMatchViewModel = hiltViewModel()
+            val backStackEntry = navController.getBackStackEntry(Main)
+            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
             MatchCategoryScreen(
                 viewModel = matchViewModel,
                 navigateToCreateMatch = { navController.popAndNavigate(CreateMatch) },

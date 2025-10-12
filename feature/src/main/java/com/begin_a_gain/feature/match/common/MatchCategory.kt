@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.begin_a_gain.core.util.EmojiUtil
 import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
@@ -34,11 +35,13 @@ import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.oDefaultPadding
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 @Preview(showSystemUi = true)
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MatchCategoryGrid(
+    categoryList: List<MatchCategoryItem> = listOf(MatchCategoryItem("1", "Test1", "U+1FAE7")),
     modifier: Modifier = Modifier,
     selectedIndex: List<Int> = emptyList(),
     onSelect: (Int) -> Unit = {}
@@ -48,10 +51,10 @@ fun MatchCategoryGrid(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        categories.forEachIndexed { index, (emoji, text) ->
+        categoryList.forEachIndexed { index, category ->
             CategoryChip(
-                emoji = emoji,
-                text = text,
+                emoji = EmojiUtil.decodeEmoji(category.emoji),
+                text = category.name,
                 isSelected = selectedIndex.contains(index),
                 onSelect = {
                     onSelect(index)

@@ -50,6 +50,7 @@ fun MatchCategoryScreen(
             Spacer(modifier = Modifier.height(32.dp))
             MatchCategoryGrid(
                 modifier = Modifier.fillMaxWidth(),
+                categoryList = state.categoryList,
                 selectedIndex = listOf(state.selectedCategoryIndex)
             ) {
                 viewModel.setCategory(it)
