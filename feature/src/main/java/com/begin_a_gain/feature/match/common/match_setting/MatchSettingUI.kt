@@ -38,7 +38,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
 import com.begin_a_gain.feature.match.common.MatchCodeDialog
-import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
@@ -173,7 +172,7 @@ fun MatchSettingCommonLayout(
         ) {
             SettingRow(
                 title = "대국 카테고리",
-                value = "", // Todo update
+                value = state.selectedCategory?.name?: "",
                 isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showCategoryBottomSheet = true
@@ -261,7 +260,7 @@ fun MatchSettingCommonLayout(
     if (showCategoryBottomSheet) {
         CategoryBottomSheet(
             sheetState = bottomSheetState,
-            selectedCode = state.selectedCategoryCode,
+            selectedItem = state.selectedCategory ,
             onDismissRequest = { showCategoryBottomSheet = false },
             onSelected = {
                 showCategoryBottomSheet = false

@@ -9,7 +9,7 @@ data class CreateMatchState(
     val selectedDay: List<Boolean> = listOf(false, false, false, false, false, false, false),
     val maxParticipantsCount: Int = 5,
     val categoryList: List<MatchCategoryItem> = emptyList(),
-    val selectedCategoryCode: String = "",
+    val selectCategory: MatchCategoryItem? = null,
     val alarmOn: Boolean = false,
     val alarmHour: Int = 0,
     val alarmMin: Int = 0,

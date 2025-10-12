@@ -1,6 +1,7 @@
 package com.begin_a_gain.feature.match.create_match
 
 import androidx.lifecycle.ViewModel
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,10 +53,10 @@ class CreateMatchViewModel @Inject constructor(
         reduce { state.copy(maxParticipantsCount = value) }
     }
 
-    fun setCategory(selectedCode: String) = intent {
+    fun setCategory(selectedItem: MatchCategoryItem) = intent {
         reduce {
             state.copy(
-                selectedCategoryCode = if (state.selectedCategoryCode == selectedCode) "" else selectedCode
+                selectCategory = if (state.selectCategory == selectedItem) null else selectedItem
             )
         }
     }

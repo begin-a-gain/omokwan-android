@@ -28,6 +28,7 @@ import com.begin_a_gain.design.component.dialog.ODialog
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 @Preview
 @Composable
@@ -64,7 +65,7 @@ fun MatchSettingScreen(
                     setMaximumParticipants = {
 
                     },
-                    selectedCategoryCode = "1",
+                    selectedCategory = null,
                     setCategory = {
 
                     },
