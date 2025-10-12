@@ -172,7 +172,7 @@ fun MatchSettingCommonLayout(
         ) {
             SettingRow(
                 title = "대국 카테고리",
-                value = state.selectedCategory?.name?: "",
+                value = state.selectedCategory?.name?: "선택",
                 isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showCategoryBottomSheet = true

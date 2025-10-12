@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -114,7 +115,7 @@ fun CategoryBottomSheet(
     onDismissRequest: () -> Unit,
     onSelected: (MatchCategoryItem) -> Unit
 ) {
-    var currentCode by rememberSaveable { mutableStateOf(selectedItem) }
+    var currentItem by remember { mutableStateOf(selectedItem) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -124,9 +125,9 @@ fun CategoryBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedItem = if (selectedItem == null) emptyList() else listOf(selectedItem)
+                selectedItem = if (currentItem == null) emptyList() else listOf(currentItem!!)
             ) {
-                currentCode = it
+                currentItem = it
             }
             Spacer(modifier = Modifier.weight(1f))
             OButton(
@@ -135,7 +136,7 @@ fun CategoryBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                currentCode?.let {
+                currentItem?.let {
                     onSelected(it)
                 }
             }

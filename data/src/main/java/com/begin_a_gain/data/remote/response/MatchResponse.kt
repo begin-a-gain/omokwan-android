@@ -8,3 +8,8 @@ data class MatchCategoryItemResponse(
     val category: String,
     val emoji: String
 )
+
+@Serializable
+data class CreateMatchResponse(
+    val matchId: Int
+)

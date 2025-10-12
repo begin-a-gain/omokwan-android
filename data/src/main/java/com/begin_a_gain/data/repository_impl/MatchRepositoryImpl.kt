@@ -3,6 +3,7 @@ package com.begin_a_gain.data.repository_impl
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
 import javax.inject.Inject
@@ -32,6 +33,17 @@ class MatchRepositoryImpl @Inject internal constructor(
                         true
                     }
                 }
+            }
+        )
+    }
+
+    override suspend fun postCreateMatch(request: CreateMatchRequest): Result<Int> {
+        return callApi(
+            call = {
+                matchApi.postMatch(request)
+            },
+            handleResponse = {
+                it?.matchId ?: -1
             }
         )
     }
