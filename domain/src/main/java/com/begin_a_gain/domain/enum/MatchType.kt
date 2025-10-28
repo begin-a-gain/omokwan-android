@@ -1,12 +1,5 @@
 package com.begin_a_gain.domain.enum
 
-enum class MatchStatus {
-    None,
-    Todo,
-    Done,
-    Skip
-}
-
 enum class MatchDayType(val code: Int) {
     Monday(1),
     Tuesday(2),

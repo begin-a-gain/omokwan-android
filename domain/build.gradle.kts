@@ -11,5 +11,5 @@ kotlin {
 dependencies {
     testImplementation(libs.junit)
     implementation(libs.kotlinx.serialization.json)
-    implementation(projects.library.coreModel)
+    implementation(projects.library.coreUtil)
 }

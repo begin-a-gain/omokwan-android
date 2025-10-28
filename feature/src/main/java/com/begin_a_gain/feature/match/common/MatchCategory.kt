@@ -22,14 +22,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.begin_a_gain.core.util.EmojiUtil
+import com.begin_a_gain.util.common.EmojiUtil
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.text.OText
@@ -57,7 +56,7 @@ fun MatchCategoryGrid(
     ) {
         categoryList.forEach { category ->
             CategoryChip(
-                emoji = EmojiUtil.decodeEmoji(category.emoji),
+                emoji = com.begin_a_gain.util.common.EmojiUtil.decodeEmoji(category.emoji),
                 text = category.name,
                 isSelected = selectedItem.contains(category),
                 onSelect = {

@@ -3,9 +3,11 @@ package com.begin_a_gain.data.repository_impl
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.match.MatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.model.type.match.MatchStatus
 import javax.inject.Inject
 
 class MatchRepositoryImpl @Inject internal constructor(
@@ -44,6 +46,30 @@ class MatchRepositoryImpl @Inject internal constructor(
             },
             handleResponse = {
                 it?.matchId ?: -1
+            }
+        )
+    }
+
+    override suspend fun getMyDailyMatchList(date: String): Result<List<MatchItem>> {
+        return callApi(
+            call = {
+                matchApi.getMatch(date)
+            },
+            handleResponse = { response ->
+                response?.map {
+                    MatchItem(
+                        matchId = it.matchId,
+                        name = it.name,
+                        ongoingDays = it.ongoingDays,
+                        participants = it.participants,
+                        maxParticipants = it.maxParticipants,
+                        public = it.public,
+                        status = MatchStatus.getMatchStatus(
+                            date = date,
+                            isCompleted = it.completed
+                        )
+                    )
+                }?: emptyList()
             }
         )
     }

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.core.type.ValidationState
+import com.begin_a_gain.model.type.common.ValidationState
 import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.text.OText
