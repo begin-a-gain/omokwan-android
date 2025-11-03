@@ -18,43 +18,49 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.feature.match.create_match.util.constant.categories
-import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
-import com.begin_a_gain.library.design.component.button.OButton
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.oDefaultPadding
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.begin_a_gain.util.common.EmojiUtil
+import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.oDefaultPadding
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 @Preview(showSystemUi = true)
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MatchCategoryGrid(
     modifier: Modifier = Modifier,
-    selectedIndex: List<Int> = emptyList(),
-    onSelect: (Int) -> Unit = {}
+    categoryViewModel: MatchCategoryViewModel = hiltViewModel(),
+    selectedItem: List<MatchCategoryItem> = emptyList(),
+    onSelect: (MatchCategoryItem) -> Unit = {}
 ) {
+    val categoryList by categoryViewModel.categoryList.collectAsState()
+
     FlowRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        categories.forEachIndexed { index, (emoji, text) ->
+        categoryList.forEach { category ->
             CategoryChip(
-                emoji = emoji,
-                text = text,
-                isSelected = selectedIndex.contains(index),
+                emoji = com.begin_a_gain.util.common.EmojiUtil.decodeEmoji(category.emoji),
+                text = category.name,
+                isSelected = selectedItem.contains(category),
                 onSelect = {
-                    onSelect(index)
+                    onSelect(category)
                 }
             )
         }
@@ -104,11 +110,11 @@ fun CategoryChip(
 @Composable
 fun CategoryBottomSheet(
     sheetState: SheetState,
-    selectedIndex: Int,
+    selectedItem: MatchCategoryItem?,
     onDismissRequest: () -> Unit,
-    onSelected: (Int) -> Unit
+    onSelected: (MatchCategoryItem) -> Unit
 ) {
-    var currentIndex by rememberSaveable { mutableIntStateOf(selectedIndex) }
+    var currentItem by remember { mutableStateOf(selectedItem) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -118,9 +124,9 @@ fun CategoryBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = listOf(currentIndex)
+                selectedItem = if (currentItem == null) emptyList() else listOf(currentItem!!)
             ) {
-                currentIndex = it
+                currentItem = it
             }
             Spacer(modifier = Modifier.weight(1f))
             OButton(
@@ -129,7 +135,9 @@ fun CategoryBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                onSelected(currentIndex)
+                currentItem?.let {
+                    onSelected(it)
+                }
             }
         }
     }

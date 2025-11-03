@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.MatchCategoryGrid
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.button.OTextButton
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OTextButton
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 
 @Composable
 fun MatchCategoryScreen(
@@ -28,7 +28,7 @@ fun MatchCategoryScreen(
 
     OScreen(
         bottomButtonText = "다음",
-        bottomButtonType = if (state.selectedCategoryIndex == -1) ButtonType.Disable else ButtonType.Primary,
+        bottomButtonType = if (state.selectedCategory == null) ButtonType.Disable else ButtonType.Primary,
         onBottomButtonClick = navigateToCreateMatch,
         onBackButtonClick = navigateToMain
     ) {
@@ -50,7 +50,7 @@ fun MatchCategoryScreen(
             Spacer(modifier = Modifier.height(32.dp))
             MatchCategoryGrid(
                 modifier = Modifier.fillMaxWidth(),
-                selectedIndex = listOf(state.selectedCategoryIndex)
+                selectedItem = if (state.selectedCategory == null) emptyList() else listOf(state.selectedCategory!!)
             ) {
                 viewModel.setCategory(it)
             }
@@ -58,6 +58,7 @@ fun MatchCategoryScreen(
             OTextButton(
                 text = "건너뛰기"
             ) {
+                viewModel.setCategory(null)
                 navigateToCreateMatch()
             }
         }

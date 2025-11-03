@@ -36,20 +36,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.button.OIconButton
+import com.begin_a_gain.design.component.image.OImage
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.AppColors
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.advanceShadow
+import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.MyPageScreen
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
-import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
-import com.begin_a_gain.library.design.component.button.OButton
-import com.begin_a_gain.library.design.component.button.OIconButton
-import com.begin_a_gain.library.design.component.image.OImage
-import com.begin_a_gain.library.design.component.image.OImageRes
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.AppColors
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.advanceShadow
-import com.begin_a_gain.library.design.util.noRippleClickable
 import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
 
@@ -58,7 +58,9 @@ import com.begin_a_gain.omokwang.navigation.MyPage
 @Composable
 fun MainGraph(
     navigateToCreateMatch: () -> Unit = {},
-    navigateToJoinMatch: () -> Unit = {}
+    navigateToJoinMatch: () -> Unit = {},
+    navigateToMatch: () -> Unit = {},
+    popBack: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
@@ -161,7 +163,9 @@ fun MainGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<MatchList> {
-                OmokMatchListScreen()
+                OmokMatchListScreen() {
+                    navigateToMatch()
+                }
             }
             composable<MyPage> {
                 MyPageScreen()

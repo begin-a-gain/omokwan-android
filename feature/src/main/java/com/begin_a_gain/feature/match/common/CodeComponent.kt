@@ -20,8 +20,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.library.design.component.dialog.ODialog
-import com.begin_a_gain.library.design.component.text.OTextField
+import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.text.OTextField
 
 @Composable
 fun CodeTextField(

@@ -1,8 +1,10 @@
 package com.begin_a_gain.feature.match.join_match
 
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
+
 data class JoinMatchState(
     val matchList: List<MatchInfo> = testMatchList,
-    val categoryFilter: List<Int> = listOf(),
+    val categoryFilter: List<MatchCategoryItem> = listOf(),
     val availableMatchFilterSelected: Boolean = false,
     val selectedMatchCode: String = ""
 )

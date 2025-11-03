@@ -21,6 +21,7 @@ mviOrbit = "9.0.0"
 # Network / Data
 datastore = "1.1.1"
 securityCrypto = "1.0.0"
+tink = "1.7.0"
 ktor = "2.3.12"
 gson = "2.11.0"
 
@@ -80,6 +81,7 @@ mvi-orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.r
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+google-crypto-tink = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 
 # Network
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -89,6 +91,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 # Serialization
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -150,13 +153,15 @@ data-ktor = [
     "ktor-client-logging",
     "ktor-client-serialization",
     "ktor-serialization-kotlinx-json",
-    "ktor-client-content-negotiation"
+    "ktor-client-content-negotiation",
+    "ktor-client-auth"
 ]
 
 data-local = [
     "androidx-datastore",
     "androidx-datastore-core",
-    "androidx-security-crypto"
+    "androidx-security-crypto",
+    "google-crypto-tink"
 ]
 
 mvi-orbit = [

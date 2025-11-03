@@ -2,19 +2,16 @@ package com.begin_a_gain.feature.match.join_match
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,18 +29,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.MatchCategoryGrid
 import com.begin_a_gain.feature.match.common.MatchCodeDialog
-import com.begin_a_gain.library.design.component.bottom_sheet.OBottomSheet
-import com.begin_a_gain.library.design.component.button.OButton
-import com.begin_a_gain.library.design.component.dialog.ODialog
-import com.begin_a_gain.library.design.component.image.OImage
-import com.begin_a_gain.library.design.component.image.OImageRes
-import com.begin_a_gain.library.design.component.selection.OChip
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
-import com.begin_a_gain.library.design.util.oDefaultPadding
+import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.image.OImage
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.selection.OChip
+import com.begin_a_gain.design.component.text.SearchBar
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.design.util.oDefaultPadding
+import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -96,7 +92,7 @@ fun JoinMatchScreen(
         if (showCategoryBottomSheet) {
             CategoryFilterBottomSheet(
                 sheetState = bottomSheetState,
-                selectedIndexList = state.categoryFilter,
+                selectedItemList = state.categoryFilter,
                 onDismissRequest = { showCategoryBottomSheet = false }
             ) {
                 showCategoryBottomSheet = false
@@ -155,29 +151,11 @@ fun JoinMatchHeader(
     Column(
         modifier = Modifier.oDefaultPadding()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = ColorToken.UI_03.color(), shape = RoundedCornerShape(8.dp))
-                .padding(vertical = 8.dp, horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        SearchBar(
+            keyword = keyword,
+            hint = "대국 이름, 대국방 ID, 방장으로 검색하기"
         ) {
-            OImage(image = OImageRes.Search)
-            Spacer(modifier = Modifier.width(4.dp))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                BasicTextField(
-                    value = keyword,
-                    onValueChange = onKeywordChanged,
-                    singleLine = true
-                )
-                if (keyword.isEmpty()) {
-                    OText(
-                        text = "대국 이름, 대국방 ID, 방장으로 검색하기",
-                        style = OTextStyle.Body1,
-                        color = ColorToken.TEXT_02
-                    )
-                }
-            }
+            onKeywordChanged(it)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -219,16 +197,10 @@ fun JoinMatchList(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorToken.UI_02.color())
-            .padding(
-                start = 20.dp,
-                end = 20.dp
-            )
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(ColorToken.UI_BG.color(), shape = RoundedCornerShape(8.dp)),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(bottom = 60.dp, start = 20.dp, end = 20.dp)
         ) {
             itemsIndexed(
                 items = matchItems
@@ -240,6 +212,12 @@ fun JoinMatchList(
                 ) {
                     onJoinMatchClick(match)
                 }
+                if (index != matchItems.size - 1) {
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .background(ColorToken.UI_BG.color()))
+                }
             }
         }
     }
@@ -249,11 +227,11 @@ fun JoinMatchList(
 @Composable
 fun CategoryFilterBottomSheet(
     sheetState: SheetState,
-    selectedIndexList: List<Int>,
+    selectedItemList: List<MatchCategoryItem>,
     onDismissRequest: () -> Unit,
-    onSelected: (List<Int>) -> Unit
+    onSelected: (List<MatchCategoryItem>) -> Unit
 ) {
-    var currentIndexList by rememberSaveable { mutableStateOf(selectedIndexList) }
+    var currentCodeList by rememberSaveable { mutableStateOf(selectedItemList) }
 
     OBottomSheet(
         title = "대국 카테고리",
@@ -263,14 +241,14 @@ fun CategoryFilterBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedIndex = currentIndexList
+                selectedItem = selectedItemList
             ) {
-                if (currentIndexList.contains(it)) {
-                    val newList = currentIndexList.filter { index -> index != it }
-                    currentIndexList = newList
+                if (currentCodeList.contains(it)) {
+                    val newList = currentCodeList.filter { code -> code != it }
+                    currentCodeList = newList
                 } else {
-                    val newList = currentIndexList + listOf(it)
-                    currentIndexList = newList
+                    val newList = currentCodeList + listOf(it)
+                    currentCodeList = newList
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -280,7 +258,7 @@ fun CategoryFilterBottomSheet(
                     .fillMaxWidth(),
                 text = "확인"
             ) {
-                onSelected(currentIndexList)
+                onSelected(currentCodeList)
             }
         }
     }
