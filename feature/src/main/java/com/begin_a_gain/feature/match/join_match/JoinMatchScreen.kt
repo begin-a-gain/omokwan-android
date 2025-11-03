@@ -41,6 +41,7 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.oDefaultPadding
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.match.MatchInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -83,7 +84,7 @@ fun JoinMatchScreen(
                 matchItems = state.matchList
             ) { match ->
                 selectedMatch = match
-                if (!match.alreadyJoined && match.maximumParticipants != match.currentParticipants) {
+                if (!match.joinable && match.maxParticipants != match.participants) {
                     showJoinMatchDialog = true
                 }
             }
@@ -104,7 +105,7 @@ fun JoinMatchScreen(
             selectedMatch?.let {
                 ODialog(
                     title = "대국에 참여하시겠습니까?",
-                    message = "\'${it.title}\' 대국을 시작해보세요.",
+                    message = "\'${it.name}\' 대국을 시작해보세요.",
                     buttonText = "참여",
                     onButtonClick = { /*TODO*/ },
                     additionalButtonText = "취소",
@@ -112,15 +113,15 @@ fun JoinMatchScreen(
                         showJoinMatchDialog = false
                     }
                 ) {
-                    if (it.isPrivate) {
+                    if (it.public) {
+                        showJoinMatchDialog = false
+                        // Todo : navigate to match
+                    } else {
                         scope.launch {
                             showJoinMatchDialog = false
                             delay(250L)
                             showMatchCodeDialog = true
                         }
-                    } else {
-                        showJoinMatchDialog = false
-                        // Todo : navigate to match
                     }
                 }
             }

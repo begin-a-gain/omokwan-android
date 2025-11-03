@@ -1,6 +1,7 @@
 package com.begin_a_gain.feature.match.join_match
 
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.match.MatchInfo
 
 data class JoinMatchState(
     val matchList: List<MatchInfo> = testMatchList,
@@ -15,92 +16,80 @@ sealed interface JoinMatchSideEffect {
 
 val testMatchList =listOf(
     MatchInfo(
-        id = "",
-        title = "테스트 1",
-        isPrivate = true,
-        maximumParticipants = 5,
-        currentParticipants = 5,
+        matchId = 1,
+        name = "테스트 1",
+        public = true,
+        maxParticipants = 5,
+        participants = 5,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = true
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = true
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 2",
-        isPrivate = false,
-        maximumParticipants = 5,
-        currentParticipants = 3,
+        matchId = 1,
+        name = "테스트 2",
+        public = false,
+        maxParticipants = 5,
+        participants = 3,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = true
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = true
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 3",
-        isPrivate = true,
-        maximumParticipants = 5,
-        currentParticipants = 5,
+        matchId = 1,
+        name = "테스트 3",
+        public = true,
+        maxParticipants = 5,
+        participants = 5,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = false
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = false
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 4",
-        isPrivate = false,
-        maximumParticipants = 5,
-        currentParticipants = 3,
+        matchId = 1,
+        name = "테스트 4",
+        public = false,
+        maxParticipants = 5,
+        participants = 3,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = false
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = false
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 5",
-        isPrivate = true,
-        maximumParticipants = 5,
-        currentParticipants = 3,
+        matchId = 1,
+        name = "테스트 5",
+        public = true,
+        maxParticipants = 5,
+        participants = 3,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = false
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = false
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 6",
-        isPrivate = true,
-        maximumParticipants = 5,
-        currentParticipants = 5,
+        matchId = 1,
+        name = "테스트 6",
+        public = true,
+        maxParticipants = 5,
+        participants = 5,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = false
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = false
     ),
     MatchInfo(
-        id = "",
-        title = "테스트 7",
-        isPrivate = false,
-        maximumParticipants = 5,
-        currentParticipants = 3,
+        matchId = 1,
+        name = "테스트 7",
+        public = false,
+        maxParticipants = 5,
+        participants = 3,
         category = "테스트",
-        date = 10,
-        ownerName = "junyoungleee",
-        alreadyJoined = false
+        ongoingDays = 10,
+        owner = "junyoungleee",
+        joinable = false
     )
-)
-
-data class MatchInfo(
-    val id: String,
-    val title: String,
-    val isPrivate: Boolean,
-    val maximumParticipants: Int,
-    val currentParticipants: Int,
-    val category: String,
-    val date: Int,
-    val ownerName: String,
-    val alreadyJoined: Boolean
 )

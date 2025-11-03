@@ -2,11 +2,13 @@ package com.begin_a_gain.data.remote.api
 
 import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.all
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
+import com.begin_a_gain.data.remote.response.MatchItemResponse
 import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import io.ktor.client.HttpClient
@@ -30,9 +32,15 @@ class MatchApi @Inject constructor(
         }.body<Response<CreateMatchResponse>>()
     }
 
-    suspend fun getMatch(date: String): Response<List<MyDailyMatchResponse>> {
+    suspend fun getMyMatch(date: String): Response<List<MyDailyMatchResponse>> {
         return client.get(ApiEndPoint.Match.get()) {
             parameter("date", date)
+        }.body()
+    }
+
+    suspend fun getAllMatch(): Response<List<MatchItemResponse>> {
+        return client.get(ApiEndPoint.Match.all()) {
+
         }.body()
     }
 }

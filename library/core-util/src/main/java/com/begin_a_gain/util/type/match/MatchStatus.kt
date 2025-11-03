@@ -23,3 +23,18 @@ enum class MatchStatus {
         }
     }
 }
+
+enum class MatchJoinStatus(val value: String) {
+    Joinable("JOINABLE"),
+    NotJoinable("NOT_JOINABLE");
+
+    companion object {
+        fun String.isJoinable(): Boolean {
+            return when {
+                this == Joinable.value -> true
+                this == NotJoinable.value -> false
+                else -> false
+            }
+        }
+    }
+}

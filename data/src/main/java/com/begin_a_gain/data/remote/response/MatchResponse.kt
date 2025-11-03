@@ -24,3 +24,15 @@ data class MyDailyMatchResponse(
     val completed: Boolean,
     val public: Boolean
 )
+
+@Serializable
+data class MatchItemResponse(
+    val matchId: Int,
+    val categoryId: Int,
+    val name: String,
+    val hostName: String,
+    val ongoingDays: Int,
+    val maxParticipants: Int,
+    val joinable: String,
+    val public: Boolean
+)

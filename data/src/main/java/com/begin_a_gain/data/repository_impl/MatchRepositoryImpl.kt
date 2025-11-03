@@ -4,9 +4,11 @@ import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchItem
+import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.isJoinable
 import com.begin_a_gain.model.type.match.MatchStatus
 import javax.inject.Inject
 
@@ -50,14 +52,14 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getMyDailyMatchList(date: String): Result<List<MatchItem>> {
+    override suspend fun getMyDailyMatchList(date: String): Result<List<MyMatchItem>> {
         return callApi(
             call = {
-                matchApi.getMatch(date)
+                matchApi.getMyMatch(date)
             },
             handleResponse = { response ->
                 response?.map {
-                    MatchItem(
+                    MyMatchItem(
                         matchId = it.matchId,
                         name = it.name,
                         ongoingDays = it.ongoingDays,
@@ -70,6 +72,28 @@ class MatchRepositoryImpl @Inject internal constructor(
                         )
                     )
                 }?: emptyList()
+            }
+        )
+    }
+
+    override suspend fun getAllMatchItems(): Result<List<MatchItem>> {
+        return callApi(
+            call = {
+                matchApi.getAllMatch()
+            },
+            handleResponse = { response ->
+                response?.map {
+                    MatchItem(
+                        matchId = it.matchId,
+                        name = it.name,
+                        ongoingDays = it.ongoingDays,
+                        participants = it.maxParticipants,
+                        maxParticipants = it.maxParticipants,
+                        categoryId = it.categoryId,
+                        public = it.public,
+                        joinable = it.joinable.isJoinable()
+                    )
+                }
             }
         )
     }
