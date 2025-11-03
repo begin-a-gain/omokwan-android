@@ -2,7 +2,7 @@ package com.begin_a_gain.feature.sign_up
 
 import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.core.type.ValidationState
+import com.begin_a_gain.model.type.common.ValidationState
 import com.begin_a_gain.domain.exception.SourceException
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.UserRepository

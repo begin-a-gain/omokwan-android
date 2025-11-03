@@ -13,3 +13,14 @@ data class MatchCategoryItemResponse(
 data class CreateMatchResponse(
     val matchId: Int
 )
+
+@Serializable
+data class MyDailyMatchResponse(
+    val matchId: Int,
+    val name: String,
+    val ongoingDays: Int,
+    val participants: Int,
+    val maxParticipants: Int,
+    val completed: Boolean,
+    val public: Boolean
+)

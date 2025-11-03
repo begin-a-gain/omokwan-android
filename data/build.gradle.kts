@@ -39,7 +39,8 @@ android {
 
 dependencies {
 
-    implementation(project(":domain"))
+    implementation(projects.domain)
+    implementation(projects.library.coreUtil)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -50,4 +51,5 @@ dependencies {
     implementation(libs.bundles.data.ktor)
     implementation(libs.bundles.data.local)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.util.jodatime)
 }

@@ -21,9 +21,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.enum.MatchStatus
-import com.begin_a_gain.domain.model.OmokMatch
-import com.begin_a_gain.core.constant.MAX_ROOM_MEMBER
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.OText
@@ -33,10 +30,12 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.domain.model.match.MatchItem
+import com.begin_a_gain.model.type.match.MatchStatus
 
 @Composable
 fun OmokMatchItem(
-    match: OmokMatch,
+    match: MatchItem,
     size: Dp,
     onClickOmokMatch: () -> Unit,
     onClickButton: () -> Unit,
@@ -85,15 +84,15 @@ fun OmokMatchItem(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OImage(
-                    image = if (match.isLocked) OImageRes.Locked else OImageRes.Unlocked,
+                    image = if (match.public) OImageRes.Unlocked else OImageRes.Locked,
                     size = 16.dp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-                OText(text = match.title, style = OTextStyle.Title2)
+                OText(text = match.name, style = OTextStyle.Title2)
                 Spacer(modifier = Modifier.height(6.dp))
-                OText(text = "대국 +${match.date}일 째", style = OTextStyle.Caption)
+                OText(text = "대국 +${match.ongoingDays}일 째", style = OTextStyle.Caption)
                 Spacer(modifier = Modifier.height(2.dp))
-                OText(text = "${match.member}/${com.begin_a_gain.core.constant.MAX_ROOM_MEMBER} 명", style = OTextStyle.Caption)
+                OText(text = "${match.participants}/${match.maxParticipants} 명", style = OTextStyle.Caption)
             }
 
             MatchCheckButton(
@@ -185,14 +184,7 @@ fun OmokMatchItemPreview() {
         MatchStatus.entries.forEach { status ->
             OmokMatchItem(
                 modifier = Modifier.size(192.dp),
-                match = OmokMatch(
-                    id = "",
-                    status = status,
-                    title = "아침 달리기 하기",
-                    date = 1,
-                    member = 1,
-                    isLocked = false,
-                ),
+                match = MatchItem(status = status, name = "Test"),
                 size = 192.dp,
                 onClickOmokMatch = {},
                 onClickButton = {}

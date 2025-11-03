@@ -14,4 +14,5 @@ sealed class ApiEndPoint(val endPoint: String) {
     data object Match : ApiEndPoint("matches")
     fun Match.categories() = this.endPoint + "/categories"
     fun Match.create() = this.endPoint
+    fun Match.get() = this.endPoint
 }

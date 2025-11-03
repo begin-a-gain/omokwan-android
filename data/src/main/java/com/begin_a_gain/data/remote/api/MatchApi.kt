@@ -4,12 +4,15 @@ import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
+import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import javax.inject.Inject
@@ -25,5 +28,11 @@ class MatchApi @Inject constructor(
         return client.post(ApiEndPoint.Match.create()) {
             setBody(createMatchRequest)
         }.body<Response<CreateMatchResponse>>()
+    }
+
+    suspend fun getMatch(date: String): Response<List<MyDailyMatchResponse>> {
+        return client.get(ApiEndPoint.Match.get()) {
+            parameter("date", date)
+        }.body()
     }
 }
