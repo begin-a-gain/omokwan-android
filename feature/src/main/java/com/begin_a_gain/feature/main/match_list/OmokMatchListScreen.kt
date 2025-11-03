@@ -78,7 +78,7 @@ fun OmokMatchListScreen(
         OmokMatchListDateBar(
             date = state.currentDate,
             addDate = { day ->
-                viewModel.addDate(day)
+                viewModel.addDateAndFetchList(day)
             }
         ) {
             showDatePicker = true
@@ -99,7 +99,7 @@ fun OmokMatchListScreen(
                 showDatePicker = false
             }
         ) { selectedDate ->
-            viewModel.setDate(selectedDate)
+            viewModel.setDateAndFetchList(selectedDate)
         }
     }
 }
