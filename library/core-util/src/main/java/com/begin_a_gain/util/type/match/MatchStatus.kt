@@ -26,14 +26,15 @@ enum class MatchStatus {
 
 enum class MatchJoinStatus(val value: String) {
     Joinable("JOINABLE"),
-    NotJoinable("NOT_JOINABLE");
+    NotJoinable("NOT_JOINABLE"),
+    InProgress("IN_PROGRESS");
 
     companion object {
-        fun String.isJoinable(): Boolean {
+        fun String.toMatchJoinStatus(): MatchJoinStatus {
             return when {
-                this == Joinable.value -> true
-                this == NotJoinable.value -> false
-                else -> false
+                this == Joinable.value -> Joinable
+                this == NotJoinable.value -> NotJoinable
+                else -> InProgress
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.begin_a_gain.data.repository_impl
 
-import android.util.Log
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
@@ -9,7 +8,7 @@ import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
-import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.isJoinable
+import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
 import com.begin_a_gain.model.type.match.MatchStatus
 import javax.inject.Inject
 
@@ -97,7 +96,7 @@ class MatchRepositoryImpl @Inject internal constructor(
                         category = category,
                         public = it.public,
                         owner = it.hostName,
-                        joinable = it.joinable.isJoinable()
+                        status = it.joinable.toMatchJoinStatus()
                     )
                 }?: emptyList()
             }

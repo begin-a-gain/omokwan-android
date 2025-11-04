@@ -1,10 +1,12 @@
 package com.begin_a_gain.feature.match.join_match
 
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
 
 data class JoinMatchState(
-    val matchList: List<MatchInfo> = testMatchList,
+    val isLoading: Boolean = false,
+    val matchList: List<MatchInfo> = tmpMatchList,
     val categoryFilter: List<MatchCategoryItem> = listOf(),
     val availableMatchFilterSelected: Boolean = false,
     val selectedMatchCode: String = ""
@@ -14,82 +16,9 @@ sealed interface JoinMatchSideEffect {
 
 }
 
-val testMatchList =listOf(
+val tmpMatchList = (1..10).map {
     MatchInfo(
-        matchId = 1,
-        name = "테스트 1",
-        public = true,
-        maxParticipants = 5,
-        participants = 5,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = true
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 2",
-        public = false,
-        maxParticipants = 5,
-        participants = 3,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = true
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 3",
-        public = true,
-        maxParticipants = 5,
-        participants = 5,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = false
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 4",
-        public = false,
-        maxParticipants = 5,
-        participants = 3,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = false
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 5",
-        public = true,
-        maxParticipants = 5,
-        participants = 3,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = false
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 6",
-        public = true,
-        maxParticipants = 5,
-        participants = 5,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = false
-    ),
-    MatchInfo(
-        matchId = 1,
-        name = "테스트 7",
-        public = false,
-        maxParticipants = 5,
-        participants = 3,
-        category = MatchCategoryItem("", "테스트", ""),
-        ongoingDays = 10,
-        owner = "junyoungleee",
-        joinable = false
+        name = LoremIpsum(10).values.first(),
+        owner = LoremIpsum(10).values.first().take(10)
     )
-)
+}

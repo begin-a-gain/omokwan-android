@@ -42,6 +42,7 @@ import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.oDefaultPadding
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.model.type.match.MatchJoinStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -81,10 +82,11 @@ fun JoinMatchScreen(
                 }
             )
             JoinMatchList(
+                isLoading = state.isLoading,
                 matchItems = state.matchList
             ) { match ->
                 selectedMatch = match
-                if (!match.joinable && match.maxParticipants != match.participants) {
+                if (match.status == MatchJoinStatus.Joinable) {
                     showJoinMatchDialog = true
                 }
             }
@@ -191,7 +193,8 @@ fun JoinMatchHeader(
 @Preview
 @Composable
 fun JoinMatchList(
-    matchItems: List<MatchInfo> = testMatchList,
+    isLoading: Boolean = false,
+    matchItems: List<MatchInfo> = tmpMatchList,
     onJoinMatchClick: (MatchInfo) -> Unit = {}
 ) {
     Column(
@@ -201,15 +204,16 @@ fun JoinMatchList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(bottom = 60.dp, start = 20.dp, end = 20.dp)
+            contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp, start = 20.dp, end = 20.dp)
         ) {
             itemsIndexed(
                 items = matchItems
             ) { index, match ->
                 JoinMatchItem(
+                    isLoading = isLoading,
                     match = match,
                     isFirst = index == 0,
-                    isLast = index == testMatchList.size - 1
+                    isLast = index == matchItems.size - 1
                 ) {
                     onJoinMatchClick(match)
                 }

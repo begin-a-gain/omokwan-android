@@ -1,5 +1,6 @@
 package com.begin_a_gain.domain.model.match
 
+import com.begin_a_gain.model.type.match.MatchJoinStatus
 import com.begin_a_gain.model.type.match.MatchStatus
 import kotlinx.serialization.Serializable
 
@@ -23,6 +24,6 @@ data class MatchInfo(
     val maxParticipants: Int = 5,
     val category: MatchCategoryItem? = MatchCategoryItem("", "", ""),
     val public: Boolean = true,
-    val joinable: Boolean = true,
+    val status: MatchJoinStatus = MatchJoinStatus.Joinable,
     val owner: String = ""
 )
