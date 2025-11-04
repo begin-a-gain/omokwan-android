@@ -26,6 +26,11 @@ data class MyDailyMatchResponse(
 )
 
 @Serializable
+data class MatchListResponse(
+    val matchList: List<MatchItemResponse>
+)
+
+@Serializable
 data class MatchItemResponse(
     val matchId: Int,
     val categoryId: Int,
@@ -33,6 +38,7 @@ data class MatchItemResponse(
     val hostName: String,
     val ongoingDays: Int,
     val maxParticipants: Int,
+    val participants: Int,
     val joinable: String,
     val public: Boolean
 )

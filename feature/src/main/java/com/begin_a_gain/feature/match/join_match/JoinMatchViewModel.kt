@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.join_match
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
@@ -35,14 +36,15 @@ class JoinMatchViewModel @Inject constructor(
         reduce { state.copy(selectedMatchCode = code) }
     }
 
-    fun fetchMatchList() {
+    private fun fetchMatchList() {
         viewModelScope.launch {
             matchRepository.getAllMatchItems()
                 .onSuccess {
+                    Log.d("junyoung", "list : $it")
                     intent { reduce { state.copy(matchList = it) } }
                 }
                 .onFailure {
-
+                    Log.d("junyoung", "onFailure : $it")
                 }
         }
     }

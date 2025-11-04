@@ -9,6 +9,7 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
 import com.begin_a_gain.data.remote.response.MatchItemResponse
+import com.begin_a_gain.data.remote.response.MatchListResponse
 import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import io.ktor.client.HttpClient
@@ -38,7 +39,7 @@ class MatchApi @Inject constructor(
         }.body()
     }
 
-    suspend fun getAllMatch(): Response<List<MatchItemResponse>> {
+    suspend fun getAllMatch(): Response<MatchListResponse> {
         return client.get(ApiEndPoint.Match.all()) {
 
         }.body()

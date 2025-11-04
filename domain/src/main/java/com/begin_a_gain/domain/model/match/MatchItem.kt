@@ -21,7 +21,7 @@ data class MatchInfo(
     val ongoingDays: Int = 0,
     val participants: Int = 0,
     val maxParticipants: Int = 5,
-    val category: String = "",
+    val category: MatchCategoryItem? = MatchCategoryItem("", "", ""),
     val public: Boolean = true,
     val joinable: Boolean = true,
     val owner: String = ""

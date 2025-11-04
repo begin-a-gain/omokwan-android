@@ -1,9 +1,10 @@
 package com.begin_a_gain.data.repository_impl
 
+import android.util.Log
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
-import com.begin_a_gain.domain.model.match.MatchItem
+import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -76,24 +77,29 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getAllMatchItems(): Result<List<MatchItem>> {
+    override suspend fun getAllMatchItems(): Result<List<MatchInfo>> {
         return callApi(
             call = {
                 matchApi.getAllMatch()
             },
             handleResponse = { response ->
-                response?.map {
-                    MatchItem(
+                val list = response?.matchList
+                list?.map {
+                    val category = localRepository.getCategoryList().firstOrNull { category ->
+                        category.code.toInt() == it.categoryId
+                    }
+                    MatchInfo(
                         matchId = it.matchId,
                         name = it.name,
                         ongoingDays = it.ongoingDays,
-                        participants = it.maxParticipants,
+                        participants = it.participants,
                         maxParticipants = it.maxParticipants,
-                        categoryId = it.categoryId,
+                        category = category,
                         public = it.public,
+                        owner = it.hostName,
                         joinable = it.joinable.isJoinable()
                     )
-                }
+                }?: emptyList()
             }
         )
     }

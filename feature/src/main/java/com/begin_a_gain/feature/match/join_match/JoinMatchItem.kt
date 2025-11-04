@@ -28,6 +28,7 @@ import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.domain.model.match.MatchInfo
 
 @Composable
 fun JoinMatchItem(
@@ -61,11 +62,11 @@ fun JoinMatchItem(
                 horizontalArrangement = Arrangement.Start
             ) {
                 OImage(
-                    image = if (match.isPrivate) OImageRes.Locked else OImageRes.Unlocked,
+                    image = if (match.public) OImageRes.Unlocked else OImageRes.Locked,
                     size = 16.dp
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                OText(text = match.title, style = OTextStyle.Title2)
+                OText(text = match.name, style = OTextStyle.Title2)
             }
 
             Row(
@@ -73,7 +74,7 @@ fun JoinMatchItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OText(
-                    text = "${match.currentParticipants}/${match.maximumParticipants} 명",
+                    text = "${match.participants}/${match.maxParticipants} 명",
                     style = OTextStyle.Caption
                 )
                 OHorizontalDivider(
@@ -81,94 +82,27 @@ fun JoinMatchItem(
                         .padding(vertical = 2.dp)
                         .height(12.dp), colorToken = ColorToken.STROKE_02
                 )
-                OText(text = "#${match.category}", style = OTextStyle.Caption)
-                OHorizontalDivider(
-                    modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .height(12.dp), colorToken = ColorToken.STROKE_02
-                )
-                OText(text = "대국 +${match.date}일 째", style = OTextStyle.Caption)
+                match.category?.let { category ->
+                    OText(text = "#${category.name}", style = OTextStyle.Caption)
+                    OHorizontalDivider(
+                        modifier = Modifier
+                            .padding(vertical = 2.dp)
+                            .height(12.dp), colorToken = ColorToken.STROKE_02
+                    )
+                }
+                OText(text = "대국 +${match.ongoingDays}일 째", style = OTextStyle.Caption)
             }
 
-            OText(text = "${match.ownerName}님의 방", style = OTextStyle.Caption)
+            OText(text = "${match.owner}님의 방", style = OTextStyle.Caption)
         }
 
         Spacer(modifier = Modifier.weight(1f))
         OButton(
-            text = if (match.alreadyJoined) "참여중" else "참여하기",
-            type = if (!match.alreadyJoined && match.maximumParticipants != match.currentParticipants) ButtonType.Primary else ButtonType.Disable,
+            text = if (match.joinable) "참여하기" else "참여중",
+            type = if (!match.joinable && match.maxParticipants != match.participants) ButtonType.Primary else ButtonType.Disable,
             size = ButtonSize.Medium
         ) {
             onJoinMatchClick()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun JoinMatchItemPreview() {
-    OScreen {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(ColorToken.UI_02.color())
-        ) {
-            JoinMatchItem(
-                match = MatchInfo(
-                    id = "",
-                    title = "테스트 1",
-                    isPrivate = true,
-                    maximumParticipants = 5,
-                    currentParticipants = 5,
-                    category = "테스트",
-                    date = 10,
-                    ownerName = "junyoungleee",
-                    alreadyJoined = true
-                )
-            )
-
-            JoinMatchItem(
-                match = MatchInfo(
-                    id = "",
-                    title = "테스트 2",
-                    isPrivate = false,
-                    maximumParticipants = 5,
-                    currentParticipants = 3,
-                    category = "테스트",
-                    date = 10,
-                    ownerName = "junyoungleee",
-                    alreadyJoined = true
-                )
-            )
-
-            JoinMatchItem(
-                match = MatchInfo(
-                    id = "",
-                    title = "테스트 3",
-                    isPrivate = true,
-                    maximumParticipants = 5,
-                    currentParticipants = 5,
-                    category = "테스트",
-                    date = 10,
-                    ownerName = "junyoungleee",
-                    alreadyJoined = false
-                )
-            )
-
-            JoinMatchItem(
-                match = MatchInfo(
-                    id = "",
-                    title = "테스트 4",
-                    isPrivate = false,
-                    maximumParticipants = 5,
-                    currentParticipants = 3,
-                    category = "테스트",
-                    date = 10,
-                    ownerName = "junyoungleee",
-                    alreadyJoined = false,
-                ),
-                isLast = true
-            )
         }
     }
 }
