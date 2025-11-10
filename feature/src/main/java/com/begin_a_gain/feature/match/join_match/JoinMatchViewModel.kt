@@ -2,6 +2,8 @@ package com.begin_a_gain.feature.match.join_match
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.begin_a_gain.data.remote.paging.PagingRepository
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,14 +15,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JoinMatchViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
+    private val matchRepository: MatchRepository,
+    private val pagingRepository: PagingRepository
 ) : ViewModel(), ContainerHost<JoinMatchState, JoinMatchSideEffect> {
 
     override val container: Container<JoinMatchState, JoinMatchSideEffect> =
         container(JoinMatchState())
 
+    val matchPagingData = pagingRepository.getMatchPageItems().cachedIn(viewModelScope)
+
     init {
-        fetchMatchList()
+//        fetchMatchList()
     }
 
     fun setCategoryFilter(indexList: List<MatchCategoryItem>) = intent {

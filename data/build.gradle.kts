@@ -12,7 +12,7 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 29
@@ -52,4 +52,5 @@ dependencies {
     implementation(libs.bundles.data.local)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.util.jodatime)
+    implementation(libs.bundles.android.paging)
 }

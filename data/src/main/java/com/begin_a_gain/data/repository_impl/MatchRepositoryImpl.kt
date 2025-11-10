@@ -2,6 +2,7 @@ package com.begin_a_gain.data.repository_impl
 
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
+import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MyMatchItem
@@ -79,7 +80,7 @@ class MatchRepositoryImpl @Inject internal constructor(
     override suspend fun getAllMatchItems(): Result<List<MatchInfo>> {
         return callApi(
             call = {
-                matchApi.getAllMatch()
+                matchApi.getAllMatches()
             },
             handleResponse = { response ->
                 val list = response?.matchList
@@ -100,6 +101,31 @@ class MatchRepositoryImpl @Inject internal constructor(
                     )
                 }?: emptyList()
             }
+        )
+    }
+
+    override suspend fun getAllMatchPagingItems(pageSize: Int): PageResult<MatchInfo> {
+        val response = matchApi.getAllMatchesPaging(pageSize)
+        val matchList = response.matchList?.map {
+            val category = localRepository.getCategoryList().firstOrNull { category ->
+                category.code.toInt() == it.categoryId
+            }
+            MatchInfo(
+                matchId = it.matchId,
+                name = it.name,
+                ongoingDays = it.ongoingDays,
+                participants = it.participants,
+                maxParticipants = it.maxParticipants,
+                category = category,
+                public = it.public,
+                owner = it.hostName,
+                status = it.joinable.toMatchJoinStatus()
+            )
+        }?: emptyList()
+
+        return PageResult(
+            items = matchList,
+            hasNext = response.hasNext ?: false
         )
     }
 }

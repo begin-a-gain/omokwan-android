@@ -12,7 +12,7 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.feature"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 29
@@ -48,6 +48,7 @@ dependencies {
     implementation(projects.library.core)
     implementation(projects.library.coreUtil)
     implementation(projects.domain)
+    implementation(projects.data)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -59,6 +60,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
     implementation(libs.bundles.android.lifecycle)
+    implementation(libs.bundles.android.paging)
     ksp(libs.di.google.hilt.compiler)
     implementation(libs.bundles.di.hilt)
     implementation(libs.bundles.mvi.orbit)

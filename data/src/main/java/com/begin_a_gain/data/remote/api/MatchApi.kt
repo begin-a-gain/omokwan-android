@@ -8,7 +8,6 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
-import com.begin_a_gain.data.remote.response.MatchItemResponse
 import com.begin_a_gain.data.remote.response.MatchListResponse
 import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
@@ -39,9 +38,16 @@ class MatchApi @Inject constructor(
         }.body()
     }
 
-    suspend fun getAllMatch(): Response<MatchListResponse> {
-        return client.get(ApiEndPoint.Match.all()) {
+    suspend fun getAllMatches(
+    ): Response<MatchListResponse> {
+        return client.get(ApiEndPoint.Match.all()) {}.body()
+    }
 
+    suspend fun getAllMatchesPaging(
+        pageSize: Int = 10
+    ): MatchListResponse {
+        return client.get(ApiEndPoint.Match.all()) {
+            parameter("pageSize", pageSize)
         }.body()
     }
 }

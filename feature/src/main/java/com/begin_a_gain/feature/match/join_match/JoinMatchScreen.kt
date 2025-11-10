@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -27,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.feature.match.common.MatchCategoryGrid
-import com.begin_a_gain.feature.match.common.MatchCodeDialog
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.dialog.ODialog
@@ -42,6 +41,8 @@ import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.oDefaultPadding
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.feature.match.common.MatchCategoryGrid
+import com.begin_a_gain.feature.match.common.MatchCodeDialog
 import com.begin_a_gain.model.type.match.MatchJoinStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,21 +53,25 @@ import kotlinx.coroutines.launch
 fun JoinMatchScreen(
     viewModel: JoinMatchViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(true)
+
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    var keyword by rememberSaveable { mutableStateOf("") }
+    val matchPagingItems = viewModel.matchPagingData.collectAsLazyPagingItems()
+
+    var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showJoinMatchDialog by rememberSaveable { mutableStateOf(false) }
+    var showMatchCodeDialog by rememberSaveable { mutableStateOf(false) }
+    var selectedMatch by remember {
+        mutableStateOf<MatchInfo?>(null)
+    }
+
     OScreen(
         title = "대국 참여하기",
         useDefaultPadding = false
     ) {
-        val scope = rememberCoroutineScope()
-        val bottomSheetState = rememberModalBottomSheetState(true)
 
-        val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
-        var keyword by rememberSaveable { mutableStateOf("") }
-        var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
-        var showJoinMatchDialog by rememberSaveable { mutableStateOf(false) }
-        var showMatchCodeDialog by rememberSaveable { mutableStateOf(false) }
-        var selectedMatch by remember {
-            mutableStateOf<MatchInfo?>(null)
-        }
 
         Column {
             JoinMatchHeader(
@@ -83,7 +88,7 @@ fun JoinMatchScreen(
             )
             JoinMatchList(
                 isLoading = state.isLoading,
-                matchItems = state.matchList
+                matchItems = matchPagingItems
             ) { match ->
                 selectedMatch = match
                 if (match.status == MatchJoinStatus.Joinable) {
@@ -190,13 +195,13 @@ fun JoinMatchHeader(
     }
 }
 
-@Preview
 @Composable
 fun JoinMatchList(
     isLoading: Boolean = false,
-    matchItems: List<MatchInfo> = tmpMatchList,
+    matchItems: LazyPagingItems<MatchInfo>,
     onJoinMatchClick: (MatchInfo) -> Unit = {}
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -206,23 +211,25 @@ fun JoinMatchList(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp, start = 20.dp, end = 20.dp)
         ) {
-            itemsIndexed(
-                items = matchItems
-            ) { index, match ->
-                JoinMatchItem(
-                    isLoading = isLoading,
-                    match = match,
-                    isFirst = index == 0,
-                    isLast = index == matchItems.size - 1
-                ) {
-                    onJoinMatchClick(match)
+            items(matchItems.itemCount) { index ->
+                matchItems[index]?.let { match ->
+                    JoinMatchItem(
+                        isLoading = isLoading,
+                        match = match,
+                        isFirst =
+                    ) {
+                        onJoinMatchClick(match)
+                    }
+                    if (index != matchItems.itemCount - 1) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp)
+                                .background(ColorToken.UI_BG.color())
+                        )
+                    }
                 }
-                if (index != matchItems.size - 1) {
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .background(ColorToken.UI_BG.color()))
-                }
+
             }
         }
     }

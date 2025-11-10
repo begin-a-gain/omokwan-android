@@ -27,7 +27,8 @@ data class MyDailyMatchResponse(
 
 @Serializable
 data class MatchListResponse(
-    val matchList: List<MatchItemResponse>
+    val matchList: List<MatchItemResponse>?,
+    val hasNext: Boolean?
 )
 
 @Serializable

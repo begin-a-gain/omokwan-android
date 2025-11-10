@@ -14,7 +14,7 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.omokwang"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.begin_a_gain.omokwang"
