@@ -216,7 +216,7 @@ fun JoinMatchList(
                     JoinMatchItem(
                         isLoading = isLoading,
                         match = match,
-                        isFirst =
+                        isFirst = true
                     ) {
                         onJoinMatchClick(match)
                     }

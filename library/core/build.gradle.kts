@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.begin_a_gain.core"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = 29

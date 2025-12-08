@@ -12,7 +12,7 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.data"
-    compileSdk = 35
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         minSdk = 29
