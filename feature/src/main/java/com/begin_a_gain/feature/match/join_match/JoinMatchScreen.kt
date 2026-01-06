@@ -215,7 +215,8 @@ fun JoinMatchList(
                     JoinMatchItem(
                         isLoading = isLoading,
                         match = match,
-                        isFirst = true
+                        isFirst = index == 0,
+                        isLast = index == matchItems.itemCount - 1
                     ) {
                         onJoinMatchClick(match)
                     }
