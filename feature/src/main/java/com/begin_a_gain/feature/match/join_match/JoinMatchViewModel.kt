@@ -9,6 +9,12 @@ import com.begin_a_gain.data.remote.paging.MatchPagingSource
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.blockingIntent
@@ -18,9 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class JoinMatchViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : ViewModel(), ContainerHost<JoinMatchState, JoinMatchSideEffect> {
+) : ViewModel(), ContainerHost<JoinMatchState, Nothing> {
 
-    override val container: Container<JoinMatchState, JoinMatchSideEffect> =
+    override val container: Container<JoinMatchState, Nothing> =
         container(JoinMatchState())
 
     private val pagingConfig = PagingConfig(
@@ -28,13 +34,28 @@ class JoinMatchViewModel @Inject constructor(
         initialLoadSize = 10
     )
 
-    val matchPagingData = Pager(
-            config = pagingConfig,
-            pagingSourceFactory = {
-                MatchPagingSource(matchRepository)
-            }
-        ).flow
-        .cachedIn(viewModelScope)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val matchPagingData = container.stateFlow
+        .map { Triple(it.keyword, it.availableMatchFilterSelected, it.categoryFilter) }
+        .distinctUntilChanged()
+        .debounce(500L)
+        .flatMapLatest { (query, joinable, category) ->
+            Pager(
+                config = pagingConfig,
+                pagingSourceFactory = {
+                    MatchPagingSource(
+                        matchRepository,
+                        category = category.map { it.code.toInt() },
+                        joinable = joinable,
+                        keyword = query
+                    )
+                }
+            ).flow
+        }.cachedIn(viewModelScope)
+
+    fun setKeyword(value: String) = blockingIntent {
+        reduce { state.copy(keyword = value) }
+    }
 
     fun setCategoryFilter(indexList: List<MatchCategoryItem>) = intent {
         reduce { state.copy(categoryFilter = indexList) }

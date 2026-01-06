@@ -77,8 +77,14 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getAllMatchPagingItems(pageNumber:Int, pageSize: Int): PageResult<MatchInfo> {
-        val response = matchApi.getAllMatchesPaging(pageNumber, pageSize)
+    override suspend fun getAllMatchPagingItems(
+        pageNumber:Int,
+        pageSize: Int,
+        category: List<Int>,
+        joinable: Boolean,
+        keyword: String
+    ): PageResult<MatchInfo> {
+        val response = matchApi.getAllMatchesPaging(pageNumber, pageSize, category, joinable, keyword)
         val matchList = response.data?.matchList?.map {
             val category = localRepository.getCategoryList().firstOrNull { category ->
                 category.code.toInt() == it.categoryId

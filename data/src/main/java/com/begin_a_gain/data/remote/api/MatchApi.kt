@@ -45,11 +45,21 @@ class MatchApi @Inject constructor(
 
     suspend fun getAllMatchesPaging(
         pageNumber: Int = 1,
-        pageSize: Int = 10
+        pageSize: Int = 10,
+        category: List<Int>,
+        joinable: Boolean,
+        keyword: String
     ): Response<MatchListResponse> {
         return client.get(ApiEndPoint.Match.all()) {
             parameter("pageNumber", pageNumber)
             parameter("pageSize", pageSize)
+            if (category.isNotEmpty()) {
+                parameter("category", category.joinToString(","))
+            }
+            if (joinable) {
+                parameter("joinable", true)
+            }
+            parameter("keyword", keyword)
         }.body()
     }
 }

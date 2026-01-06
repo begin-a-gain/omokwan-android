@@ -9,7 +9,10 @@ import com.begin_a_gain.domain.repository.MatchRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MatchPagingSource(
-    private val matchRepository: MatchRepository
+    private val matchRepository: MatchRepository,
+    private val category: List<Int> = emptyList(),
+    private val joinable: Boolean = false,
+    private val keyword: String = ""
 ) : PagingSource<Int, MatchInfo>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MatchInfo> {
@@ -17,7 +20,7 @@ class MatchPagingSource(
         val pageSize = params.loadSize
 
         return try {
-            val response = matchRepository.getAllMatchPagingItems(pageNumber, pageSize)
+            val response = matchRepository.getAllMatchPagingItems(pageNumber, pageSize, category, joinable, keyword)
             LoadResult.Page(
                 data = response.items,
                 prevKey = if (pageNumber == 1) null else pageNumber - 1,

@@ -56,7 +56,7 @@ fun MatchCategoryGrid(
     ) {
         categoryList.forEach { category ->
             CategoryChip(
-                emoji = com.begin_a_gain.util.common.EmojiUtil.decodeEmoji(category.emoji),
+                emoji = EmojiUtil.decodeEmoji(category.emoji),
                 text = category.name,
                 isSelected = selectedItem.contains(category),
                 onSelect = {

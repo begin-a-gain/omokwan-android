@@ -33,6 +33,7 @@ import com.begin_a_gain.design.component.LoadingIndicator
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.selection.OChip
@@ -59,7 +60,6 @@ fun JoinMatchScreen(
     val bottomSheetState = rememberModalBottomSheetState(true)
 
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
-    var keyword by rememberSaveable { mutableStateOf("") }
     val matchPagingItems = viewModel.matchPagingData.collectAsLazyPagingItems()
 
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -69,14 +69,22 @@ fun JoinMatchScreen(
         mutableStateOf<MatchInfo?>(null)
     }
 
+    when (matchPagingItems.loadState.refresh) {
+        is LoadState.Loading -> {
+            ProgressBar()
+        }
+
+        else -> {}
+    }
+
     OScreen(
         title = "대국 참여하기",
         useDefaultPadding = false
     ) {
         Column {
             JoinMatchHeader(
-                keyword = keyword,
-                onKeywordChanged = { keyword = it },
+                keyword = state.keyword,
+                onKeywordChanged = { viewModel.setKeyword(it) },
                 isAvailableMatchFilterSelected = state.availableMatchFilterSelected,
                 selectedCategoryCount = state.categoryFilter.size,
                 onAvailableMatchChipClick = {
@@ -266,7 +274,7 @@ fun CategoryFilterBottomSheet(
         Column {
             MatchCategoryGrid(
                 modifier = Modifier.oDefaultPadding(),
-                selectedItem = selectedItemList
+                selectedItem = currentCodeList
             ) {
                 if (currentCodeList.contains(it)) {
                     val newList = currentCodeList.filter { code -> code != it }

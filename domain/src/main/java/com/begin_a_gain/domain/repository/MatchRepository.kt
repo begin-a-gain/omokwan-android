@@ -9,5 +9,11 @@ interface MatchRepository {
     suspend fun getMatchCategoryList(): Result<Boolean>
     suspend fun postCreateMatch(request: CreateMatchRequest): Result<Int>
     suspend fun getMyDailyMatchList(date: String): Result<List<MyMatchItem>>
-    suspend fun getAllMatchPagingItems(pageNumber: Int, pageSize: Int): PageResult<MatchInfo>
+    suspend fun getAllMatchPagingItems(
+        pageNumber: Int,
+        pageSize: Int,
+        category: List<Int>,
+        joinable: Boolean,
+        keyword: String
+    ): PageResult<MatchInfo>
 }
