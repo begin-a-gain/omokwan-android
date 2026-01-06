@@ -44,9 +44,11 @@ class MatchApi @Inject constructor(
     }
 
     suspend fun getAllMatchesPaging(
+        pageNumber: Int = 1,
         pageSize: Int = 10
-    ): MatchListResponse {
+    ): Response<MatchListResponse> {
         return client.get(ApiEndPoint.Match.all()) {
+            parameter("pageNumber", pageNumber)
             parameter("pageSize", pageSize)
         }.body()
     }

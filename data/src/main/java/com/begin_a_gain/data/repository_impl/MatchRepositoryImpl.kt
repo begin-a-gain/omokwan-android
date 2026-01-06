@@ -77,36 +77,9 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getAllMatchItems(): Result<List<MatchInfo>> {
-        return callApi(
-            call = {
-                matchApi.getAllMatches()
-            },
-            handleResponse = { response ->
-                val list = response?.matchList
-                list?.map {
-                    val category = localRepository.getCategoryList().firstOrNull { category ->
-                        category.code.toInt() == it.categoryId
-                    }
-                    MatchInfo(
-                        matchId = it.matchId,
-                        name = it.name,
-                        ongoingDays = it.ongoingDays,
-                        participants = it.participants,
-                        maxParticipants = it.maxParticipants,
-                        category = category,
-                        public = it.public,
-                        owner = it.hostName,
-                        status = it.joinable.toMatchJoinStatus()
-                    )
-                }?: emptyList()
-            }
-        )
-    }
-
-    override suspend fun getAllMatchPagingItems(pageSize: Int): PageResult<MatchInfo> {
-        val response = matchApi.getAllMatchesPaging(pageSize)
-        val matchList = response.matchList?.map {
+    override suspend fun getAllMatchPagingItems(pageNumber:Int, pageSize: Int): PageResult<MatchInfo> {
+        val response = matchApi.getAllMatchesPaging(pageNumber, pageSize)
+        val matchList = response.data?.matchList?.map {
             val category = localRepository.getCategoryList().firstOrNull { category ->
                 category.code.toInt() == it.categoryId
             }
@@ -125,7 +98,7 @@ class MatchRepositoryImpl @Inject internal constructor(
 
         return PageResult(
             items = matchList,
-            hasNext = response.hasNext ?: false
+            hasNext = response.data?.hasNext ?: false
         )
     }
 }

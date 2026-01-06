@@ -26,8 +26,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.begin_a_gain.design.component.LoadingIndicator
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.dialog.ODialog
@@ -71,8 +73,6 @@ fun JoinMatchScreen(
         title = "대국 참여하기",
         useDefaultPadding = false
     ) {
-
-
         Column {
             JoinMatchHeader(
                 keyword = keyword,
@@ -201,7 +201,6 @@ fun JoinMatchList(
     matchItems: LazyPagingItems<MatchInfo>,
     onJoinMatchClick: (MatchInfo) -> Unit = {}
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -229,7 +228,20 @@ fun JoinMatchList(
                         )
                     }
                 }
+            }
 
+            when (matchItems.loadState.append) {
+                is LoadState.Loading -> {
+                    item {
+                        LoadingIndicator()
+                    }
+                }
+
+                is LoadState.Error -> {
+
+                }
+
+                else -> {}
             }
         }
     }
