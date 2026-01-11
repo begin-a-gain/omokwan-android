@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.MatchPagingSource
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,6 +56,19 @@ class JoinMatchViewModel @Inject constructor(
             ).flow
         }.cachedIn(viewModelScope)
 
+    fun setSkeletonLoading(value: Boolean) = intent {
+        reduce { state.copy(loadingCount = if (value) 1 else 0) }
+    }
+
+    fun setSelectedMatch(match: MatchInfo?) = intent {
+        reduce {
+            state.copy(
+                selectedMatch = match,
+                isMatchPasswordValid = true
+            )
+        }
+    }
+
     fun setKeyword(value: String) = blockingIntent {
         reduce { state.copy(keyword = value) }
     }
@@ -67,33 +81,31 @@ class JoinMatchViewModel @Inject constructor(
         reduce { state.copy(availableMatchFilterSelected = !state.availableMatchFilterSelected) }
     }
 
-    fun setCode(code: String) = blockingIntent {
-        reduce {
-            state.copy(
-                selectedMatchCode = code,
-                isMatchPasswordValid = true
-            )
-        }
-    }
-
-    fun joinMatch(matchId: Int, password: String = "") {
-        viewModelScope.withLoading {
-            matchRepository.postJoinMatch(
-                matchId = matchId,
-                request = JoinMatchRequest(password)
-            ).onSuccess { isJoined ->
-                if (isJoined) {
+    fun joinMatch(matchId: Int, password: String = "") = intent {
+        reduce { state.copy(isJoining = true) }
+        matchRepository.postJoinMatch(
+            matchId = matchId,
+            request = JoinMatchRequest(password)
+        ).onSuccess { isJoined ->
+            if (isJoined) {
+                intent {
+                    postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId))
+                }
+            } else {
+                if (password.isNotEmpty()) {
                     intent {
-                        postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId))
-                    }
-                } else {
-                    if (password.isNotEmpty()) {
-                        intent {
-                            reduce { state.copy(isMatchPasswordValid = false) }
-                        }
+                        reduce { state.copy(isMatchPasswordValid = false) }
                     }
                 }
             }
+            reduce { state.copy(isJoining = false) }
+        }.onFailure {
+            if (password.isNotEmpty()) {
+                intent {
+                    reduce { state.copy(isMatchPasswordValid = false) }
+                }
+            }
+            reduce { state.copy(isJoining = false) }
         }
     }
 }

@@ -238,14 +238,14 @@ fun MatchCalendar(
     itemSize: Dp = 58.dp
 ) {
     val startDate = DateTime.now()
-    val startMonth = startDate.monthOfYear
+    val startMonth = startDate.monthOfYear // startMonth minus logic has a problem (1-2 = -1)
     val lazyState = rememberLazyListState()
 
     LazyColumn(
         state = lazyState,
         modifier = modifier
     ) {
-        (startMonth - 2..startMonth + 2).reversed().map { month ->
+        (startMonth..startMonth + 2).reversed().map { month ->
             stickyHeader {
                 CalendarStickyHeader(
                     header = "${startDate.year}. ${month}월",

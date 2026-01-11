@@ -36,9 +36,10 @@ import com.begin_a_gain.design.util.shimmerEffect
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.model.type.match.MatchJoinStatus
 
+@Preview
 @Composable
 fun JoinMatchItem(
-    match: MatchInfo,
+    match: MatchInfo = MatchInfo(),
     isLoading: Boolean = true,
     isFirst: Boolean = false,
     isLast: Boolean = false,

@@ -91,8 +91,9 @@ fun ODialog(
                             .height(52.dp)
                             .background(ColorToken.UI_DISABLE_01.color())
                             .clickable {
-                                onDismissRequest()
-                                onAdditionalButtonClick ?: {}
+                                onAdditionalButtonClick?.let {
+                                    onAdditionalButtonClick()
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -116,7 +117,6 @@ fun ODialog(
                             }
                         )
                         .clickable {
-                            onDismissRequest()
                             onButtonClick()
                         },
                     contentAlignment = Alignment.Center

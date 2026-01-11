@@ -6,18 +6,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -67,22 +66,22 @@ fun JoinMatchScreen(
 
     var showCategoryBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showJoinMatchDialog by rememberSaveable { mutableStateOf(false) }
-    var showMatchCodeDialog by rememberSaveable { mutableStateOf(false) }
-    var selectedMatch by remember {
-        mutableStateOf<MatchInfo?>(null)
-    }
+    var showPasswordDialog by rememberSaveable { mutableStateOf(false) }
 
     when (matchPagingItems.loadState.refresh) {
         is LoadState.Loading -> {
-            ProgressBar()
+            viewModel.setSkeletonLoading(true)
         }
 
-        else -> {}
+        else -> {
+            viewModel.setSkeletonLoading(false)
+        }
     }
 
     viewModel.collectSideEffect {
-        when(it) {
+        when (it) {
             is JoinMatchSideEffect.JoinSuccess -> {
+                viewModel.setSelectedMatch(null)
                 navigateToMatch(it.matchId)
             }
         }
@@ -112,7 +111,7 @@ fun JoinMatchScreen(
                 isLoading = state.isLoading,
                 matchItems = matchPagingItems
             ) { match ->
-                selectedMatch = match
+                viewModel.setSelectedMatch(match)
                 if (match.status == MatchJoinStatus.Joinable) {
                     showJoinMatchDialog = true
                 }
@@ -131,40 +130,48 @@ fun JoinMatchScreen(
         }
 
         if (showJoinMatchDialog) {
-            selectedMatch?.let {
+            state.selectedMatch?.let {
                 ODialog(
                     title = "대국에 참여할까요?",
                     message = "\'${it.name}\' 대국을 시작해보세요.",
                     buttonText = "참여",
-                    onButtonClick = { /*TODO*/ },
+                    onButtonClick = {
+                        if (it.public) {
+                            showJoinMatchDialog = false
+                            viewModel.joinMatch(it.matchId)
+                        } else {
+                            scope.launch {
+                                showJoinMatchDialog = false
+                                delay(100L)
+                                showPasswordDialog = true
+                            }
+                        }
+                    },
                     additionalButtonText = "취소",
                     onAdditionalButtonClick = {
                         showJoinMatchDialog = false
                     }
                 ) {
-                    if (it.public) {
-                        showJoinMatchDialog = false
-                        // Todo : navigate to match
-                    } else {
-                        scope.launch {
-                            showJoinMatchDialog = false
-                            delay(250L)
-                            showMatchCodeDialog = true
-                        }
-                    }
+                    showJoinMatchDialog = false
                 }
             }
         }
 
-        if (showMatchCodeDialog) {
-            MatchCodeDialog(
-                code = state.selectedMatchCode,
-                onConfirmClick = {
-                    viewModel.setCode(it)
+        if (showPasswordDialog) {
+            state.selectedMatch?.let { match ->
+                MatchCodeDialog(
+                    isValid = state.isMatchPasswordValid,
+                    onConfirmClick = { password ->
+                        viewModel.joinMatch(matchId = match.matchId, password = password)
+                    }
+                ) {
+                    showPasswordDialog = false
                 }
-            ) {
-                showMatchCodeDialog = false
             }
+        }
+
+        if (state.isJoining) {
+            ProgressBar()
         }
     }
 }
@@ -223,19 +230,27 @@ fun JoinMatchList(
     matchItems: LazyPagingItems<MatchInfo>,
     onJoinMatchClick: (MatchInfo) -> Unit = {}
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .background(ColorToken.UI_02.color())
+            .fillMaxWidth()
+            .background(ColorToken.UI_02.color()),
+        contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp, start = 20.dp, end = 20.dp)
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(top = 20.dp, bottom = 60.dp, start = 20.dp, end = 20.dp)
-        ) {
+        if (isLoading) {
+            items((0..5).map { it }) { index ->
+                JoinMatchItem(
+                    isLoading = true,
+                    isFirst = index == 0,
+                    isLast = index == matchItems.itemCount - 1
+                ) {
+                    onJoinMatchClick(MatchInfo())
+                }
+            }
+        } else {
             items(matchItems.itemCount) { index ->
                 matchItems[index]?.let { match ->
                     JoinMatchItem(
-                        isLoading = isLoading,
+                        isLoading = false,
                         match = match,
                         isFirst = index == 0,
                         isLast = index == matchItems.itemCount - 1

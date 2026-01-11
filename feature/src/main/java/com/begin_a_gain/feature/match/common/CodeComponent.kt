@@ -52,7 +52,6 @@ fun CodeTextField(
 
 @Composable
 fun MatchCodeDialog(
-    code: String = "",
     isValid: Boolean = true,
     onConfirmClick: (String) -> Unit,
     onDismissRequest: () -> Unit
@@ -65,6 +64,7 @@ fun MatchCodeDialog(
     val focusRequester3 = remember { FocusRequester() }
     val focusRequester4 = remember { FocusRequester() }
 
+    var code by rememberSaveable { mutableStateOf("") }
     var code1 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[0]}") }
     var code2 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[1]}") }
     var code3 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[2]}") }
@@ -77,9 +77,6 @@ fun MatchCodeDialog(
             val fullCode = "$code1$code2$code3$code4"
             if (fullCode.length == 4) {
                 onConfirmClick(fullCode)
-                onDismissRequest()
-            } else {
-                onDismissRequest()
             }
         },
         additionalButtonText = "취소",
