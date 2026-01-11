@@ -4,6 +4,7 @@ import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
+import com.begin_a_gain.domain.model.request.JoinMatchRequest
 
 interface MatchRepository {
     suspend fun getMatchCategoryList(): Result<Boolean>
@@ -16,4 +17,5 @@ interface MatchRepository {
         joinable: Boolean,
         keyword: String
     ): PageResult<MatchInfo>
+    suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean>
 }

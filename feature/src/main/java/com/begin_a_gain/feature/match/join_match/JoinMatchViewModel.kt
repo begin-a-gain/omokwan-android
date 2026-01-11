@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.MatchPagingSource
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,9 +26,9 @@ import javax.inject.Inject
 @HiltViewModel
 class JoinMatchViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : ViewModel(), ContainerHost<JoinMatchState, Nothing> {
+) : BaseViewModel<JoinMatchState, JoinMatchSideEffect>() {
 
-    override val container: Container<JoinMatchState, Nothing> =
+    override val container: Container<JoinMatchState, JoinMatchSideEffect> =
         container(JoinMatchState())
 
     private val pagingConfig = PagingConfig(
@@ -66,6 +68,32 @@ class JoinMatchViewModel @Inject constructor(
     }
 
     fun setCode(code: String) = blockingIntent {
-        reduce { state.copy(selectedMatchCode = code) }
+        reduce {
+            state.copy(
+                selectedMatchCode = code,
+                isMatchPasswordValid = true
+            )
+        }
+    }
+
+    fun joinMatch(matchId: Int, password: String = "") {
+        viewModelScope.withLoading {
+            matchRepository.postJoinMatch(
+                matchId = matchId,
+                request = JoinMatchRequest(password)
+            ).onSuccess { isJoined ->
+                if (isJoined) {
+                    intent {
+                        postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId))
+                    }
+                } else {
+                    if (password.isNotEmpty()) {
+                        intent {
+                            reduce { state.copy(isMatchPasswordValid = false) }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

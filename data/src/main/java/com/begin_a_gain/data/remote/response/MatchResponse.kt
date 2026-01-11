@@ -43,3 +43,8 @@ data class MatchItemResponse(
     val joinable: String,
     val public: Boolean
 )
+
+@Serializable
+data class JoinMatchResponse(
+    val matchId: String?
+)

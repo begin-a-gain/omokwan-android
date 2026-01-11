@@ -49,12 +49,15 @@ import com.begin_a_gain.feature.match.common.MatchCodeDialog
 import com.begin_a_gain.model.type.match.MatchJoinStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun JoinMatchScreen(
-    viewModel: JoinMatchViewModel = hiltViewModel()
+    viewModel: JoinMatchViewModel = hiltViewModel(),
+    navigateToMain: () -> Unit = {},
+    navigateToMatch: (Int) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(true)
@@ -77,9 +80,20 @@ fun JoinMatchScreen(
         else -> {}
     }
 
+    viewModel.collectSideEffect {
+        when(it) {
+            is JoinMatchSideEffect.JoinSuccess -> {
+                navigateToMatch(it.matchId)
+            }
+        }
+    }
+
     OScreen(
         title = "대국 참여하기",
-        useDefaultPadding = false
+        useDefaultPadding = false,
+        onBackButtonClick = {
+            navigateToMain()
+        }
     ) {
         Column {
             JoinMatchHeader(
@@ -119,7 +133,7 @@ fun JoinMatchScreen(
         if (showJoinMatchDialog) {
             selectedMatch?.let {
                 ODialog(
-                    title = "대국에 참여하시겠습니까?",
+                    title = "대국에 참여할까요?",
                     message = "\'${it.name}\' 대국을 시작해보세요.",
                     buttonText = "참여",
                     onButtonClick = { /*TODO*/ },

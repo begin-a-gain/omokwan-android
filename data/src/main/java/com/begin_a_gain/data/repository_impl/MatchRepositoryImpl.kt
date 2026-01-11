@@ -7,6 +7,7 @@ import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
+import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
@@ -105,6 +106,17 @@ class MatchRepositoryImpl @Inject internal constructor(
         return PageResult(
             items = matchList,
             hasNext = response.data?.hasNext ?: false
+        )
+    }
+
+    override suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean> {
+        return callApi(
+            call = {
+                matchApi.postMatchParticipants(matchId, request)
+            },
+            handleResponse = {
+                it?.matchId != null
+            }
         )
     }
 }

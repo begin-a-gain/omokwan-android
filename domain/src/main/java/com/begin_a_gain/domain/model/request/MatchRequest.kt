@@ -11,3 +11,8 @@ data class CreateMatchRequest(
     val password: String?,
     val isPublic: Boolean
 )
+
+@Serializable
+data class JoinMatchRequest(
+    val password: String
+)
