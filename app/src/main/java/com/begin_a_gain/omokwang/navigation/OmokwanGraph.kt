@@ -1,7 +1,6 @@
 package com.begin_a_gain.omokwang.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,7 +18,6 @@ import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -45,7 +43,8 @@ object MyPage
 
 @Serializable
 data class Match(
-    val isInitial: Boolean = false
+    val isInitial: Boolean = false,
+    val matchId: Int
 )
 
 @Serializable
@@ -98,7 +97,7 @@ fun OmokwanGraph(
         composable<Main> {
             MainGraph(
                 navigateToCreateMatch = { navController.navigate(MatchCategory) },
-                navigateToJoinMatch = { navController.popAndNavigate(JoinMatch) },
+                navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { navController.popAndNavigate(Match) }
             )
         }
@@ -121,17 +120,27 @@ fun OmokwanGraph(
             CreateMatchScreen(
                 viewModel = matchViewModel,
                 navigateToMain = { navController.popAndNavigate(Main) },
-                navigateToMatch = { navController.popAndNavigate(Match(isInitial = true)) }
+                navigateToMatch = { matchId ->
+                    navController.popAndNavigate(Match(isInitial = true, matchId = matchId))
+                }
             )
         }
 
         composable<JoinMatch> {
-            JoinMatchScreen()
+            JoinMatchScreen(
+                navigateToMain = { navController.popAndNavigate(Main) },
+                navigateToMatch = { matchId ->
+                    navController.popAndNavigate(Match(isInitial = false, matchId = matchId))
+                }
+            )
         }
 
         composable<Match> { backstackEntry ->
             val match = backstackEntry.toRoute<Match>()
-            MatchScreen(match.isInitial)
+            MatchScreen(
+                isInitial = match.isInitial,
+                navigateToMain = { navController.popAndNavigate(Main) }
+            )
         }
     }
 }

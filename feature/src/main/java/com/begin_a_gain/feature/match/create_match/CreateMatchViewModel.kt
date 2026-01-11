@@ -103,11 +103,11 @@ class CreateMatchViewModel @Inject constructor(
             ).onSuccess {
                 if (it != -1) {
                     intent {
-                        postSideEffect(CreateMatchSideEffect.CreateSuccess)
+                        postSideEffect(CreateMatchSideEffect.CreateSuccess(it))
                     }
                 }
             }.onFailure {
-                Log.d("junyoung", "failed")
+
             }
         }
     }

@@ -22,5 +22,5 @@ data class CreateMatchState(
 }
 
 interface CreateMatchSideEffect {
-    data object CreateSuccess: CreateMatchSideEffect
+    data class CreateSuccess(val matchId: Int): CreateMatchSideEffect
 }

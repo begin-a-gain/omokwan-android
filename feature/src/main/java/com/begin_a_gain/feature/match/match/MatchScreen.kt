@@ -68,7 +68,8 @@ import org.joda.time.YearMonth
 @Preview
 @Composable
 fun MatchScreen(
-    isInitial: Boolean = false
+    isInitial: Boolean = false,
+    navigateToMain: () -> Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
