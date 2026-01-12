@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.design.component.button.BottomModalButton
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.InitialText
@@ -41,13 +40,13 @@ import com.begin_a_gain.design.util.noRippleClickable
 @Preview
 @Composable
 fun InviteMemberScreen(
-    onNavigateToSetting: () -> Unit = {}
+    navigateToSetting: () -> Unit = {}
 ) {
     OScreen(
         title = "대국 초대하기",
         showBackButton = true,
         onBackButtonClick = {
-            onNavigateToSetting()
+            navigateToSetting()
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "초대하기",

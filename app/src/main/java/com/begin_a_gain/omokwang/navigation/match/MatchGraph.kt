@@ -1,15 +1,14 @@
 package com.begin_a_gain.omokwang.navigation.match
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.begin_a_gain.feature.match.invite_member.InviteMemberScreen
 import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.change_leader.ChangeLeaderScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
-import com.begin_a_gain.omokwang.navigation.Main
-import com.begin_a_gain.omokwang.navigation.cleanUpTo
+import com.begin_a_gain.omokwang.navigation.popAndNavigate
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,16 +27,17 @@ object InviteMatch
 object ChangeLeader
 
 fun NavGraphBuilder.matchGraph(
-    navController: NavController,
-    onNavigateToMain: () -> Unit
+    navController: NavHostController,
+    navigateToMain: () -> Unit
 ) {
     navigation<MatchGraph>(
         startDestination = Match
     ) {
         composable<Match> {
             MatchScreen(
-                onNavigateToMain = onNavigateToMain,
-                onNavigateToSetting = {
+                isInitial = false,
+                navigateToMain = navigateToMain,
+                navigateToSetting = {
                     navController.navigate(MatchSetting)
                 }
             )
@@ -45,13 +45,13 @@ fun NavGraphBuilder.matchGraph(
 
         composable<MatchSetting> {
             MatchSettingScreen(
-                onNavigateToMatch = {
-                    navController.cleanUpTo(Match)
+                navigateToMatch = {
+                    navController.popAndNavigate(Match)
                 },
-                onNavigateToInvite = {
+                navigateToInvite = {
                     navController.navigate(InviteMatch)
                 },
-                onNavigateToChangeLeader = {
+                navigateToChangeLeader = {
                     navController.navigate(ChangeLeader)
                 }
             )
@@ -59,7 +59,7 @@ fun NavGraphBuilder.matchGraph(
 
         composable<InviteMatch> {
             InviteMemberScreen(
-                onNavigateToSetting = {
+                navigateToSetting = {
                     navController.popBackStack()
                 }
             )
@@ -67,7 +67,7 @@ fun NavGraphBuilder.matchGraph(
 
         composable<ChangeLeader> {
             ChangeLeaderScreen(
-                onNavigateToSetting = {
+                navigateToSetting = {
                     navController.popBackStack()
                 }
             )

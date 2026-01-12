@@ -37,13 +37,13 @@ import com.begin_a_gain.design.util.ScreenBottomButtonType
 @Preview
 @Composable
 fun ChangeLeaderScreen(
-    onNavigateToSetting: () -> Unit = {}
+    navigateToSetting: () -> Unit = {}
 ) {
     OScreen(
         title = "대국장 변경하기",
         showBackButton = true,
         onBackButtonClick = {
-            onNavigateToSetting()
+            navigateToSetting()
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "대국장 변경하기"

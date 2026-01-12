@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,8 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.MemberHistory
-import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -58,6 +57,8 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.domain.model.MemberHistory
+import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
@@ -69,7 +70,7 @@ import org.joda.time.YearMonth
 fun MatchScreen(
     isInitial: Boolean = false,
     navigateToMain: () -> Unit = {},
-    onNavigateToSetting: () -> Unit = {}
+    navigateToSetting: () -> Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
@@ -86,7 +87,7 @@ fun MatchScreen(
         showBackButton = true,
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
-            onNavigateToSetting()
+            navigateToSetting()
         },
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp

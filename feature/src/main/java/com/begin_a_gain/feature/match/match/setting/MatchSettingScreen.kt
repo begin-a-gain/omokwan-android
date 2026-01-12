@@ -28,15 +28,14 @@ import com.begin_a_gain.design.component.dialog.ODialog
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.util.OScreen
-import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 @Preview
 @Composable
 fun MatchSettingScreen(
     isLeader: Boolean = true,
-    onNavigateToMatch: () -> Unit = {},
-    onNavigateToInvite: () -> Unit = {},
-    onNavigateToChangeLeader: () -> Unit = {}
+    navigateToMatch: () -> Unit = {},
+    navigateToInvite: () -> Unit = {},
+    navigateToChangeLeader: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
 
@@ -88,7 +87,7 @@ fun MatchSettingScreen(
                     title = "초대하기",
                     value = ""
                 ) {
-                    onNavigateToInvite()
+                    navigateToInvite()
                 }
 
                 if (isLeader) {
@@ -97,7 +96,7 @@ fun MatchSettingScreen(
                         title = "방장 변경하기",
                         value = ""
                     ) {
-                        onNavigateToChangeLeader()
+                        navigateToChangeLeader()
                     }
                 }
             }
