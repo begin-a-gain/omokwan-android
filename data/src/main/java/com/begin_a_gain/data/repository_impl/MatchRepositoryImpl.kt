@@ -2,11 +2,15 @@ package com.begin_a_gain.data.repository_impl
 
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
+import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
-import com.begin_a_gain.domain.model.match.MatchItem
+import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
+import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
 import com.begin_a_gain.model.type.match.MatchStatus
 import javax.inject.Inject
 
@@ -50,14 +54,14 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getMyDailyMatchList(date: String): Result<List<MatchItem>> {
+    override suspend fun getMyDailyMatchList(date: String): Result<List<MyMatchItem>> {
         return callApi(
             call = {
-                matchApi.getMatch(date)
+                matchApi.getMyMatch(date)
             },
             handleResponse = { response ->
                 response?.map {
-                    MatchItem(
+                    MyMatchItem(
                         matchId = it.matchId,
                         name = it.name,
                         ongoingDays = it.ongoingDays,
@@ -70,6 +74,48 @@ class MatchRepositoryImpl @Inject internal constructor(
                         )
                     )
                 }?: emptyList()
+            }
+        )
+    }
+
+    override suspend fun getAllMatchPagingItems(
+        pageNumber:Int,
+        pageSize: Int,
+        category: List<Int>,
+        joinable: Boolean,
+        keyword: String
+    ): PageResult<MatchInfo> {
+        val response = matchApi.getAllMatchesPaging(pageNumber, pageSize, category, joinable, keyword)
+        val matchList = response.data?.matchList?.map {
+            val category = localRepository.getCategoryList().firstOrNull { category ->
+                category.code.toInt() == it.categoryId
+            }
+            MatchInfo(
+                matchId = it.matchId,
+                name = it.name,
+                ongoingDays = it.ongoingDays,
+                participants = it.participants,
+                maxParticipants = it.maxParticipants,
+                category = category,
+                public = it.public,
+                owner = it.hostName,
+                status = it.joinable.toMatchJoinStatus()
+            )
+        }?: emptyList()
+
+        return PageResult(
+            items = matchList,
+            hasNext = response.data?.hasNext ?: false
+        )
+    }
+
+    override suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean> {
+        return callApi(
+            call = {
+                matchApi.postMatchParticipants(matchId, request)
+            },
+            handleResponse = {
+                it?.matchId != null
             }
         )
     }

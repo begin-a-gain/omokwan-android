@@ -22,7 +22,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun CreateMatchScreen(
     viewModel: CreateMatchViewModel,
     navigateToMain: () -> Unit,
-    navigateToMatch: () -> Unit
+    navigateToMatch: (Int) -> Unit
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val isMatchCreatable by viewModel.isMatchCreatable.collectAsStateWithLifecycle(initialValue = false)
@@ -34,8 +34,8 @@ fun CreateMatchScreen(
 
     viewModel.collectSideEffect {
         when(it) {
-            CreateMatchSideEffect.CreateSuccess -> {
-                navigateToMatch()
+            is CreateMatchSideEffect.CreateSuccess -> {
+                navigateToMatch(it.matchId)
             }
         }
     }

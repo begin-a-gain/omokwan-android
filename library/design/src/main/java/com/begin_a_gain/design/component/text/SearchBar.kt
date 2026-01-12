@@ -37,6 +37,7 @@ fun SearchBar(
         Spacer(modifier = Modifier.width(4.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = keyword,
                 onValueChange = onKeywordChanged,
                 singleLine = true

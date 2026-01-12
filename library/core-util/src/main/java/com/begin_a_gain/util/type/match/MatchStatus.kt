@@ -23,3 +23,19 @@ enum class MatchStatus {
         }
     }
 }
+
+enum class MatchJoinStatus(val value: String) {
+    Joinable("JOINABLE"),
+    NotJoinable("NOT_JOINABLE"),
+    InProgress("IN_PROGRESS");
+
+    companion object {
+        fun String.toMatchJoinStatus(): MatchJoinStatus {
+            return when {
+                this == Joinable.value -> Joinable
+                this == NotJoinable.value -> NotJoinable
+                else -> InProgress
+            }
+        }
+    }
+}

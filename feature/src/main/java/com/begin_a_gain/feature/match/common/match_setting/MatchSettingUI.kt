@@ -271,7 +271,6 @@ fun MatchSettingCommonLayout(
 
     if (showCodeDialog) {
         MatchCodeDialog(
-            code = state.code,
             onConfirmClick = { code ->
                 state.setPrivate(true, code)
             }
