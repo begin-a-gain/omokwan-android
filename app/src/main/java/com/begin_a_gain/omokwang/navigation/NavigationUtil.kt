@@ -1,9 +1,13 @@
 package com.begin_a_gain.omokwang.navigation
 
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
-fun NavController.cleanUpTo(route: Any) {
+fun NavHostController.popAndNavigate(route: Any) {
+    val currentRoute = currentDestination?.route
     this.navigate(route) {
-        popUpTo(route) { inclusive = true }
+        if (currentRoute != null) {
+            popUpTo(currentRoute) { inclusive = true }
+        }
+        launchSingleTop = true
     }
 }

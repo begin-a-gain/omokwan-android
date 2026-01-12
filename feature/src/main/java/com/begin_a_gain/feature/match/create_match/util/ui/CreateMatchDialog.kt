@@ -1,7 +1,7 @@
 package com.begin_a_gain.feature.match.create_match.util.ui
 
 import androidx.compose.runtime.Composable
-import com.begin_a_gain.library.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ODialog
 
 @Composable
 fun CreateMatchDialog(

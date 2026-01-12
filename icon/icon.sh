@@ -13,7 +13,7 @@ then
   fi
 fi
 
-MODULE_NAME="library"
+MODULE_NAME="library/design"
 MODULE_PATH="../$MODULE_NAME"
 
 PATH_MDPI=$MODULE_PATH

@@ -24,15 +24,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.begin_a_gain.domain.model.MemberHistory
-import com.begin_a_gain.library.design.component.OHorizontalDivider
-import com.begin_a_gain.library.design.component.selection.ORadioButton
-import com.begin_a_gain.library.design.component.text.InitialText
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
-import com.begin_a_gain.library.design.util.ScreenBottomButtonType
+import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.selection.ORadioButton
+import com.begin_a_gain.design.component.text.InitialText
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.design.util.ScreenBottomButtonType
 
 @Preview
 @Composable

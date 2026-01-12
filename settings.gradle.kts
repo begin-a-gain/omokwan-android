@@ -2,13 +2,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -28,4 +22,6 @@ include(":app")
 include(":feature")
 include(":data")
 include(":domain")
-include(":library")
+include(":library:core")
+include(":library:design")
+include(":library:core-util")

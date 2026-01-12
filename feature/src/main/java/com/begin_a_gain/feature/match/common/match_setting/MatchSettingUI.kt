@@ -39,23 +39,22 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.begin_a_gain.feature.match.common.CategoryBottomSheet
 import com.begin_a_gain.feature.match.common.MatchCodeDialog
-import com.begin_a_gain.feature.match.create_match.util.constant.categories
 import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
 import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
 import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
-import com.begin_a_gain.library.design.component.OVerticalDivider
-import com.begin_a_gain.library.design.component.bottom_sheet.OPickerBottomSheet
-import com.begin_a_gain.library.design.component.dialog.OTimePickerDialog
-import com.begin_a_gain.library.design.component.image.OImage
-import com.begin_a_gain.library.design.component.image.OImageRes
-import com.begin_a_gain.library.design.component.selection.OSwitch
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.component.text.OTextField
-import com.begin_a_gain.library.design.component.text.TextFieldStatus
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.ColorToken.Companion.color
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.design.component.OVerticalDivider
+import com.begin_a_gain.design.component.bottom_sheet.OPickerBottomSheet
+import com.begin_a_gain.design.component.dialog.OTimePickerDialog
+import com.begin_a_gain.design.component.image.OImage
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.selection.OSwitch
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.component.text.OTextField
+import com.begin_a_gain.design.component.text.TextFieldStatus
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.ColorToken.Companion.color
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -174,8 +173,7 @@ fun MatchSettingCommonLayout(
         ) {
             SettingRow(
                 title = "대국 카테고리",
-                value = if (categories.getOrNull(state.selectedCategoryIndex) == null) ""
-                else categories[state.selectedCategoryIndex].second,
+                value = state.selectedCategory?.name?: "선택",
                 isEditable = type != MatchSettingUiType.MatchMember
             ) {
                 showCategoryBottomSheet = true
@@ -263,7 +261,7 @@ fun MatchSettingCommonLayout(
     if (showCategoryBottomSheet) {
         CategoryBottomSheet(
             sheetState = bottomSheetState,
-            selectedIndex = state.selectedCategoryIndex,
+            selectedItem = state.selectedCategory ,
             onDismissRequest = { showCategoryBottomSheet = false },
             onSelected = {
                 showCategoryBottomSheet = false
@@ -274,7 +272,6 @@ fun MatchSettingCommonLayout(
 
     if (showCodeDialog) {
         MatchCodeDialog(
-            code = state.code,
             onConfirmClick = { code ->
                 state.setPrivate(true, code)
             }

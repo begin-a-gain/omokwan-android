@@ -8,14 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.library.core.util.ValidationState
-import com.begin_a_gain.library.design.component.button.ButtonType
-import com.begin_a_gain.library.design.component.text.OText
-import com.begin_a_gain.library.design.component.text.OTextField
-import com.begin_a_gain.library.design.component.text.TextFieldStatus
-import com.begin_a_gain.library.design.theme.ColorToken
-import com.begin_a_gain.library.design.theme.OTextStyle
-import com.begin_a_gain.library.design.util.OScreen
+import com.begin_a_gain.model.type.common.ValidationState
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.dialog.ProgressBar
+import com.begin_a_gain.design.component.text.OText
+import com.begin_a_gain.design.component.text.OTextField
+import com.begin_a_gain.design.component.text.TextFieldStatus
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun SignUpScreen(
@@ -35,7 +37,7 @@ fun SignUpScreen(
             else -> ButtonType.Disable
         },
         onBottomButtonClick = {
-            navigateToSignUpDone()
+            viewModel.saveNickname()
         }
     ) {
         Spacer(modifier = Modifier.height(32.dp))
@@ -51,7 +53,9 @@ fun SignUpScreen(
             text = state.nickname,
             hint = "ex. 오목완",
             maxCount = 10,
-            message = state.nicknameFailCase?.message,
+            message = if (state.nicknameValidation == ValidationState.Fail) {
+                state.nicknameFailCase?.message
+            } else "",
             status = when (state.nicknameValidation) {
                 ValidationState.Normal,
                 ValidationState.Success -> TextFieldStatus.Default
@@ -60,6 +64,22 @@ fun SignUpScreen(
             }
         ) {
             viewModel.setNickname(it)
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
+        }
+    }
+
+    viewModel.collectSideEffect {
+        when(it) {
+            is SignUpSideEffect.SignUpSuccess -> {
+                navigateToSignUpDone()
+            }
+
+            is SignUpSideEffect.NavigateToSignIn -> {
+                popBack()
+            }
         }
     }
 }

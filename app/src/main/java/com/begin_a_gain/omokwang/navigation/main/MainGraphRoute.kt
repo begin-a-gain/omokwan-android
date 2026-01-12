@@ -1,6 +1,6 @@
 package com.begin_a_gain.omokwang.navigation.main
 
-import com.begin_a_gain.library.design.component.image.OImageRes
+import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.omokwang.navigation.MyPage
 import com.begin_a_gain.omokwang.navigation.MatchList
 

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -14,7 +15,7 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.omokwang"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.begin_a_gain.omokwang"
@@ -55,9 +56,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompilerExtension.get()
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -70,8 +68,10 @@ fun getLocalProperties(key: String): String {
 }
 
 dependencies {
+    implementation(projects.data)
     implementation(projects.feature)
-    implementation(projects.library)
+    implementation(projects.library.core)
+    implementation(projects.library.design)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
