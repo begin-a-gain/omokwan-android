@@ -3,15 +3,18 @@ package com.begin_a_gain.data.remote.api
 import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.all
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.board
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
-import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.joinMatch
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.participants
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.JoinMatchResponse
+import com.begin_a_gain.data.remote.response.MatchBoardResponse
 import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
 import com.begin_a_gain.data.remote.response.MatchListResponse
 import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
+import com.begin_a_gain.data.remote.response.ParticipantsResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import io.ktor.client.HttpClient
@@ -62,8 +65,19 @@ class MatchApi @Inject constructor(
     }
 
     suspend fun postMatchParticipants(matchId: Int, request: JoinMatchRequest): Response<JoinMatchResponse> {
-        return client.post(ApiEndPoint.Match.joinMatch(matchId)) {
+        return client.post(ApiEndPoint.Match.participants(matchId)) {
             setBody(request)
         }.body<Response<JoinMatchResponse>>()
+    }
+
+    suspend fun getMatchBoard(matchId: Int): Response<MatchBoardResponse> {
+        return client.get(ApiEndPoint.Match.board(matchId)) {
+            parameter("date", "2026-01-14")
+            parameter("size", 10)
+        }.body()
+    }
+
+    suspend fun getParticipants(matchId: Int): Response<ParticipantsResponse> {
+        return client.get(ApiEndPoint.Match.participants(matchId)).body()
     }
 }

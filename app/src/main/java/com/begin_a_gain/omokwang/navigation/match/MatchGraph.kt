@@ -1,9 +1,11 @@
 package com.begin_a_gain.omokwang.navigation.match
 
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.begin_a_gain.feature.match.invite_member.InviteMemberScreen
 import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.change_leader.ChangeLeaderScreen
@@ -12,7 +14,10 @@ import com.begin_a_gain.omokwang.navigation.popAndNavigate
 import kotlinx.serialization.Serializable
 
 @Serializable
-object MatchGraph
+data class MatchGraph(
+    val isInitial: Boolean = false,
+    val matchId: Int
+)
 
 @Serializable
 object Match
@@ -33,9 +38,14 @@ fun NavGraphBuilder.matchGraph(
     navigation<MatchGraph>(
         startDestination = Match
     ) {
-        composable<Match> {
+        composable<Match> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<MatchGraph>()
+            }
+            val args = parentEntry.toRoute<MatchGraph>()
             MatchScreen(
-                isInitial = false,
+                matchId = args.matchId,
+                isInitial = args.isInitial,
                 navigateToMain = navigateToMain,
                 navigateToSetting = {
                     navController.navigate(MatchSetting)

@@ -92,7 +92,7 @@ fun OmokwanGraph(
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { matchId ->
-                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }

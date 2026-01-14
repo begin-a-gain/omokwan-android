@@ -39,6 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -57,7 +59,7 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.domain.model.MemberHistory
+import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -69,9 +71,12 @@ import org.joda.time.YearMonth
 @Composable
 fun MatchScreen(
     isInitial: Boolean = false,
+    matchId: Int = -1,
+    viewModel: MatchViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
@@ -79,8 +84,12 @@ fun MatchScreen(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showOthersProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showOthersProfileBottomSheet: ParticipantInfo? by rememberSaveable { mutableStateOf(null) }
     var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId)
+    }
 
     OScreen(
         title = "대국방 이름",
@@ -110,11 +119,12 @@ fun MatchScreen(
                 itemSize = calendarItemSize
             )
             Spacer(modifier = Modifier.height(8.dp))
-            MatchMembers(
+            MatchParticipantsRow(
+                participants = state.participants.map { it.name },
                 itemWidth = calendarItemSize,
                 onMemberClick = { index ->
                     if (index == 0) showMyProfileBottomSheet = true
-                    else showOthersProfileBottomSheet = true
+                    else showOthersProfileBottomSheet = state.participants[index]
                 },
                 onAddMemberClick = {
 
@@ -137,28 +147,20 @@ fun MatchScreen(
             }
         }
 
-        if (showOthersProfileBottomSheet) {
+        showOthersProfileBottomSheet?.let { participant ->
             MemberProfileBottomSheet(
                 sheetState = sheetState,
+                participant = participant,
                 isMine = false,
-                isOwner = true,
-                onSendOmokClick = {
-                    // Todo : update
-                    scope.launch {
-                        showOthersProfileBottomSheet = false
-                        delay(200L)
-                        showSnackBar("‘0000’님에게 오목알을 튕겼습니다.")
-                    }
-                },
                 onOutMemberClick = {
                     scope.launch {
-                        showOthersProfileBottomSheet = false
+                        showOthersProfileBottomSheet = null
                         delay(200L)
                         showMemberOutDialog = true
                     }
                 }
             ) {
-                showOthersProfileBottomSheet = false
+                showOthersProfileBottomSheet = null
             }
         }
 
@@ -272,8 +274,8 @@ fun MatchCalendar(
 
 @Preview
 @Composable
-fun MatchMembers(
-    members: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱", "연날리기"),
+fun MatchParticipantsRow(
+    participants: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱", "연날리기"),
     itemWidth: Dp = 58.dp,
     onMemberClick: (Int) -> Unit = {},
     onAddMemberClick: () -> Unit = {}
@@ -284,13 +286,13 @@ fun MatchMembers(
     ) {
         Spacer(modifier = Modifier.width(itemWidth + 6.dp))
         (0..4).forEach { index ->
-            if (index <= members.size) {
+            if (index <= participants.size) {
                 Column(
                     modifier = Modifier
                         .width(itemWidth)
                         .padding(horizontal = 5.dp, vertical = 8.dp)
                 ) {
-                    if (index == members.size) {
+                    if (index == participants.size) {
                         AddMemberButton(
                             itemWidth = itemWidth
                         ) {
@@ -298,11 +300,11 @@ fun MatchMembers(
                         }
                     } else {
                         InitialTextLayout(
-                            text = members[index],
+                            text = participants[index],
                             itemWidth = itemWidth,
                             initialTextColor = if (index == 0) ColorToken.TEXT_ON_01 else ColorToken.TEXT_01,
                             backgroundColor = if (index == 0) ColorToken.UI_PRIMARY.color()
-                            else if (index == members.size) Color.Transparent
+                            else if (index == participants.size) Color.Transparent
                             else ColorToken.UI_03.color()
                         ) {
                             onMemberClick(index)
@@ -367,20 +369,19 @@ fun AddMemberButton(
 fun MemberProfileBottomSheet(
     sheetState: SheetState,
     isMine: Boolean = false,
-    isOwner: Boolean = true,
-    member: MemberHistory = MemberHistory(
-        id = "",
+    participant: ParticipantInfo = ParticipantInfo(
+        id = -1,
         name = "가나다라",
         combo = 0,
         omok = 0,
-        days = 0
+        days = 0,
+        isHost = false
     ),
-    onSendOmokClick: () -> Unit = {},
     onOutMemberClick: () -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
     OBottomSheet(
-        title = (if (isMine) "나" else "${member.name} 님") + "의 프로필",
+        title = (if (isMine) "나" else "${participant.name} 님") + "의 프로필",
         sheetState = sheetState,
         heightRatio = null,
         onDismissRequest = onDismissRequest
@@ -395,7 +396,7 @@ fun MemberProfileBottomSheet(
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
                 InitialTextLayout(
-                    text = "${member.name} 님",
+                    text = "${participant.name} 님",
                     itemWidth = 96.dp,
                     initialTextStyle = OTextStyle.Display2,
                     fullTextModifier = Modifier.fillMaxWidth(),
@@ -416,9 +417,9 @@ fun MemberProfileBottomSheet(
                             OText(
                                 style = OTextStyle.Title2,
                                 text = when (index) {
-                                    0 -> "${member.combo}"
-                                    1 -> "${member.omok}"
-                                    else -> "${member.days}"
+                                    0 -> "${participant.combo}"
+                                    1 -> "${participant.omok}"
+                                    else -> "${participant.days}"
                                 }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -443,30 +444,16 @@ fun MemberProfileBottomSheet(
                 }
             }
 
-            if (isMine) {
-                Spacer(modifier = Modifier.height(40.dp))
-            } else {
-                Column(
-                    modifier = Modifier.padding(vertical = 16.dp)
+            if (participant.isHost && !isMine) {
+                OButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "내보내기",
+                    style = ButtonStyle.None
                 ) {
-                    OButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "오목알 튕기기"
-                    ) {
-                        onSendOmokClick()
-                    }
-
-                    if (isOwner) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        OButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "내보내기",
-                            style = ButtonStyle.None
-                        ) {
-                            onOutMemberClick()
-                        }
-                    }
+                    onOutMemberClick()
                 }
+            } else {
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

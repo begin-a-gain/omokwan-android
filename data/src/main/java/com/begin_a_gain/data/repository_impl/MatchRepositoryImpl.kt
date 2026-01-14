@@ -2,9 +2,12 @@ package com.begin_a_gain.data.repository_impl
 
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
+import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.domain.model.PageResult
+import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.domain.model.match.MatchUser
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
@@ -116,6 +119,44 @@ class MatchRepositoryImpl @Inject internal constructor(
             },
             handleResponse = {
                 it?.matchId != null
+            }
+        )
+    }
+
+    override suspend fun getMatchBoard(matchId: Int): Result<MatchBoard> {
+        return callApi(
+            call = {
+                matchApi.getMatchBoard(matchId)
+            },
+            handleResponse = {
+                MatchBoard(
+                    users = it?.users?.map { user ->
+                        MatchUser(
+                            userId = user.userId,
+                            nickname = user.nickname,
+                            isHost = user.isHost
+                        )
+                    }?: emptyList()
+                )
+            }
+        )
+    }
+
+    override suspend fun getParticipants(matchId: Int): Result<List<ParticipantInfo>> {
+        return callApi(
+            call = {
+                matchApi.getParticipants(matchId)
+            },
+            handleResponse = {
+                it?.userInfo?.map { user ->
+                    ParticipantInfo(
+                        id = user.userId,
+                        name = user.nickname,
+                        combo = user.combo,
+                        days = user.participantDays,
+                        omok = user.participantNumbers
+                    )
+                }?: emptyList()
             }
         )
     }

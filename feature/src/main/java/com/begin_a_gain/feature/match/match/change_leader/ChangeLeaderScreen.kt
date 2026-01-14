@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.MemberHistory
+import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.selection.ORadioButton
 import com.begin_a_gain.design.component.text.InitialText
@@ -57,9 +57,9 @@ fun ChangeLeaderScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             listOf(
-                MemberHistory("", "연날리기", 1000, 100, 1000),
-                MemberHistory("", "생갈치1호의행방불명", 1, 10, 10),
-                MemberHistory("", "쥬짱", 10, 5, 10),
+                ParticipantInfo(-1, "연날리기", 1000, 100, 1000),
+                ParticipantInfo(-1, "생갈치1호의행방불명", 1, 10, 10),
+                ParticipantInfo(-1, "쥬짱", 10, 5, 10),
             ).forEachIndexed { index, member ->
                 LeaderCandidateItem(
                     member = member,
@@ -75,7 +75,7 @@ fun ChangeLeaderScreen(
 @Preview
 @Composable
 fun LeaderCandidateItem(
-    member: MemberHistory = MemberHistory("", "가나다라", 5, 5, 5),
+    member: ParticipantInfo = ParticipantInfo(-1, "가나다라", 5, 5, 5),
     isSelected: Boolean = false,
     onSelect: () -> Unit = {}
 ) {
