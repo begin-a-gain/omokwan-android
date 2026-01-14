@@ -10,16 +10,12 @@ import com.begin_a_gain.util.common.ODateTimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class OmokMatchListViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>() {
-
-    override val container: Container<OmokMatchListState, OmokMatchListSideEffect> = container(OmokMatchListState())
+): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>(OmokMatchListState()) {
 
     init {
         viewModelScope.launch {
