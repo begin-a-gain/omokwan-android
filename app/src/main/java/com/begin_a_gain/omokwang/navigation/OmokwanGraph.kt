@@ -14,6 +14,7 @@ import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.Match
+import com.begin_a_gain.omokwang.navigation.match.MatchGraph
 import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.matchGraph
 import kotlinx.serialization.Serializable
@@ -38,12 +39,6 @@ object MatchList
 
 @Serializable
 object MyPage
-
-@Serializable
-data class Match(
-    val isInitial: Boolean = false,
-    val matchId: Int
-)
 
 @Serializable
 object MatchCategory
@@ -96,7 +91,9 @@ fun OmokwanGraph(
             MainGraph(
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { navController.popAndNavigate(Match) }
+                navigateToMatch = { matchId ->
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
+                }
             )
         }
 
@@ -108,7 +105,7 @@ fun OmokwanGraph(
             JoinMatchScreen(
                 navigateToMain = { navController.popAndNavigate(Main) },
                 navigateToMatch = { matchId ->
-                    navController.popAndNavigate(Match(isInitial = false, matchId = matchId))
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }

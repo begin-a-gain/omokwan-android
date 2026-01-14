@@ -60,7 +60,7 @@ import com.begin_a_gain.omokwang.navigation.MyPage
 fun MainGraph(
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: () -> Unit = {},
+    navigateToMatch: (Int) -> Unit = {},
     popBack: () -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -164,8 +164,8 @@ fun MainGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<MatchList> {
-                OmokMatchListScreen() {
-                    navigateToMatch()
+                OmokMatchListScreen { id ->
+                    navigateToMatch(id)
                 }
             }
             composable<MyPage> {
