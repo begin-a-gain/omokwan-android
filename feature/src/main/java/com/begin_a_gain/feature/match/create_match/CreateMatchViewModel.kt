@@ -1,7 +1,5 @@
 package com.begin_a_gain.feature.match.create_match
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
@@ -14,22 +12,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import org.joda.time.LocalTime
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.blockingIntent
-import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateMatchViewModel @Inject constructor(
     private val localRepository: LocalRepository,
     private val matchRepository: MatchRepository
-) : BaseViewModel<CreateMatchState, CreateMatchSideEffect>() {
-
-    override val container: Container<CreateMatchState, CreateMatchSideEffect> =
-        container(CreateMatchState())
+) : BaseViewModel<CreateMatchState, CreateMatchSideEffect>(CreateMatchState()) {
 
     init {
         intent {

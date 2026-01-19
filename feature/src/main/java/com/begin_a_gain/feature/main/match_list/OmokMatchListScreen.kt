@@ -53,7 +53,7 @@ import org.joda.time.DateTime
 @Composable
 fun OmokMatchListScreen(
     viewModel: OmokMatchListViewModel = hiltViewModel(),
-    navigateToMatch: () -> Unit = {}
+    navigateToMatch: (Int) -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
@@ -88,7 +88,7 @@ fun OmokMatchListScreen(
             omokMatchItemSize = ((configuration.screenWidthDp - 10)/2).dp,
             omokMatches = state.omokMatches
         ) { id ->
-            navigateToMatch()
+            navigateToMatch(id)
         }
     }
 

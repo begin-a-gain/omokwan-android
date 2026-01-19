@@ -3,21 +3,20 @@ package com.begin_a_gain.omokwang.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
-import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
-import com.begin_a_gain.feature.match.create_match.CreateMatchViewModel
-import com.begin_a_gain.feature.match.create_match.MatchCategoryScreen
 import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
-import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
+import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
+import com.begin_a_gain.omokwang.navigation.match.Match
+import com.begin_a_gain.omokwang.navigation.match.MatchGraph
+import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
+import com.begin_a_gain.omokwang.navigation.match.matchGraph
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -40,12 +39,6 @@ object MatchList
 
 @Serializable
 object MyPage
-
-@Serializable
-data class Match(
-    val isInitial: Boolean = false,
-    val matchId: Int
-)
 
 @Serializable
 object MatchCategory
@@ -96,52 +89,31 @@ fun OmokwanGraph(
 
         composable<Main> {
             MainGraph(
-                navigateToCreateMatch = { navController.navigate(MatchCategory) },
+                navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { navController.popAndNavigate(Match) }
-            )
-        }
-
-        composable<MatchCategory> {
-            val backStackEntry = navController.getBackStackEntry(Main)
-            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
-            MatchCategoryScreen(
-                viewModel = matchViewModel,
-                navigateToCreateMatch = { navController.popAndNavigate(CreateMatch) },
-                navigateToMain = {
-                    navController.popAndNavigate(Main)
-                }
-            )
-        }
-
-        composable<CreateMatch> {
-            val backStackEntry = navController.getBackStackEntry(Main)
-            val matchViewModel: CreateMatchViewModel = hiltViewModel(backStackEntry)
-            CreateMatchScreen(
-                viewModel = matchViewModel,
-                navigateToMain = { navController.popAndNavigate(Main) },
                 navigateToMatch = { matchId ->
-                    navController.popAndNavigate(Match(isInitial = true, matchId = matchId))
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }
+
+        createMatchGraph(
+            navController = navController
+        )
 
         composable<JoinMatch> {
             JoinMatchScreen(
                 navigateToMain = { navController.popAndNavigate(Main) },
                 navigateToMatch = { matchId ->
-                    navController.popAndNavigate(Match(isInitial = false, matchId = matchId))
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }
 
-        composable<Match> { backstackEntry ->
-            val match = backstackEntry.toRoute<Match>()
-            MatchScreen(
-                isInitial = match.isInitial,
-                navigateToMain = { navController.popAndNavigate(Main) }
-            )
-        }
+        matchGraph(
+            navController = navController,
+            navigateToMain = { navController.popAndNavigate(Main) }
+        )
     }
 }
 

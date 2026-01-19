@@ -48,3 +48,29 @@ data class MatchItemResponse(
 data class JoinMatchResponse(
     val matchId: String?
 )
+
+@Serializable
+data class MatchBoardResponse(
+    val users: List<MatchUserResponse>
+)
+
+@Serializable
+data class MatchUserResponse(
+    val userId: Int,
+    val nickname: String,
+    val isHost: Boolean
+)
+
+@Serializable
+data class ParticipantsResponse(
+    val userInfo: List<ParticipantInfoResponse>
+)
+
+@Serializable
+data class ParticipantInfoResponse(
+    val userId: Int,
+    val nickname: String,
+    val combo: Int,
+    val participantDays: Int,
+    val participantNumbers: Int
+)

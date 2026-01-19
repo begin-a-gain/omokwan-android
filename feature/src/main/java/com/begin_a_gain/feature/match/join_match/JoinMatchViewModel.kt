@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.join_match
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -18,19 +17,13 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.blockingIntent
-import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class JoinMatchViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : BaseViewModel<JoinMatchState, JoinMatchSideEffect>() {
-
-    override val container: Container<JoinMatchState, JoinMatchSideEffect> =
-        container(JoinMatchState())
+) : BaseViewModel<JoinMatchState, JoinMatchSideEffect>(JoinMatchState()) {
 
     private val pagingConfig = PagingConfig(
         pageSize = 10,

@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.design.component.button.BottomModalButton
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.InitialText
@@ -40,15 +39,18 @@ import com.begin_a_gain.design.util.noRippleClickable
 
 @Preview
 @Composable
-fun InviteMemberScreen() {
+fun InviteMemberScreen(
+    navigateToSetting: () -> Unit = {}
+) {
     OScreen(
         title = "대국 초대하기",
         showBackButton = true,
         onBackButtonClick = {
-
+            navigateToSetting()
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "초대하기",
+        useDefaultPadding = false,
         onBottomButtonClick = {
 
         }
@@ -56,7 +58,7 @@ fun InviteMemberScreen() {
         Column {
             SelectedInvitees()
             SearchBar(
-                modifier = Modifier.padding(vertical = 20.dp),
+                modifier = Modifier.padding(20.dp),
                 keyword = "",
                 hint = "이름으로 검색하기"
             ) {
@@ -137,6 +139,7 @@ fun SelectedInvitees(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp)
+            .padding(horizontal = 20.dp)
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {

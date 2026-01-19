@@ -50,6 +50,7 @@ import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.MyPageScreen
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
+
 import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
 
@@ -59,7 +60,7 @@ import com.begin_a_gain.omokwang.navigation.MyPage
 fun MainGraph(
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: () -> Unit = {},
+    navigateToMatch: (Int) -> Unit = {},
     popBack: () -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -163,8 +164,8 @@ fun MainGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<MatchList> {
-                OmokMatchListScreen() {
-                    navigateToMatch()
+                OmokMatchListScreen { id ->
+                    navigateToMatch(id)
                 }
             }
             composable<MyPage> {
