@@ -23,7 +23,9 @@ data class MatchGraph(
 object Match
 
 @Serializable
-object MatchSetting
+data class MatchSetting(
+    val matchId: Int
+)
 
 @Serializable
 object InviteMatch
@@ -48,13 +50,18 @@ fun NavGraphBuilder.matchGraph(
                 isInitial = args.isInitial,
                 navigateToMain = navigateToMain,
                 navigateToSetting = {
-                    navController.navigate(MatchSetting)
+                    navController.navigate(MatchSetting(args.matchId))
                 }
             )
         }
 
-        composable<MatchSetting> {
+        composable<MatchSetting> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<MatchGraph>()
+            }
+            val args = parentEntry.toRoute<MatchGraph>()
             MatchSettingScreen(
+                matchId = args.matchId,
                 navigateToMatch = {
                     navController.popAndNavigate(Match)
                 },

@@ -183,40 +183,40 @@ fun MatchSettingCommonLayout(
                 showCategoryBottomSheet = true
             }
 
-            OVerticalDivider(colorToken = ColorToken.STROKE_02)
-            SettingRow(
-                title = "리마인드 알림",
-                value = if (state.alarmOn) {
-                    if (state.alarmHour > 12) "오후 ${state.alarmHour - 12}:${state.alarmMin}"
-                    else "오전 ${state.alarmHour}:${state.alarmMin}"
-                } else "",
-                showSwitch = true,
-                isRowClickable = state.alarmOn,
-                switchChecked = state.alarmOn,
-                onCheckedChanged = {
-                    when {
-                        notificationPermission.status.isGranted -> {
-                            if (state.alarmOn) {
-                                state.setAlarmOn(false, null, null)
-                            } else {
-                                showNotificationTimeDialog = true
-                            }
-                        }
-
-                        notificationPermission.status.shouldShowRationale -> {
-                            showNotificationPermissionBottomSheet = true
-                        }
-
-                        else -> {
-                            notificationPermission.launchPermissionRequest()
-                        }
-                    }
-                }
-            ) {
-                if (state.alarmOn) {
-                    showNotificationTimeDialog = true
-                }
-            }
+//            OVerticalDivider(colorToken = ColorToken.STROKE_02)
+//            SettingRow(
+//                title = "리마인드 알림",
+//                value = if (state.alarmOn) {
+//                    if (state.alarmHour > 12) "오후 ${state.alarmHour - 12}:${state.alarmMin}"
+//                    else "오전 ${state.alarmHour}:${state.alarmMin}"
+//                } else "",
+//                showSwitch = true,
+//                isRowClickable = state.alarmOn,
+//                switchChecked = state.alarmOn,
+//                onCheckedChanged = {
+//                    when {
+//                        notificationPermission.status.isGranted -> {
+//                            if (state.alarmOn) {
+//                                state.setAlarmOn(false, null, null)
+//                            } else {
+//                                showNotificationTimeDialog = true
+//                            }
+//                        }
+//
+//                        notificationPermission.status.shouldShowRationale -> {
+//                            showNotificationPermissionBottomSheet = true
+//                        }
+//
+//                        else -> {
+//                            notificationPermission.launchPermissionRequest()
+//                        }
+//                    }
+//                }
+//            ) {
+//                if (state.alarmOn) {
+//                    showNotificationTimeDialog = true
+//                }
+//            }
 
             OVerticalDivider(colorToken = ColorToken.STROKE_02)
             SettingRow(
@@ -364,10 +364,10 @@ fun SettingRow(
                 .clickable(enabled = isRowClickable && isEditable) {
                     onClick()
                 }
+                .padding(horizontal = 16.dp)
                 .height(64.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(16.dp))
             OText(text = title, style = OTextStyle.Subtitle3)
             Spacer(modifier = Modifier.weight(1f))
             OText(
@@ -384,16 +384,12 @@ fun SettingRow(
             if (!showSwitch && isEditable) {
                 Spacer(modifier = Modifier.width(8.dp))
                 OImage(image = OImageRes.ArrowRight, size = 14.dp)
-                Spacer(modifier = Modifier.width(16.dp))
-            } else {
-                Spacer(modifier = Modifier.width(12.dp))
             }
         }
         if (showSwitch && isEditable) {
             OSwitch(checked = switchChecked) {
                 onCheckedChanged()
             }
-            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 }

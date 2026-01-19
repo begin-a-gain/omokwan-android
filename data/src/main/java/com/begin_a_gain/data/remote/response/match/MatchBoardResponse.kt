@@ -36,6 +36,6 @@ data class MatchSettingsResponse(
     val repeatDayTypes: List<Int>,
     val maxParticipants: Int,
     val category: String,
-    val password: String,
+    val password: String?,
     val isPublic: Boolean
 )
