@@ -4,6 +4,7 @@ import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.domain.model.match.MatchSettings
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
@@ -22,4 +23,5 @@ interface MatchRepository {
     suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean>
     suspend fun getParticipants(matchId: Int): Result<List<ParticipantInfo>>
     suspend fun getMatchBoard(matchId: Int): Result<MatchBoard>
+    suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
 }

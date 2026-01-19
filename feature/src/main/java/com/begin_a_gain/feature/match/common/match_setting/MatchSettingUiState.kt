@@ -21,5 +21,7 @@ data class MatchSettingUiState(
     val alarmMin: Int = 0,
     val isPrivate: Boolean = false,
     val setPrivate: (value: Boolean, code: String?) -> Unit = { _, _ -> },
-    val code: String = ""
+    val password: String = "",
+    val matchCode: String = "",
+    val onClickMatchCode: () -> Unit = {}
 )

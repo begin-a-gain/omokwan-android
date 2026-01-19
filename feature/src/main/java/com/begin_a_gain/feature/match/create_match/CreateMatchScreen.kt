@@ -69,7 +69,7 @@ fun CreateMatchScreen(
                 alarmMin = state.alarmMin,
                 isPrivate = state.isPrivate,
                 setPrivate = viewModel::setPrivate,
-                code = state.code
+                password = state.code
             )
         )
 

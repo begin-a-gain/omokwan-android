@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,6 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingCommonLayout
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiType
@@ -32,14 +35,21 @@ import com.begin_a_gain.design.util.OScreen
 @Preview
 @Composable
 fun MatchSettingScreen(
-    isLeader: Boolean = true,
+    matchId: Int = 0,
+    viewModel: MatchSettingViewModel = hiltViewModel(),
     navigateToMatch: () -> Unit = {},
     navigateToInvite: () -> Unit = {},
     navigateToChangeLeader: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
 
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    var isLeader by rememberSaveable { mutableStateOf(false) } // changed by sharedViewModel
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId)
+    }
 
     OScreen(
         title = "대국 설정",
@@ -57,25 +67,22 @@ fun MatchSettingScreen(
             MatchSettingCommonLayout(
                 type = if (isLeader) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
                 state = MatchSettingUiState(
-                    title = "",
-                    setMatchTitle = {
+                    title = state.title,
+                    setMatchTitle = { },
+                    daysInProgress = state.daysInProgress,
+                    matchCode = state.matchCode,
+                    onClickMatchCode = {
 
                     },
-                    daysInProgress = 1,
                     selectedDay = (1..7).map { true },
-                    maxParticipantsCount = 5,
-                    setMaximumParticipants = {
-
-                    },
-                    selectedCategory = null,
+                    maxParticipantsCount = state.maxParticipantsCount,
+                    setMaximumParticipants = { },
+                    selectedCategory = state.selectedCategory,
                     setCategory = {
 
                     },
-                    alarmOn = false,
-                    alarmHour = 0,
-                    alarmMin = 0,
-                    isPrivate = false,
-                    code = "0000"
+                    isPrivate = state.isPrivate,
+                    password = state.password
                 )
             )
 

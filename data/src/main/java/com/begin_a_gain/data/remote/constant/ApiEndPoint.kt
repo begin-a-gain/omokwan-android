@@ -18,4 +18,6 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun Match.all() = this.endPoint + "/all"
     fun Match.board(matchId: Int) = this.endPoint + "/$matchId/board"
     fun Match.participants(matchId: Int) = this.endPoint + "/$matchId/participants"
+    fun Match.settings(matchId: Int) = this.endPoint + "/$matchId/settings"
+    fun Match.changeHost(matchId: Int) = this.endPoint + "/$matchId/host"
 }

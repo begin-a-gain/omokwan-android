@@ -2,11 +2,8 @@ package com.begin_a_gain.data.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.begin_a_gain.data.remote.api.MatchApi
-import com.begin_a_gain.data.remote.response.MatchItemResponse
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.repository.MatchRepository
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class MatchPagingSource(
     private val matchRepository: MatchRepository,

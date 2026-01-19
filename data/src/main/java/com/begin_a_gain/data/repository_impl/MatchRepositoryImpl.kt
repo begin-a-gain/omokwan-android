@@ -7,6 +7,7 @@ import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
+import com.begin_a_gain.domain.model.match.MatchSettings
 import com.begin_a_gain.domain.model.match.MatchUser
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
@@ -157,6 +158,30 @@ class MatchRepositoryImpl @Inject internal constructor(
                         omok = user.participantNumbers
                     )
                 }?: emptyList()
+            }
+        )
+    }
+
+    override suspend fun getMatchSettings(matchId: Int): Result<MatchSettings> {
+        return callApi(
+            call = {
+                matchApi.getMatchSettings(matchId)
+            },
+            handleResponse = {
+                val categoryItem = localRepository.getCategoryList().firstOrNull { category ->
+                    category.name == it?.category
+                }
+
+                MatchSettings(
+                    name = it?.name ?: "",
+                    matchCode = it?.matchCode ?: "",
+                    ongoingDays = it?.ongoingDays ?: 0,
+                    repeatDayTypes = it?.repeatDayTypes ?: emptyList(),
+                    maxParticipants = it?.maxParticipants ?: 0,
+                    category = categoryItem,
+                    isPublic = it?.isPublic ?: true,
+                    password = it?.password ?: ""
+                )
             }
         )
     }

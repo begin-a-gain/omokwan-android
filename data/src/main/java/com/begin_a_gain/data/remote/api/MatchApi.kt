@@ -6,15 +6,18 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.all
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.board
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.participants
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.settings
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
-import com.begin_a_gain.data.remote.response.CreateMatchResponse
-import com.begin_a_gain.data.remote.response.JoinMatchResponse
-import com.begin_a_gain.data.remote.response.MatchBoardResponse
-import com.begin_a_gain.data.remote.response.MatchCategoryItemResponse
-import com.begin_a_gain.data.remote.response.MatchListResponse
-import com.begin_a_gain.data.remote.response.MyDailyMatchResponse
-import com.begin_a_gain.data.remote.response.ParticipantsResponse
+import com.begin_a_gain.data.remote.response.match.CreateMatchResponse
+import com.begin_a_gain.data.remote.response.match.JoinMatchResponse
+import com.begin_a_gain.data.remote.response.match.MatchBoardResponse
+import com.begin_a_gain.data.remote.response.match.MatchCategoryItemResponse
+import com.begin_a_gain.data.remote.response.match.MatchItemResponse
+import com.begin_a_gain.data.remote.response.match.MatchListResponse
+import com.begin_a_gain.data.remote.response.match.MatchSettingsResponse
+import com.begin_a_gain.data.remote.response.match.MyDailyMatchResponse
+import com.begin_a_gain.data.remote.response.match.ParticipantsResponse
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import io.ktor.client.HttpClient
@@ -79,5 +82,9 @@ class MatchApi @Inject constructor(
 
     suspend fun getParticipants(matchId: Int): Response<ParticipantsResponse> {
         return client.get(ApiEndPoint.Match.participants(matchId)).body()
+    }
+
+    suspend fun getMatchSettings(matchId: Int): Response<MatchSettingsResponse> {
+        return client.get(ApiEndPoint.Match.settings(matchId)).body()
     }
 }
