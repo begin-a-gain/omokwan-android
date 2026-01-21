@@ -5,6 +5,7 @@ import com.begin_a_gain.domain.model.match.MatchCategoryItem
 
 data class MatchSettingState(
     override val loadingCount: Int = 0,
+    val isHost: Boolean = false,
     val daysInProgress: Int = 0,
     val matchCode: String = "",
     val selectedDay: List<Boolean> = listOf(),

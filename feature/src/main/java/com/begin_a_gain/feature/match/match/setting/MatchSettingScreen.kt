@@ -38,6 +38,7 @@ import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiType
 import com.begin_a_gain.feature.match.common.match_setting.SettingBox
 import com.begin_a_gain.feature.match.common.match_setting.SettingRow
+import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -46,6 +47,7 @@ import kotlinx.coroutines.launch
 fun MatchSettingScreen(
     matchId: Int = 0,
     viewModel: MatchSettingViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMatch: () -> Unit = {},
     navigateToInvite: () -> Unit = {},
     navigateToChangeLeader: () -> Unit = {}
@@ -55,11 +57,10 @@ fun MatchSettingScreen(
     val clipboard = LocalClipboard.current
 
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
-    var isLeader by rememberSaveable { mutableStateOf(true) } // changed by sharedViewModel
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(matchId)
+        viewModel.initialize(matchId, sharedViewModel.isHost.value)
         snapshotFlow { state.currentSettings }
             .distinctUntilChanged()
             .collect { settings ->
@@ -90,7 +91,7 @@ fun MatchSettingScreen(
                 .verticalScroll(scroll)
         ) {
             MatchSettingCommonLayout(
-                type = if (isLeader) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
+                type = if (state.isHost) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
                 state = MatchSettingUiState(
                     title = state.currentSettings.title,
                     setMatchTitle = { title ->
@@ -138,7 +139,7 @@ fun MatchSettingScreen(
                     navigateToInvite()
                 }
 
-                if (isLeader) {
+                if (state.isHost) {
                     OVerticalDivider(colorToken = ColorToken.STROKE_02)
                     SettingRow(
                         title = "방장 변경하기",

@@ -73,6 +73,7 @@ fun MatchScreen(
     isInitial: Boolean = false,
     matchId: Int = -1,
     viewModel: MatchViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
@@ -88,7 +89,9 @@ fun MatchScreen(
     var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(matchId)
+        viewModel.initialize(matchId) { hostId, amIHost ->
+            sharedViewModel.setCurrentHost(hostId, amIHost)
+        }
     }
 
     OScreen(

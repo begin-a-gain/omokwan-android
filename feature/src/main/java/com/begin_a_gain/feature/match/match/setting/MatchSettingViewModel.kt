@@ -12,13 +12,14 @@ class MatchSettingViewModel @Inject constructor(
     private val matchRepository: MatchRepository
 ) : BaseViewModel<MatchSettingState, Nothing>(MatchSettingState()) {
 
-    fun initialize(matchId: Int) {
+    fun initialize(matchId: Int, isHost: Boolean) {
         viewModelScope.withLoading {
             matchRepository.getMatchSettings(matchId)
                 .onSuccess {
                     intent {
                         reduce {
                             state.copy(
+                                isHost = isHost,
                                 initialSettings = MatchSettingsItem(
                                     title = it.name,
                                     maxParticipantsCount = it.maxParticipants,

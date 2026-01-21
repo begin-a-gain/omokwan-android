@@ -75,7 +75,7 @@ class MatchApi @Inject constructor(
 
     suspend fun getMatchBoard(matchId: Int): Response<MatchBoardResponse> {
         return client.get(ApiEndPoint.Match.board(matchId)) {
-            parameter("date", "2026-01-14")
+            parameter("date", "2026-01-21")
             parameter("size", 10)
         }.body()
     }

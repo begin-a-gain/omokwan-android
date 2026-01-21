@@ -1,6 +1,7 @@
 package com.begin_a_gain.omokwang.navigation.match
 
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -8,6 +9,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.begin_a_gain.feature.match.invite_member.InviteMemberScreen
 import com.begin_a_gain.feature.match.match.MatchScreen
+import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import com.begin_a_gain.feature.match.match.change_leader.ChangeLeaderScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
 import com.begin_a_gain.omokwang.navigation.popAndNavigate
@@ -45,8 +47,10 @@ fun NavGraphBuilder.matchGraph(
                 navController.getBackStackEntry<MatchGraph>()
             }
             val args = parentEntry.toRoute<MatchGraph>()
+            val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             MatchScreen(
                 matchId = args.matchId,
+                sharedViewModel = sharedViewModel,
                 isInitial = args.isInitial,
                 navigateToMain = navigateToMain,
                 navigateToSetting = {
@@ -60,8 +64,10 @@ fun NavGraphBuilder.matchGraph(
                 navController.getBackStackEntry<MatchGraph>()
             }
             val args = parentEntry.toRoute<MatchGraph>()
+            val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             MatchSettingScreen(
                 matchId = args.matchId,
+                sharedViewModel = sharedViewModel,
                 navigateToMatch = {
                     navController.popAndNavigate(Match)
                 },
