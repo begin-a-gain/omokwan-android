@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.match.change_leader
+package com.begin_a_gain.feature.match.match.change_host
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,9 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,14 +38,13 @@ import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 
 @Preview
 @Composable
-fun ChangeLeaderScreen(
+fun ChangeHostScreen(
     matchId: Int = -1,
-    viewModel: ChangeLeaderViewModel = hiltViewModel(),
+    viewModel: ChangeHostViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToSetting: () -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
-    var selectedIndex by rememberSaveable { mutableStateOf(-1) }
 
     LaunchedEffect(Unit) {
         viewModel.initialize(matchId = matchId, participants = sharedViewModel.currentParticipants.value)
@@ -62,18 +58,18 @@ fun ChangeLeaderScreen(
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "대국장 변경하기",
-        bottomButtonType = if (selectedIndex == -1) ButtonType.Disable else ButtonType.Primary
+        bottomButtonType = if (state.selectedIndex == -1) ButtonType.Disable else ButtonType.Primary
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             state.participants.forEachIndexed { index, member ->
-                LeaderCandidateItem(
+                HostCandidateItem(
                     member = member,
-                    isSelected = index == selectedIndex
+                    isSelected = index == state.selectedIndex
                 ) {
-                    selectedIndex = index
+                    viewModel.setSelectedIndex(index)
                 }
             }
         }
@@ -82,7 +78,7 @@ fun ChangeLeaderScreen(
 
 @Preview
 @Composable
-fun LeaderCandidateItem(
+fun HostCandidateItem(
     member: ParticipantInfo = ParticipantInfo(-1, "가나다라", 5, 5, 5),
     isSelected: Boolean = false,
     onSelect: () -> Unit = {}

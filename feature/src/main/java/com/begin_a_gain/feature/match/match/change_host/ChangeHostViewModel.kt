@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.match.change_leader
+package com.begin_a_gain.feature.match.match.change_host
 
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.ParticipantInfo
@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ChangeLeaderViewModel @Inject constructor(
+class ChangeHostViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : BaseViewModel<ChangeLeaderState, Nothing>(ChangeLeaderState()) {
+) : BaseViewModel<ChangeHostState, Nothing>(ChangeHostState()) {
 
     private var currentMatchId = MutableStateFlow(-1)
 
@@ -21,5 +21,13 @@ class ChangeLeaderViewModel @Inject constructor(
                 participants = participants.filter { !it.isHost }
             )
         }
+    }
+
+    fun setSelectedIndex(index: Int) = intent {
+        reduce { state.copy(selectedIndex = index) }
+    }
+
+    fun changeHost() {
+
     }
 }

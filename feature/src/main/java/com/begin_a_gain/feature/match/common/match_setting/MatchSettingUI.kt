@@ -106,7 +106,7 @@ fun MatchSettingCommonLayout(
             text = state.title,
             status = when (type) {
                 MatchSettingUiType.NewMatch,
-                MatchSettingUiType.MatchLeader -> TextFieldStatus.Default
+                MatchSettingUiType.MatchHost -> TextFieldStatus.Default
 
                 MatchSettingUiType.MatchMember -> TextFieldStatus.ReadOnly
             }

@@ -50,7 +50,7 @@ fun MatchSettingScreen(
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMatch: () -> Unit = {},
     navigateToInvite: () -> Unit = {},
-    navigateToChangeLeader: () -> Unit = {}
+    navigateToChangeHost: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
     val scope = rememberCoroutineScope()
@@ -91,7 +91,7 @@ fun MatchSettingScreen(
                 .verticalScroll(scroll)
         ) {
             MatchSettingCommonLayout(
-                type = if (state.isHost) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
+                type = if (state.isHost) MatchSettingUiType.MatchHost else MatchSettingUiType.MatchMember,
                 state = MatchSettingUiState(
                     title = state.currentSettings.title,
                     setMatchTitle = { title ->
@@ -145,7 +145,7 @@ fun MatchSettingScreen(
                         title = "방장 변경하기",
                         value = ""
                     ) {
-                        navigateToChangeLeader()
+                        navigateToChangeHost()
                     }
                 }
             }

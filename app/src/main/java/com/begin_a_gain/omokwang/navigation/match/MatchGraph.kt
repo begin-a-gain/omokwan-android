@@ -10,7 +10,7 @@ import androidx.navigation.toRoute
 import com.begin_a_gain.feature.match.invite_member.InviteMemberScreen
 import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
-import com.begin_a_gain.feature.match.match.change_leader.ChangeLeaderScreen
+import com.begin_a_gain.feature.match.match.change_host.ChangeHostScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
 import com.begin_a_gain.omokwang.navigation.popAndNavigate
 import kotlinx.serialization.Serializable
@@ -33,7 +33,7 @@ data class MatchSetting(
 object InviteMatch
 
 @Serializable
-object ChangeLeader
+object ChangeHost
 
 fun NavGraphBuilder.matchGraph(
     navController: NavHostController,
@@ -74,8 +74,8 @@ fun NavGraphBuilder.matchGraph(
                 navigateToInvite = {
                     navController.navigate(InviteMatch)
                 },
-                navigateToChangeLeader = {
-                    navController.navigate(ChangeLeader)
+                navigateToChangeHost = {
+                    navController.navigate(ChangeHost)
                 }
             )
         }
@@ -88,13 +88,13 @@ fun NavGraphBuilder.matchGraph(
             )
         }
 
-        composable<ChangeLeader> { backStackEntry ->
+        composable<ChangeHost> { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry<MatchGraph>()
             }
             val args = parentEntry.toRoute<MatchGraph>()
             val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
-            ChangeLeaderScreen(
+            ChangeHostScreen(
                 matchId = args.matchId,
                 sharedViewModel = sharedViewModel,
                 navigateToSetting = {
