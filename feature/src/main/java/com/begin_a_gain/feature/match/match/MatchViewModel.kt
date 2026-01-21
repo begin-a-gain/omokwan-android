@@ -15,7 +15,7 @@ class MatchViewModel @Inject constructor(
 
     private val currentMatchId = MutableStateFlow(-1)
 
-    fun initialize(matchId: Int, setHost: (Int, Boolean) -> Unit) {
+    fun initialize(matchId: Int, saveMatchInfo: (Boolean, List<ParticipantInfo>) -> Unit) {
         currentMatchId.value = matchId
         viewModelScope.withLoading {
             val board = matchRepository.getMatchBoard(matchId)
@@ -24,13 +24,13 @@ class MatchViewModel @Inject constructor(
             val participants: List<ParticipantInfo> = matchRepository.getParticipants(matchId)
                 .getOrDefault(emptyList())
 
+            var amIHost = false
             intent {
                 val participantMap = participants.associateBy { it.id }
                 val combinedParticipants = board?.users?.mapIndexed { index, user ->
                     val info = participantMap[user.userId]
                     if (user.isHost) {
-                        val amIHost = index == 0
-                        setHost(user.userId, amIHost)
+                        amIHost = index == 0
                     }
                     ParticipantInfo(
                         id = user.userId,
@@ -41,7 +41,7 @@ class MatchViewModel @Inject constructor(
                         isHost = user.isHost
                     )
                 } ?: participants
-
+                saveMatchInfo(amIHost, combinedParticipants)
                 reduce { state.copy(participants = combinedParticipants) }
             }
         }

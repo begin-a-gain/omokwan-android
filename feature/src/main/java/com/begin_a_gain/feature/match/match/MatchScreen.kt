@@ -89,8 +89,8 @@ fun MatchScreen(
     var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(matchId) { hostId, amIHost ->
-            sharedViewModel.setCurrentHost(hostId, amIHost)
+        viewModel.initialize(matchId) { amIHost, participants ->
+            sharedViewModel.setCurrentMatch(amIHost, participants)
         }
     }
 

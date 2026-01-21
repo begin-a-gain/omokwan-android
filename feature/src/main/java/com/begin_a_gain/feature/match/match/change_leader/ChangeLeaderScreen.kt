@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,8 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.ParticipantInfo
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.selection.ORadioButton
 import com.begin_a_gain.design.component.text.InitialText
 import com.begin_a_gain.design.component.text.OText
@@ -33,12 +36,24 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
+import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 
 @Preview
 @Composable
 fun ChangeLeaderScreen(
+    matchId: Int = -1,
+    viewModel: ChangeLeaderViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToSetting: () -> Unit = {}
 ) {
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    var selectedIndex by rememberSaveable { mutableStateOf(-1) }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId = matchId, participants = sharedViewModel.currentParticipants.value)
+    }
+
     OScreen(
         title = "대국장 변경하기",
         showBackButton = true,
@@ -46,21 +61,14 @@ fun ChangeLeaderScreen(
             navigateToSetting()
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
-        bottomButtonText = "대국장 변경하기"
+        bottomButtonText = "대국장 변경하기",
+        bottomButtonType = if (selectedIndex == -1) ButtonType.Disable else ButtonType.Primary
     ) {
-        var selectedIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            listOf(
-                ParticipantInfo(-1, "연날리기", 1000, 100, 1000),
-                ParticipantInfo(-1, "생갈치1호의행방불명", 1, 10, 10),
-                ParticipantInfo(-1, "쥬짱", 10, 5, 10),
-            ).forEachIndexed { index, member ->
+            state.participants.forEachIndexed { index, member ->
                 LeaderCandidateItem(
                     member = member,
                     isSelected = index == selectedIndex

@@ -88,8 +88,15 @@ fun NavGraphBuilder.matchGraph(
             )
         }
 
-        composable<ChangeLeader> {
+        composable<ChangeLeader> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<MatchGraph>()
+            }
+            val args = parentEntry.toRoute<MatchGraph>()
+            val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             ChangeLeaderScreen(
+                matchId = args.matchId,
+                sharedViewModel = sharedViewModel,
                 navigateToSetting = {
                     navController.popBackStack()
                 }
