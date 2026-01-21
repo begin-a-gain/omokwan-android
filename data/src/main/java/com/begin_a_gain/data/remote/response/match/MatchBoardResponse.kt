@@ -1,5 +1,6 @@
 package com.begin_a_gain.data.remote.response.match
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,8 +25,10 @@ data class ParticipantInfoResponse(
     val userId: Int,
     val nickname: String,
     val combo: Int,
-    val participantDays: Int,
-    val participantNumbers: Int
+    @SerialName("participantDays")
+    val ongoingDays: Int,
+    @SerialName("participantNumbers")
+    val omokCount: Int
 )
 
 @Serializable
@@ -35,7 +38,8 @@ data class MatchSettingsResponse(
     val matchCode: String,
     val repeatDayTypes: List<Int>,
     val maxParticipants: Int,
-    val category: String,
+    @SerialName("category")
+    val categoryCode: String?,
     val password: String?,
     val isPublic: Boolean
 )

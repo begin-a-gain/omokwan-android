@@ -38,11 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.begin_a_gain.feature.match.common.CategoryBottomSheet
-import com.begin_a_gain.feature.match.common.MatchCodeDialog
-import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
-import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
-import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OPickerBottomSheet
 import com.begin_a_gain.design.component.dialog.OTimePickerDialog
@@ -57,10 +52,13 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.feature.match.common.CategoryBottomSheet
+import com.begin_a_gain.feature.match.common.MatchCodeDialog
+import com.begin_a_gain.feature.match.create_match.util.type.RepeatDayType
+import com.begin_a_gain.feature.match.create_match.util.ui.DaySelection
+import com.begin_a_gain.feature.match.create_match.util.ui.NotificationPermissionBottomSheet
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -175,12 +173,14 @@ fun MatchSettingCommonLayout(
             modifier = Modifier.fillMaxWidth(),
             label = "기타 설정"
         ) {
-            SettingRow(
-                title = "대국 카테고리",
-                value = state.selectedCategory?.name?: "선택",
-                isEditable = type != MatchSettingUiType.MatchMember
-            ) {
-                showCategoryBottomSheet = true
+            if (type != MatchSettingUiType.MatchMember || state.selectedCategory != null) {
+                SettingRow(
+                    title = "대국 카테고리",
+                    value = state.selectedCategory?.name ?: "선택",
+                    isEditable = type != MatchSettingUiType.MatchMember
+                ) {
+                    showCategoryBottomSheet = true
+                }
             }
 
 //            OVerticalDivider(colorToken = ColorToken.STROKE_02)
@@ -221,10 +221,18 @@ fun MatchSettingCommonLayout(
             OVerticalDivider(colorToken = ColorToken.STROKE_02)
             SettingRow(
                 title = "비공개",
-                value = if (state.isPrivate) "코드 : ${state.password}" else "",
+                value = if (type == MatchSettingUiType.MatchMember) {
+                    if (state.isPrivate) state.password else "공개"
+                } else {
+                    if (state.isPrivate) "코드 : ${state.password}" else ""
+                },
                 showSwitch = true,
                 switchChecked = state.isPrivate,
                 isRowClickable = state.isPrivate,
+                isValueClickable = type == MatchSettingUiType.MatchMember && state.isPrivate,
+                onValueClick = {
+                    state.onPasswordClick()
+                },
                 onCheckedChanged = {
                     if (state.isPrivate) state.setPrivate(false, null)
                     else showCodeDialog = true
@@ -265,7 +273,7 @@ fun MatchSettingCommonLayout(
     if (showCategoryBottomSheet) {
         CategoryBottomSheet(
             sheetState = bottomSheetState,
-            selectedItem = state.selectedCategory ,
+            selectedItem = state.selectedCategory,
             onDismissRequest = { showCategoryBottomSheet = false },
             onSelected = {
                 showCategoryBottomSheet = false
@@ -278,6 +286,7 @@ fun MatchSettingCommonLayout(
         MatchCodeDialog(
             onConfirmClick = { code ->
                 state.setPrivate(true, code)
+                showCodeDialog = false
             }
         ) {
             showCodeDialog = false
@@ -385,10 +394,12 @@ fun SettingRow(
                 Spacer(modifier = Modifier.width(8.dp))
                 OImage(image = OImageRes.ArrowRight, size = 14.dp)
             }
-        }
-        if (showSwitch && isEditable) {
-            OSwitch(checked = switchChecked) {
-                onCheckedChanged()
+
+            if (showSwitch && isEditable) {
+                Spacer(modifier = Modifier.width(8.dp))
+                OSwitch(checked = switchChecked) {
+                    onCheckedChanged()
+                }
             }
         }
     }
@@ -400,8 +411,8 @@ fun SettingRowPreview() {
     OScreen {
         SettingRow("Test1", "Value1", true, false, true, false, {}, false, {}, {})
         SettingRow("Test2", "Value2", true, true, true, true, {}, false, {}, {})
-        SettingRow("Test3", "", true, true, true, false,{}, false,  {}, {})
-        SettingRow("Test4", "Value4", false, false, true, true,{}, false,  {}, {})
+        SettingRow("Test3", "", true, true, true, false, {}, false, {}, {})
+        SettingRow("Test4", "Value4", false, false, true, true, {}, false, {}, {})
         SettingRow("Test2", "Value2", false, true, true, true, {}, true, {}, {})
     }
 }

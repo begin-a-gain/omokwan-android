@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.match.setting
 
+import android.content.ClipData
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,25 +13,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.toClipEntry
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.design.component.OVerticalDivider
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ProgressBar
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.design.util.ScreenBottomButtonType
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingCommonLayout
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiType
 import com.begin_a_gain.feature.match.common.match_setting.SettingBox
 import com.begin_a_gain.feature.match.common.match_setting.SettingRow
-import com.begin_a_gain.design.component.OVerticalDivider
-import com.begin_a_gain.design.component.button.ButtonType
-import com.begin_a_gain.design.component.button.OButton
-import com.begin_a_gain.design.component.dialog.ODialog
-import com.begin_a_gain.design.component.image.OImageRes
-import com.begin_a_gain.design.theme.ColorToken
-import com.begin_a_gain.design.util.OScreen
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -42,13 +51,26 @@ fun MatchSettingScreen(
     navigateToChangeLeader: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
+    val scope = rememberCoroutineScope()
+    val clipboard = LocalClipboard.current
 
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
-    var isLeader by rememberSaveable { mutableStateOf(false) } // changed by sharedViewModel
+    var isLeader by rememberSaveable { mutableStateOf(true) } // changed by sharedViewModel
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.initialize(matchId)
+        snapshotFlow { state.currentSettings }
+            .distinctUntilChanged()
+            .collect { settings ->
+                viewModel.intent {
+                    reduce {
+                        state.copy(
+                            hasChanges = settings != state.initialSettings
+                        )
+                    }
+                }
+            }
     }
 
     OScreen(
@@ -56,8 +78,11 @@ fun MatchSettingScreen(
         showBackButton = false,
         trailingIcon = OImageRes.Cancel,
         onTrailingIconClick = {
-
-        }
+            navigateToMatch()
+        },
+        bottomButtonUiType = ScreenBottomButtonType.Modal,
+        bottomButtonText = "저장하기",
+        bottomButtonType = if (state.hasChanges) ButtonType.Primary else ButtonType.Disable
     ) {
         Column(
             modifier = Modifier
@@ -67,22 +92,38 @@ fun MatchSettingScreen(
             MatchSettingCommonLayout(
                 type = if (isLeader) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
                 state = MatchSettingUiState(
-                    title = state.title,
-                    setMatchTitle = { },
+                    title = state.currentSettings.title,
+                    setMatchTitle = { title ->
+                        viewModel.setTitle(title)
+                    },
                     daysInProgress = state.daysInProgress,
                     matchCode = state.matchCode,
                     onClickMatchCode = {
-
+                        scope.launch {
+                            val clipData = ClipData.newPlainText("match_code", state.matchCode)
+                            clipboard.setClipEntry(clipData.toClipEntry())
+                        }
                     },
                     selectedDay = (1..7).map { true },
-                    maxParticipantsCount = state.maxParticipantsCount,
-                    setMaximumParticipants = { },
-                    selectedCategory = state.selectedCategory,
-                    setCategory = {
-
+                    maxParticipantsCount = state.currentSettings.maxParticipantsCount,
+                    setMaximumParticipants = { count ->
+                        viewModel.setMaxParticipantsCount(count)
                     },
-                    isPrivate = state.isPrivate,
-                    password = state.password
+                    selectedCategory = state.currentSettings.selectedCategory,
+                    setCategory = { category ->
+                        viewModel.setCategory(category)
+                    },
+                    isPrivate = state.currentSettings.isPrivate,
+                    setPrivate = { value, code ->
+                        viewModel.setPrivate(value, code)
+                    },
+                    password = state.currentSettings.password,
+                    onPasswordClick = {
+                        scope.launch {
+                            val clipData = ClipData.newPlainText("password", state.currentSettings.password)
+                            clipboard.setClipEntry(clipData.toClipEntry())
+                        }
+                    }
                 )
             )
 
@@ -139,6 +180,10 @@ fun MatchSettingScreen(
             ) {
                 showCheckLeavingDialog = false
             }
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
         }
     }
 }

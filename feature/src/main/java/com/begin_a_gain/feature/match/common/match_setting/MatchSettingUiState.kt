@@ -22,6 +22,7 @@ data class MatchSettingUiState(
     val isPrivate: Boolean = false,
     val setPrivate: (value: Boolean, code: String?) -> Unit = { _, _ -> },
     val password: String = "",
+    val onPasswordClick: () -> Unit = {},
     val matchCode: String = "",
     val onClickMatchCode: () -> Unit = {}
 )

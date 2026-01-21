@@ -154,8 +154,8 @@ class MatchRepositoryImpl @Inject internal constructor(
                         id = user.userId,
                         name = user.nickname,
                         combo = user.combo,
-                        days = user.participantDays,
-                        omok = user.participantNumbers
+                        days = user.ongoingDays,
+                        omok = user.omokCount
                     )
                 }?: emptyList()
             }
@@ -169,7 +169,7 @@ class MatchRepositoryImpl @Inject internal constructor(
             },
             handleResponse = {
                 val categoryItem = localRepository.getCategoryList().firstOrNull { category ->
-                    category.name == it?.category
+                    category.code == it?.categoryCode
                 }
 
                 MatchSettings(
