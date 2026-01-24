@@ -10,3 +10,7 @@ data class ChangeHostState(
 ): BaseState {
     override fun updateLoadingCount(count: Int): BaseState = copy(loadingCount = count)
 }
+
+interface ChangeHostSideEffect {
+    data class ChangeSuccess(val newHostName: String): ChangeHostSideEffect
+}

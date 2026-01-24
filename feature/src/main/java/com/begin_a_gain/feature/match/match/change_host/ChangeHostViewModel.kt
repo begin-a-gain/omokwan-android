@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.match.change_host
 
+import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -10,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangeHostViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : BaseViewModel<ChangeHostState, Nothing>(ChangeHostState()) {
+) : BaseViewModel<ChangeHostState, ChangeHostSideEffect>(ChangeHostState()) {
 
     private var currentMatchId = MutableStateFlow(-1)
 
@@ -28,6 +29,17 @@ class ChangeHostViewModel @Inject constructor(
     }
 
     fun changeHost() {
-
+        viewModelScope.withLoading {
+            val state = container.stateFlow.value
+            val newHost = state.participants[state.selectedIndex]
+            matchRepository.postChangeHost(
+                matchId = currentMatchId.value,
+                newHostId = newHost.id
+            ).onSuccess {
+                intent {
+                    postSideEffect(ChangeHostSideEffect.ChangeSuccess(newHost.name))
+                }
+            }
+        }
     }
 }

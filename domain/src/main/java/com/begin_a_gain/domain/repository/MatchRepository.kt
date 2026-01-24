@@ -24,4 +24,5 @@ interface MatchRepository {
     suspend fun getParticipants(matchId: Int): Result<List<ParticipantInfo>>
     suspend fun getMatchBoard(matchId: Int): Result<MatchBoard>
     suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
+    suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean>
 }

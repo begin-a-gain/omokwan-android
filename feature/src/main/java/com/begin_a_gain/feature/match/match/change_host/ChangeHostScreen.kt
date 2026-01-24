@@ -35,6 +35,7 @@ import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
 import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
@@ -42,7 +43,7 @@ fun ChangeHostScreen(
     matchId: Int = -1,
     viewModel: ChangeHostViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
-    navigateToSetting: () -> Unit = {}
+    backToSetting: (toast: String?) -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
@@ -50,15 +51,26 @@ fun ChangeHostScreen(
         viewModel.initialize(matchId = matchId, participants = sharedViewModel.currentParticipants.value)
     }
 
+    viewModel.collectSideEffect {
+        when (it) {
+            is ChangeHostSideEffect.ChangeSuccess -> {
+                backToSetting("대국장이 ‘${it.newHostName}’님으로 바뀌었어요.")
+            }
+        }
+    }
+
     OScreen(
         title = "대국장 변경하기",
         showBackButton = true,
         onBackButtonClick = {
-            navigateToSetting()
+            backToSetting(null)
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "대국장 변경하기",
-        bottomButtonType = if (state.selectedIndex == -1) ButtonType.Disable else ButtonType.Primary
+        bottomButtonType = if (state.selectedIndex == -1) ButtonType.Disable else ButtonType.Primary,
+        onBottomButtonClick = {
+            viewModel.changeHost()
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
@@ -132,6 +144,8 @@ fun HostCandidateItem(
         ORadioButton(
             modifier = Modifier.size(20.dp),
             checked = isSelected
-        ) { }
+        ) {
+            onSelect()
+        }
     }
 }

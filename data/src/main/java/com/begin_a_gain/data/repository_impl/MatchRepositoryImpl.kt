@@ -10,6 +10,7 @@ import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MatchSettings
 import com.begin_a_gain.domain.model.match.MatchUser
 import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -182,6 +183,17 @@ class MatchRepositoryImpl @Inject internal constructor(
                     isPublic = it?.isPublic ?: true,
                     password = it?.password ?: ""
                 )
+            }
+        )
+    }
+
+    override suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean> {
+        return callApi(
+            call = {
+                matchApi.postNewHost(matchId, ChangeMatchHostRequest(newHostId))
+            },
+            handleResponse = {
+                it?.hostId == newHostId
             }
         )
     }

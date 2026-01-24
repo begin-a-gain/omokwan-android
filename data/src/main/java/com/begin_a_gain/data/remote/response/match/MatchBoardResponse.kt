@@ -43,3 +43,8 @@ data class MatchSettingsResponse(
     val password: String?,
     val isPublic: Boolean
 )
+
+@Serializable
+data class ChangeHostResponse(
+    val hostId: Int
+)

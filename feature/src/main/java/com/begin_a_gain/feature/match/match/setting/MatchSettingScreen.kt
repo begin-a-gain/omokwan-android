@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MatchSettingScreen(
     matchId: Int = 0,
+    toast: String? = null,
     viewModel: MatchSettingViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMatch: () -> Unit = {},
@@ -83,8 +84,16 @@ fun MatchSettingScreen(
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "저장하기",
-        bottomButtonType = if (state.hasChanges) ButtonType.Primary else ButtonType.Disable
-    ) {
+        bottomButtonType = if (state.hasChanges) ButtonType.Primary else ButtonType.Disable,
+        snackBarBottomPadding = 20.dp
+    ) { showSnackBar ->
+
+        LaunchedEffect(toast) {
+            if (toast != null) {
+                showSnackBar(toast)
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
