@@ -48,3 +48,8 @@ data class MatchSettingsResponse(
 data class ChangeHostResponse(
     val hostId: Int
 )
+
+@Serializable
+data class DeleteParticipantResponse(
+    val userId: Int
+)

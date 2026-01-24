@@ -25,4 +25,6 @@ interface MatchRepository {
     suspend fun getMatchBoard(matchId: Int): Result<MatchBoard>
     suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
     suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean>
+    suspend fun deleteMe(matchId: Int): Result<Boolean>
+    suspend fun postKickUser(matchId: Int, userId: Int): Result<Boolean>
 }

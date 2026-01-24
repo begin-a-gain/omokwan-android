@@ -197,4 +197,27 @@ class MatchRepositoryImpl @Inject internal constructor(
             }
         )
     }
+
+    override suspend fun deleteMe(matchId: Int): Result<Boolean> {
+        val myId = localRepository.getUserId()
+        return callApi(
+            call = {
+                matchApi.deleteMe(matchId)
+            },
+            handleResponse = {
+                it?.userId == myId
+            }
+        )
+    }
+
+    override suspend fun postKickUser(matchId: Int, userId: Int): Result<Boolean> {
+        return callApi(
+            call = {
+                matchApi.postKickUser(matchId, userId)
+            },
+            handleResponse = {
+                it?.userId == userId
+            }
+        )
+    }
 }

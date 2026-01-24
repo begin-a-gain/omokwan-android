@@ -47,6 +47,9 @@ class UserRepositoryImpl @Inject constructor(
                     response.nickname?.let { nickname ->
                         localRepository.saveNickname(nickname)
                     }
+                    response.id?.let { userId ->
+                        localRepository.saveUserId(userId)
+                    }
 
                     UserInfo(
                         id = it.id ?: 0,

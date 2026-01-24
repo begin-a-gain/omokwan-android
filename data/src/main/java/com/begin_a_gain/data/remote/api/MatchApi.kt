@@ -6,12 +6,15 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.all
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.board
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.changeHost
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.deleteMe
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.kickUser
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.participants
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.settings
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.match.ChangeHostResponse
 import com.begin_a_gain.data.remote.response.match.CreateMatchResponse
+import com.begin_a_gain.data.remote.response.match.DeleteParticipantResponse
 import com.begin_a_gain.data.remote.response.match.JoinMatchResponse
 import com.begin_a_gain.data.remote.response.match.MatchBoardResponse
 import com.begin_a_gain.data.remote.response.match.MatchCategoryItemResponse
@@ -24,6 +27,7 @@ import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -94,5 +98,15 @@ class MatchApi @Inject constructor(
         return client.post(ApiEndPoint.Match.changeHost(matchId)) {
             setBody(request)
         }.body<Response<ChangeHostResponse>>()
+    }
+
+    suspend fun deleteMe(matchId: Int): Response<DeleteParticipantResponse> {
+        return client.delete(ApiEndPoint.Match.deleteMe(matchId))
+            .body<Response<DeleteParticipantResponse>>()
+    }
+
+    suspend fun postKickUser(matchId: Int, userId: Int): Response<DeleteParticipantResponse> {
+        return client.post(ApiEndPoint.Match.kickUser(matchId, userId))
+            .body<Response<DeleteParticipantResponse>>()
     }
 }
