@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.match.change_host
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -29,7 +28,7 @@ class ChangeHostViewModel @Inject constructor(
     }
 
     fun changeHost() {
-        viewModelScope.withLoading {
+        withLoading {
             val state = container.stateFlow.value
             val newHost = state.participants[state.selectedIndex]
             matchRepository.postChangeHost(

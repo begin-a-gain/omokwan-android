@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.create_match
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
@@ -80,7 +79,7 @@ class CreateMatchViewModel @Inject constructor(
     }
 
     fun createMatch() {
-        viewModelScope.withLoading {
+        withLoading {
             val state = container.stateFlow.value
             matchRepository.postCreateMatch(
                 request = CreateMatchRequest(

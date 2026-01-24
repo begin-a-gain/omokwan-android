@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.sign_in
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.core.util.SocialSignInUtil
 import com.begin_a_gain.domain.model.request.SignInRequest
@@ -22,13 +21,13 @@ class SignInViewModel @Inject constructor(
                 if (error != null) {
                     failedToKakaoSignUp(error)
                 } else if (token != null) {
-                    viewModelScope.withLoading {
+                    withLoading {
                         signIn(token.accessToken)
                     }
                 }
             },
             onSuccess = { token ->
-                viewModelScope.withLoading {
+                withLoading {
                     signIn(token.accessToken)
                 }
             }

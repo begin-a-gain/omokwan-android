@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.match.setting
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -13,7 +12,7 @@ class MatchSettingViewModel @Inject constructor(
 ) : BaseViewModel<MatchSettingState, Nothing>(MatchSettingState()) {
 
     fun initialize(matchId: Int, isHost: Boolean) {
-        viewModelScope.withLoading {
+        withLoading {
             matchRepository.getMatchSettings(matchId)
                 .onSuccess {
                     intent {

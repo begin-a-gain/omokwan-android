@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.match
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.ParticipantInfo
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -17,7 +16,7 @@ class MatchViewModel @Inject constructor(
 
     fun initialize(matchId: Int, saveMatchInfo: (Boolean, List<ParticipantInfo>) -> Unit) {
         currentMatchId.value = matchId
-        viewModelScope.withLoading {
+        withLoading {
             val board = matchRepository.getMatchBoard(matchId)
                 .getOrDefault(null)
 
