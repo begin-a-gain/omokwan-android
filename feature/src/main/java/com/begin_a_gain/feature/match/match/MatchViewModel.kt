@@ -1,7 +1,7 @@
 package com.begin_a_gain.feature.match.match
 
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,17 +10,21 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : BaseViewModel<MatchState, Nothing>(MatchState()) {
+) : BaseViewModel<MatchState, MatchSideEffect>(MatchState()) {
 
     private val currentMatchId = MutableStateFlow(-1)
 
-    fun initialize(matchId: Int, saveMatchInfo: (Boolean, List<ParticipantInfo>) -> Unit) {
+    fun initialize(
+        isInitial: Boolean,
+        matchId: Int,
+        saveMatchInfo: (Boolean, List<MemberInfo>) -> Unit
+    ) {
         currentMatchId.value = matchId
         withLoading {
             val board = matchRepository.getMatchBoard(matchId)
                 .getOrDefault(null)
 
-            val participants: List<ParticipantInfo> = matchRepository.getParticipants(matchId)
+            val participants: List<MemberInfo> = matchRepository.getParticipants(matchId)
                 .getOrDefault(emptyList())
 
             var amIHost = false
@@ -31,7 +35,7 @@ class MatchViewModel @Inject constructor(
                     if (user.isHost) {
                         amIHost = index == 0
                     }
-                    ParticipantInfo(
+                    MemberInfo(
                         id = user.userId,
                         name = user.nickname,
                         combo = info?.combo ?: 0,
@@ -42,6 +46,20 @@ class MatchViewModel @Inject constructor(
                 } ?: participants
                 saveMatchInfo(amIHost, combinedParticipants)
                 reduce { state.copy(participants = combinedParticipants) }
+                postSideEffect(MatchSideEffect.ShowInitialToast)
+            }
+        }
+    }
+
+    fun kickMember(member: MemberInfo) {
+        withLoading {
+            matchRepository.postKickUser(
+                matchId = currentMatchId.value,
+                userId = member.id
+            ).onSuccess {
+                intent {
+                    postSideEffect(MatchSideEffect.SuccessToKickMember(member.name))
+                }
             }
         }
     }

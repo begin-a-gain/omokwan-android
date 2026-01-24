@@ -2,7 +2,7 @@ package com.begin_a_gain.data.repository_impl
 
 import com.begin_a_gain.data.remote.api.MatchApi
 import com.begin_a_gain.data.remote.base.callApi
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
@@ -144,14 +144,14 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getParticipants(matchId: Int): Result<List<ParticipantInfo>> {
+    override suspend fun getParticipants(matchId: Int): Result<List<MemberInfo>> {
         return callApi(
             call = {
                 matchApi.getParticipants(matchId)
             },
             handleResponse = {
                 it?.userInfo?.map { user ->
-                    ParticipantInfo(
+                    MemberInfo(
                         id = user.userId,
                         name = user.nickname,
                         combo = user.combo,

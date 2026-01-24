@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -59,12 +60,13 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -72,6 +74,7 @@ import org.joda.time.YearMonth
 fun MatchScreen(
     isInitial: Boolean = false,
     matchId: Int = -1,
+    matchTitle: String = "대국방 이름",
     viewModel: MatchViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
@@ -85,17 +88,17 @@ fun MatchScreen(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showOthersProfileBottomSheet: ParticipantInfo? by rememberSaveable { mutableStateOf(null) }
-    var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
+    var showOthersProfileBottomSheet: MemberInfo? by rememberSaveable { mutableStateOf(null) }
+    var showMemberOutDialog: MemberInfo? by rememberSaveable { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(matchId) { amIHost, participants ->
+        viewModel.initialize(isInitial, matchId) { amIHost, participants ->
             sharedViewModel.setCurrentMatch(amIHost, participants)
         }
     }
 
     OScreen(
-        title = "대국방 이름",
+        title = matchTitle,
         showBackButton = true,
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
@@ -104,10 +107,15 @@ fun MatchScreen(
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp
     ) { showSnackBar ->
+        viewModel.collectSideEffect {
+            when(it) {
+                MatchSideEffect.ShowInitialToast -> {
+                    showSnackBar("새 대국을 만들었어요.")
+                }
 
-        LaunchedEffect(Unit) {
-            if (isInitial) {
-                showSnackBar("새 대국을 만들었어요.")
+                is MatchSideEffect.SuccessToKickMember -> {
+                    showSnackBar("'${it.name}'님을 내보냈어요.")
+                }
             }
         }
 
@@ -159,7 +167,7 @@ fun MatchScreen(
                     scope.launch {
                         showOthersProfileBottomSheet = null
                         delay(200L)
-                        showMemberOutDialog = true
+                        showMemberOutDialog = participant
                     }
                 }
             ) {
@@ -167,26 +175,22 @@ fun MatchScreen(
             }
         }
 
-        if (showMemberOutDialog) {
+        showMemberOutDialog?.let { member ->
             ODialog(
-                title = "이 멤버를 내보내시겠습니까?",
-                message = "해당 멤버는 대국에 대한 모든 정보가 사라지며 복구할 수 없습니다.",
+                title = "이 멤버를 내보낼까요?",
+                message = "해당 멤버에 대한 기록이 대국에서 사라지며 복구 할 수 없어요.",
                 buttonText = "내보내기",
                 buttonType = ButtonType.Alert,
                 onButtonClick = {
-                    // Todo : update
-                    scope.launch {
-                        showMemberOutDialog = false
-                        delay(200L)
-                        showSnackBar("‘0000’님을 내보내셨습니다.")
-                    }
+                    viewModel.kickMember(member)
+                    showMemberOutDialog = null
                 },
                 additionalButtonText = "취소",
                 onAdditionalButtonClick = {
-                    showMemberOutDialog = false
+                    showMemberOutDialog = null
                 }
             ) {
-               showMemberOutDialog = false
+                showMemberOutDialog = null
             }
         }
     }
@@ -372,7 +376,7 @@ fun AddMemberButton(
 fun MemberProfileBottomSheet(
     sheetState: SheetState,
     isMine: Boolean = false,
-    participant: ParticipantInfo = ParticipantInfo(
+    participant: MemberInfo = MemberInfo(
         id = -1,
         name = "가나다라",
         combo = 0,

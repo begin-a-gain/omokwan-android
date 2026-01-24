@@ -33,7 +33,7 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -91,7 +91,7 @@ fun ChangeHostScreen(
 @Preview
 @Composable
 fun HostCandidateItem(
-    member: ParticipantInfo = ParticipantInfo(-1, "가나다라", 5, 5, 5),
+    member: MemberInfo = MemberInfo(-1, "가나다라", 5, 5, 5),
     isSelected: Boolean = false,
     onSelect: () -> Unit = {}
 ) {

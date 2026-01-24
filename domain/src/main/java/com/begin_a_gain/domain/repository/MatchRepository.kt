@@ -1,6 +1,6 @@
 package com.begin_a_gain.domain.repository
 
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchInfo
@@ -21,7 +21,7 @@ interface MatchRepository {
         keyword: String
     ): PageResult<MatchInfo>
     suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean>
-    suspend fun getParticipants(matchId: Int): Result<List<ParticipantInfo>>
+    suspend fun getParticipants(matchId: Int): Result<List<MemberInfo>>
     suspend fun getMatchBoard(matchId: Int): Result<MatchBoard>
     suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
     suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean>

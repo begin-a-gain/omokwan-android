@@ -7,11 +7,11 @@ data class MatchHistory(
     val matchName: String,
     val matchDays: Int,
     val ownerId: String,
-    val membersHistory: List<ParticipantInfo>
+    val membersHistory: List<MemberInfo>
 )
 
 @Serializable
-data class ParticipantInfo(
+data class MemberInfo(
     val id: Int,
     val name: String,
     val combo: Int,

@@ -1,7 +1,7 @@
 package com.begin_a_gain.feature.match.match.change_host
 
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.domain.model.ParticipantInfo
+import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ class ChangeHostViewModel @Inject constructor(
 
     private var currentMatchId = MutableStateFlow(-1)
 
-    fun initialize(matchId: Int, participants: List<ParticipantInfo>) = intent {
+    fun initialize(matchId: Int, participants: List<MemberInfo>) = intent {
         currentMatchId.value = matchId
         reduce {
             state.copy(
