@@ -25,4 +25,8 @@ class MatchSharedViewModel @Inject constructor(
         _isHost.value = amIHost
         _currentParticipants.value = participants
     }
+
+    fun changeHost() {
+        _isHost.value = false
+    }
 }

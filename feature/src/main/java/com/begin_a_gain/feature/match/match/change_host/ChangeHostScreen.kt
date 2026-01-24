@@ -54,6 +54,7 @@ fun ChangeHostScreen(
     viewModel.collectSideEffect {
         when (it) {
             is ChangeHostSideEffect.ChangeSuccess -> {
+                sharedViewModel.changeHost()
                 backToSetting("대국장이 ‘${it.newHostName}’님으로 바뀌었어요.")
             }
         }
