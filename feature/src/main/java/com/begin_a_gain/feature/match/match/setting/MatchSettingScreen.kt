@@ -41,6 +41,7 @@ import com.begin_a_gain.feature.match.common.match_setting.SettingRow
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.viewmodel.container
 
 @Preview
 @Composable
@@ -58,6 +59,7 @@ fun MatchSettingScreen(
     val clipboard = LocalClipboard.current
 
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val participants by sharedViewModel.currentParticipants.collectAsStateWithLifecycle()
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -148,7 +150,7 @@ fun MatchSettingScreen(
                     navigateToInvite()
                 }
 
-                if (state.isHost) {
+                if (state.isHost && participants.size > 1) {
                     OVerticalDivider(colorToken = ColorToken.STROKE_02)
                     SettingRow(
                         title = "방장 변경하기",
