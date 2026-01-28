@@ -190,7 +190,7 @@ class MatchRepositoryImpl @Inject internal constructor(
     override suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean> {
         return callApi(
             call = {
-                matchApi.postNewHost(matchId, ChangeMatchHostRequest(newHostId))
+                matchApi.putNewHost(matchId, ChangeMatchHostRequest(newHostId))
             },
             handleResponse = {
                 it?.hostId == newHostId

@@ -31,6 +31,7 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import javax.inject.Inject
 
@@ -94,8 +95,8 @@ class MatchApi @Inject constructor(
         return client.get(ApiEndPoint.Match.settings(matchId)).body()
     }
 
-    suspend fun postNewHost(matchId: Int, request: ChangeMatchHostRequest): Response<ChangeHostResponse> {
-        return client.post(ApiEndPoint.Match.changeHost(matchId)) {
+    suspend fun putNewHost(matchId: Int, request: ChangeMatchHostRequest): Response<ChangeHostResponse> {
+        return client.put(ApiEndPoint.Match.changeHost(matchId)) {
             setBody(request)
         }.body<Response<ChangeHostResponse>>()
     }

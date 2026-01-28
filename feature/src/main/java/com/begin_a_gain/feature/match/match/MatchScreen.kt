@@ -152,7 +152,9 @@ fun MatchScreen(
         if (showMyProfileBottomSheet) {
             MemberProfileBottomSheet(
                 sheetState = sheetState,
-                isMine = true
+                isMine = true,
+                amIHost = state.amIHost,
+                participant = state.participants[0]
             ) {
                 showMyProfileBottomSheet = false
             }
@@ -163,6 +165,7 @@ fun MatchScreen(
                 sheetState = sheetState,
                 participant = participant,
                 isMine = false,
+                amIHost = state.amIHost,
                 onOutMemberClick = {
                     scope.launch {
                         showOthersProfileBottomSheet = null
@@ -376,6 +379,7 @@ fun AddMemberButton(
 fun MemberProfileBottomSheet(
     sheetState: SheetState,
     isMine: Boolean = false,
+    amIHost: Boolean = false,
     participant: MemberInfo = MemberInfo(
         id = -1,
         name = "가나다라",
@@ -451,7 +455,7 @@ fun MemberProfileBottomSheet(
                 }
             }
 
-            if (participant.isHost && !isMine) {
+            if (amIHost && !isMine) {
                 OButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = "내보내기",

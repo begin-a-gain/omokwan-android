@@ -27,8 +27,8 @@ class MatchViewModel @Inject constructor(
             val participants: List<MemberInfo> = matchRepository.getParticipants(matchId)
                 .getOrDefault(emptyList())
 
-            var amIHost = false
             intent {
+                var amIHost = false
                 val participantMap = participants.associateBy { it.id }
                 val combinedParticipants = board?.users?.mapIndexed { index, user ->
                     val info = participantMap[user.userId]
@@ -45,8 +45,10 @@ class MatchViewModel @Inject constructor(
                     )
                 } ?: participants
                 saveMatchInfo(amIHost, combinedParticipants)
-                reduce { state.copy(participants = combinedParticipants) }
-                postSideEffect(MatchSideEffect.ShowInitialToast)
+                reduce { state.copy(participants = combinedParticipants, amIHost = amIHost) }
+                if (isInitial) {
+                    postSideEffect(MatchSideEffect.ShowInitialToast)
+                }
             }
         }
     }
