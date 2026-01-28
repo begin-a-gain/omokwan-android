@@ -12,9 +12,6 @@ class MatchSharedViewModel @Inject constructor(
 
 ): ViewModel() {
 
-    private var _currentMatchId = MutableStateFlow(-1)
-    val currentMatchId = _currentMatchId.asStateFlow()
-
     private var _currentParticipants: MutableStateFlow<List<MemberInfo>> = MutableStateFlow(listOf())
     val currentParticipants = _currentParticipants.asStateFlow()
 

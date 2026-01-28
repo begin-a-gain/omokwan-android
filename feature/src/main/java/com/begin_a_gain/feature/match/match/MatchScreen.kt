@@ -115,6 +115,9 @@ fun MatchScreen(
 
                 is MatchSideEffect.SuccessToKickMember -> {
                     showSnackBar("'${it.name}'님을 내보냈어요.")
+                    viewModel.initialize(isInitial, matchId) { amIHost, participants ->
+                        sharedViewModel.setCurrentMatch(amIHost, participants)
+                    }
                 }
             }
         }
