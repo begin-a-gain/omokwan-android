@@ -86,7 +86,6 @@ fun NavGraphBuilder.matchGraph(
 
             MatchSettingScreen(
                 matchId = args.matchId,
-                title = args.matchTitle,
                 toast = toast,
                 sharedViewModel = sharedViewModel,
                 backToMain = { toast ->

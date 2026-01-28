@@ -3,6 +3,9 @@ package com.begin_a_gain.omokwang.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,6 +15,7 @@ import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
+import com.begin_a_gain.omokwang.navigation.match.ChangeHostToast
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.Match
 import com.begin_a_gain.omokwang.navigation.match.MatchGraph
@@ -87,9 +91,18 @@ fun OmokwanGraph(
             )
         }
 
-        composable<Main> {
-            // Todo : toast receive
+        composable<Main> { backStackEntry ->
+            // Todo : toast receive (bug)
+            val savedStateHandle = backStackEntry.savedStateHandle
+            val toast by savedStateHandle.getStateFlow<String?>(ChangeHostToast, null)
+                .collectAsStateWithLifecycle()
+
+            LaunchedEffect(toast) {
+                toast?.let { savedStateHandle.remove<String>(ChangeHostToast) }
+            }
+
             MainGraph(
+                toast = toast,
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { matchId, title ->

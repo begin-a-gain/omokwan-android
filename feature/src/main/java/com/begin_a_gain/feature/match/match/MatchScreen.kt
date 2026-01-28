@@ -100,6 +100,9 @@ fun MatchScreen(
     OScreen(
         title = matchTitle,
         showBackButton = true,
+        onBackButtonClick = {
+            navigateToMain()
+        },
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
             navigateToSetting()

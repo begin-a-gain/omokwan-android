@@ -47,7 +47,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun MatchSettingScreen(
     matchId: Int = 0,
-    title: String = "",
     toast: String? = null,
     viewModel: MatchSettingViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
@@ -83,7 +82,7 @@ fun MatchSettingScreen(
     viewModel.collectSideEffect {
         when(it) {
             MatchSettingSideEffect.SuccessToLeaveMatch -> {
-                backToMain("‘$title’에서 나왔어요.\n다음에 다시 도전해 보세요!")
+                backToMain("‘${state.currentSettings.title}’에서 나왔어요.\n다음에 다시 도전해 보세요!")
             }
         }
     }

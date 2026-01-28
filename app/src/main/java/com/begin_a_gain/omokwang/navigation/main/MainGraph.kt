@@ -18,10 +18,15 @@ import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,20 +58,35 @@ import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
 
 import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
 @Composable
 fun MainGraph(
+    toast: String? = null,
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = {_, _ ->},
-    popBack: () -> Unit = {}
+    navigateToMatch: (Int, String) -> Unit = {_, _ ->}
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
     var showAddMatchBottomSheet by rememberSaveable {
         mutableStateOf(false)
+    }
+
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(toast) {
+        if (!toast.isNullOrBlank()) {
+            scope.launch {
+                snackBarHostState.showSnackbar(
+                    message = toast,
+                    duration = SnackbarDuration.Short
+                )
+            }
+        }
     }
 
     Scaffold(
