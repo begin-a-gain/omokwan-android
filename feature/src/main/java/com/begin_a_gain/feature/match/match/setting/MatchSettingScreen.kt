@@ -41,15 +41,17 @@ import com.begin_a_gain.feature.match.common.match_setting.SettingRow
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
 fun MatchSettingScreen(
     matchId: Int = 0,
+    title: String = "",
     toast: String? = null,
     viewModel: MatchSettingViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
+    backToMain: (toast: String?) -> Unit = {},
     navigateToMatch: () -> Unit = {},
     navigateToInvite: () -> Unit = {},
     navigateToChangeHost: () -> Unit = {}
@@ -60,6 +62,7 @@ fun MatchSettingScreen(
 
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val participants by sharedViewModel.currentParticipants.collectAsStateWithLifecycle()
+    val isHost by sharedViewModel.isHost.collectAsStateWithLifecycle()
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -75,6 +78,14 @@ fun MatchSettingScreen(
                     }
                 }
             }
+    }
+
+    viewModel.collectSideEffect {
+        when(it) {
+            MatchSettingSideEffect.SuccessToLeaveMatch -> {
+                backToMain("‘$title’에서 나왔어요.\n다음에 다시 도전해 보세요!")
+            }
+        }
     }
 
     OScreen(
@@ -170,7 +181,11 @@ fun MatchSettingScreen(
                 type = ButtonType.Alert,
                 text = "대국 나가기"
             ) {
-                showCheckLeavingDialog = true
+               if (isHost && participants.size > 1) {
+                   navigateToChangeHost()
+               } else {
+                   showCheckLeavingDialog = true
+               }
             }
             Spacer(modifier = Modifier.height(80.dp))
         }
@@ -182,7 +197,7 @@ fun MatchSettingScreen(
                 buttonText = "나가기",
                 buttonType = ButtonType.Alert,
                 onButtonClick = {
-                    // Todo : update
+                    viewModel.leaveMatch()
                     showCheckLeavingDialog = false
                 },
                 additionalButtonText = "취소",

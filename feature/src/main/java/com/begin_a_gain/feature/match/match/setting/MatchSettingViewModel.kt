@@ -4,14 +4,20 @@ import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class MatchSettingViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-) : BaseViewModel<MatchSettingState, Nothing>(MatchSettingState()) {
+) : BaseViewModel<MatchSettingState, MatchSettingSideEffect>(MatchSettingState()) {
+
+    private var _currentMatchId = MutableStateFlow(-1)
+    val currentMatchId = _currentMatchId.asStateFlow()
 
     fun initialize(matchId: Int, isHost: Boolean) {
+        _currentMatchId.value = matchId
         withLoading {
             matchRepository.getMatchSettings(matchId)
                 .onSuccess {
@@ -78,5 +84,12 @@ class MatchSettingViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun leaveMatch() = intent {
+        matchRepository.deleteMe(currentMatchId.value)
+            .onSuccess {
+                postSideEffect(MatchSettingSideEffect.SuccessToLeaveMatch)
+            }
     }
 }

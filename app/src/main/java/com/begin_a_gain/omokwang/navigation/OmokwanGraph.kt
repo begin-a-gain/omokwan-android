@@ -88,11 +88,12 @@ fun OmokwanGraph(
         }
 
         composable<Main> {
+            // Todo : toast receive
             MainGraph(
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { matchId ->
-                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
+                navigateToMatch = { matchId, title ->
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
                 }
             )
         }
@@ -104,8 +105,8 @@ fun OmokwanGraph(
         composable<JoinMatch> {
             JoinMatchScreen(
                 navigateToMain = { navController.popAndNavigate(Main) },
-                navigateToMatch = { matchId ->
-                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
+                navigateToMatch = { matchId, title ->
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
                 }
             )
         }

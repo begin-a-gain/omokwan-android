@@ -23,3 +23,7 @@ data class MatchSettingsItem(
     val isPrivate: Boolean = false,
     val password: String = ""
 )
+
+interface MatchSettingSideEffect {
+    object SuccessToLeaveMatch: MatchSettingSideEffect
+}

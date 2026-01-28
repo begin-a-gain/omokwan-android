@@ -15,14 +15,17 @@ import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import com.begin_a_gain.feature.match.match.change_host.ChangeHostScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
+import com.begin_a_gain.omokwang.navigation.Main
 import com.begin_a_gain.omokwang.navigation.popAndNavigate
+import com.begin_a_gain.omokwang.navigation.popAndNavigateWithToast
 import com.begin_a_gain.omokwang.navigation.popBackWithToast
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MatchGraph(
     val isInitial: Boolean = false,
-    val matchId: Int
+    val matchId: Int,
+    val matchTitle: String
 )
 
 @Serializable
@@ -40,6 +43,7 @@ object InviteMatch
 object ChangeHost
 
 const val ChangeHostToast = "change_host_toast"
+const val LeaveMatchToast = "leave_match_toast"
 
 fun NavGraphBuilder.matchGraph(
     navController: NavHostController,
@@ -56,6 +60,7 @@ fun NavGraphBuilder.matchGraph(
             val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             MatchScreen(
                 matchId = args.matchId,
+                matchTitle = args.matchTitle,
                 sharedViewModel = sharedViewModel,
                 isInitial = args.isInitial,
                 navigateToMain = navigateToMain,
@@ -81,8 +86,14 @@ fun NavGraphBuilder.matchGraph(
 
             MatchSettingScreen(
                 matchId = args.matchId,
+                title = args.matchTitle,
                 toast = toast,
                 sharedViewModel = sharedViewModel,
+                backToMain = { toast ->
+                    if (!toast.isNullOrBlank()) {
+                        navController.popAndNavigateWithToast(Main, LeaveMatchToast, toast)
+                    }
+                },
                 navigateToMatch = {
                     navController.popAndNavigate(Match)
                 },

@@ -53,7 +53,7 @@ import org.joda.time.DateTime
 @Composable
 fun OmokMatchListScreen(
     viewModel: OmokMatchListViewModel = hiltViewModel(),
-    navigateToMatch: (Int) -> Unit = {}
+    navigateToMatch: (Int, String) -> Unit = {_, _ -> }
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
@@ -87,8 +87,8 @@ fun OmokMatchListScreen(
         OmokMatchGrid(
             omokMatchItemSize = ((configuration.screenWidthDp - 10)/2).dp,
             omokMatches = state.omokMatches
-        ) { id ->
-            navigateToMatch(id)
+        ) { id, title ->
+            navigateToMatch(id, title)
         }
     }
 
@@ -188,7 +188,7 @@ fun OmokMatchGrid(
         MyMatchItem(status = MatchStatus.Done, name = "명상하기"),
         MyMatchItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
     ),
-    navigateToMatch: (Int) -> Unit = {}
+    navigateToMatch: (Int, String) -> Unit = {_, _ ->}
 ) {
     Box(
         modifier = Modifier
@@ -203,7 +203,7 @@ fun OmokMatchGrid(
                     match = it,
                     size = omokMatchItemSize,
                     onClickOmokMatch = {
-                        navigateToMatch(it.matchId)
+                        navigateToMatch(it.matchId, it.name)
                     },
                     onClickButton = { /*TODO*/ }
                 )

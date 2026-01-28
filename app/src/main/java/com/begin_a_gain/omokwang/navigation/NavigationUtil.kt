@@ -19,3 +19,15 @@ fun NavHostController.popBackWithToast(key: String, message: String) {
 
     this.popBackStack()
 }
+
+fun NavHostController.popAndNavigateWithToast(
+    route: Any,
+    key: String,
+    message: String,
+) {
+    this.popAndNavigate(route)
+
+    this.currentBackStackEntry
+        ?.savedStateHandle
+        ?.set(key, message)
+}

@@ -17,5 +17,5 @@ data class JoinMatchState(
 }
 
 interface JoinMatchSideEffect {
-    data class JoinSuccess(val matchId: Int) : JoinMatchSideEffect
+    data class JoinSuccess(val matchId: Int, val title: String) : JoinMatchSideEffect
 }
