@@ -18,15 +18,11 @@ import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,14 +47,13 @@ import com.begin_a_gain.design.theme.AppColors
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.MyPageScreen
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
-
 import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
@@ -73,20 +68,6 @@ fun MainGraph(
     val sheetState = rememberModalBottomSheetState(true)
     var showAddMatchBottomSheet by rememberSaveable {
         mutableStateOf(false)
-    }
-
-    val scope = rememberCoroutineScope()
-    val snackBarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(toast) {
-        if (!toast.isNullOrBlank()) {
-            scope.launch {
-                snackBarHostState.showSnackbar(
-                    message = toast,
-                    duration = SnackbarDuration.Short
-                )
-            }
-        }
     }
 
     Scaffold(
@@ -178,32 +159,46 @@ fun MainGraph(
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = MatchList,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable<MatchList> {
-                OmokMatchListScreen { id, title ->
-                    navigateToMatch(id, title)
+        OScreen(
+            modifier = Modifier.padding(innerPadding),
+            showTitle = false,
+            useDefaultPadding = false,
+            snackBarBottomPadding = 130.dp
+        ) { showSnackBar ->
+
+            LaunchedEffect(toast) {
+                if (toast != null) {
+                    showSnackBar(toast)
                 }
             }
-            composable<MyPage> {
-                MyPageScreen()
-            }
-        }
 
-        if (showAddMatchBottomSheet) {
-            AddMatchBottomSheet(
-                sheetState = sheetState,
-                onDismissRequest = { showAddMatchBottomSheet = false }
-            ) { type ->
-                when (type) {
-                    AddMatchType.CreateMatch -> {
-                        navigateToCreateMatch()
+            NavHost(
+                navController = navController,
+                startDestination = MatchList
+            ) {
+                composable<MatchList> {
+                    OmokMatchListScreen { id, title ->
+                        navigateToMatch(id, title)
                     }
-                    AddMatchType.JoinMatch -> {
-                        navigateToJoinMatch()
+                }
+
+                composable<MyPage> {
+                    MyPageScreen()
+                }
+            }
+
+            if (showAddMatchBottomSheet) {
+                AddMatchBottomSheet(
+                    sheetState = sheetState,
+                    onDismissRequest = { showAddMatchBottomSheet = false }
+                ) { type ->
+                    when (type) {
+                        AddMatchType.CreateMatch -> {
+                            navigateToCreateMatch()
+                        }
+                        AddMatchType.JoinMatch -> {
+                            navigateToJoinMatch()
+                        }
                     }
                 }
             }

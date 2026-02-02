@@ -80,7 +80,7 @@ fun NavGraphBuilder.matchGraph(
             val toast by savedStateHandle.getStateFlow<String?>(ChangeHostToast, null)
                 .collectAsStateWithLifecycle()
 
-            LaunchedEffect(toast) {
+            LaunchedEffect(Unit) {
                 toast?.let { savedStateHandle.remove<String>(ChangeHostToast) }
             }
 

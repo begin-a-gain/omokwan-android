@@ -4,7 +4,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,7 +21,7 @@ import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import com.begin_a_gain.omokwang.navigation.match.ChangeHostToast
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
-import com.begin_a_gain.omokwang.navigation.match.Match
+import com.begin_a_gain.omokwang.navigation.match.LeaveMatchToast
 import com.begin_a_gain.omokwang.navigation.match.MatchGraph
 import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.matchGraph
@@ -92,13 +96,12 @@ fun OmokwanGraph(
         }
 
         composable<Main> { backStackEntry ->
-            // Todo : toast receive (bug)
             val savedStateHandle = backStackEntry.savedStateHandle
-            val toast by savedStateHandle.getStateFlow<String?>(ChangeHostToast, null)
+            val toast by savedStateHandle.getStateFlow<String?>(LeaveMatchToast, null)
                 .collectAsStateWithLifecycle()
 
-            LaunchedEffect(toast) {
-                toast?.let { savedStateHandle.remove<String>(ChangeHostToast) }
+            LaunchedEffect(Unit) {
+                toast?.let { savedStateHandle.remove<String>(LeaveMatchToast) }
             }
 
             MainGraph(

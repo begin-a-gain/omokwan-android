@@ -16,11 +16,15 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,6 +50,7 @@ import com.begin_a_gain.model.type.match.MatchStatus
 import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
+import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +77,9 @@ fun OmokMatchListScreen(
             .background(ColorToken.UI_BG.color())
     ) {
         OmokMatchListTopBar(
-            navigateToAlarm = {}
+            navigateToAlarm = {
+
+            }
         )
 
         OmokMatchListDateBar(
