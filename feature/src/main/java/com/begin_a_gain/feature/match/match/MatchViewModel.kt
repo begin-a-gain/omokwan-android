@@ -53,6 +53,17 @@ class MatchViewModel @Inject constructor(
         }
     }
 
+    fun completeOmok() {
+        withLoading {
+            matchRepository.putMatchStatus(currentMatchId.value)
+                .onSuccess {
+                    intent {
+                        postSideEffect(MatchSideEffect.SuccessToCompleteOmok)
+                    }
+                }
+        }
+    }
+
     fun kickMember(member: MemberInfo) {
         withLoading {
             matchRepository.postKickUser(

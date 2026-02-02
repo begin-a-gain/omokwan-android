@@ -122,6 +122,10 @@ fun MatchScreen(
                         sharedViewModel.setCurrentMatch(amIHost, participants)
                     }
                 }
+
+                is MatchSideEffect.SuccessToCompleteOmok -> {
+                    showSnackBar("오늘의 오목두기를 완료하였습니다.")
+                }
             }
         }
 
@@ -151,7 +155,7 @@ fun MatchScreen(
             BottomModalButton(
                 "오목두기"
             ) {
-                showSnackBar("오늘의 오목두기를 완료하였습니다.")
+                viewModel.completeOmok()
             }
         }
 

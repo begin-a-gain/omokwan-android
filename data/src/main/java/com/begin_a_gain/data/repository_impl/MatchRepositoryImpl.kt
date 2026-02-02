@@ -220,4 +220,15 @@ class MatchRepositoryImpl @Inject internal constructor(
             }
         )
     }
+
+    override suspend fun putMatchStatus(matchId: Int): Result<Boolean> {
+        return callApi(
+            call = {
+                matchApi.putMatchStatus(matchId)
+            },
+            handleResponse = {
+                it?.completed ?: false
+            }
+        )
+    }
 }

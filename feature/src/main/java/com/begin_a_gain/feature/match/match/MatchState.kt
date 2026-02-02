@@ -15,4 +15,5 @@ data class MatchState(
 interface MatchSideEffect {
     object ShowInitialToast : MatchSideEffect
     data class SuccessToKickMember(val name: String) : MatchSideEffect
+    object SuccessToCompleteOmok : MatchSideEffect
 }

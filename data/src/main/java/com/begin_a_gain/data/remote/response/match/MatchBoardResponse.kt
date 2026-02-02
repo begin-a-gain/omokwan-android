@@ -53,3 +53,8 @@ data class ChangeHostResponse(
 data class DeleteParticipantResponse(
     val userId: Int
 )
+
+@Serializable
+data class CompleteMatchResponse(
+    val completed: Boolean
+)

@@ -10,9 +10,11 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.deleteMe
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.kickUser
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.participants
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.settings
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.status
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.create
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.User.get
 import com.begin_a_gain.data.remote.response.match.ChangeHostResponse
+import com.begin_a_gain.data.remote.response.match.CompleteMatchResponse
 import com.begin_a_gain.data.remote.response.match.CreateMatchResponse
 import com.begin_a_gain.data.remote.response.match.DeleteParticipantResponse
 import com.begin_a_gain.data.remote.response.match.JoinMatchResponse
@@ -25,6 +27,8 @@ import com.begin_a_gain.data.remote.response.match.ParticipantsResponse
 import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.util.common.DateTimeUtil.toString
+import com.begin_a_gain.util.common.ODateTimeFormat
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -33,6 +37,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 class MatchApi @Inject constructor(
@@ -74,7 +79,10 @@ class MatchApi @Inject constructor(
         }.body()
     }
 
-    suspend fun postMatchParticipants(matchId: Int, request: JoinMatchRequest): Response<JoinMatchResponse> {
+    suspend fun postMatchParticipants(
+        matchId: Int,
+        request: JoinMatchRequest
+    ): Response<JoinMatchResponse> {
         return client.post(ApiEndPoint.Match.participants(matchId)) {
             setBody(request)
         }.body<Response<JoinMatchResponse>>()
@@ -82,7 +90,7 @@ class MatchApi @Inject constructor(
 
     suspend fun getMatchBoard(matchId: Int): Response<MatchBoardResponse> {
         return client.get(ApiEndPoint.Match.board(matchId)) {
-            parameter("date", "2026-01-28")
+            parameter("date", DateTime.now().toString(ODateTimeFormat.DateForNetwork))
             parameter("size", 10)
         }.body()
     }
@@ -95,7 +103,10 @@ class MatchApi @Inject constructor(
         return client.get(ApiEndPoint.Match.settings(matchId)).body()
     }
 
-    suspend fun putNewHost(matchId: Int, request: ChangeMatchHostRequest): Response<ChangeHostResponse> {
+    suspend fun putNewHost(
+        matchId: Int,
+        request: ChangeMatchHostRequest
+    ): Response<ChangeHostResponse> {
         return client.put(ApiEndPoint.Match.changeHost(matchId)) {
             setBody(request)
         }.body<Response<ChangeHostResponse>>()
@@ -109,5 +120,11 @@ class MatchApi @Inject constructor(
     suspend fun postKickUser(matchId: Int, userId: Int): Response<DeleteParticipantResponse> {
         return client.post(ApiEndPoint.Match.kickUser(matchId, userId))
             .body<Response<DeleteParticipantResponse>>()
+    }
+
+    suspend fun putMatchStatus(matchId: Int): Response<CompleteMatchResponse> {
+        return client.put(ApiEndPoint.Match.status(matchId)) {
+            parameter("date", DateTime.now().toString(ODateTimeFormat.DateForNetwork))
+        }.body<Response<CompleteMatchResponse>>()
     }
 }
