@@ -48,7 +48,7 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.feature.main.MyPageScreen
+import com.begin_a_gain.feature.main.my_page.MyPageScreen
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
 
 import com.begin_a_gain.omokwang.navigation.MatchList

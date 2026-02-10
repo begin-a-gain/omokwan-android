@@ -41,7 +41,7 @@ import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.model.type.match.MatchStatus
 import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
@@ -182,11 +182,11 @@ private fun OmokMatchListDateBar(
 @Composable
 fun OmokMatchGrid(
     omokMatchItemSize: Dp = 200.dp,
-    omokMatches: List<MyMatchItem> = listOf(
-        MyMatchItem(status = MatchStatus.None),
-        MyMatchItem(status = MatchStatus.Todo, name = "1일 1Commit"),
-        MyMatchItem(status = MatchStatus.Done, name = "명상하기"),
-        MyMatchItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
+    omokMatches: List<MyMatchBoardItem> = listOf(
+        MyMatchBoardItem(status = MatchStatus.None),
+        MyMatchBoardItem(status = MatchStatus.Todo, name = "1일 1Commit"),
+        MyMatchBoardItem(status = MatchStatus.Done, name = "명상하기"),
+        MyMatchBoardItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
     ),
     navigateToMatch: (Int) -> Unit = {}
 ) {

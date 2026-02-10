@@ -8,7 +8,7 @@ import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MatchUser
-import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -57,14 +57,14 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getMyDailyMatchList(date: String): Result<List<MyMatchItem>> {
+    override suspend fun getMyDailyMatchList(date: String): Result<List<MyMatchBoardItem>> {
         return callApi(
             call = {
                 matchApi.getMyMatch(date)
             },
             handleResponse = { response ->
                 response?.map {
-                    MyMatchItem(
+                    MyMatchBoardItem(
                         matchId = it.matchId,
                         name = it.name,
                         ongoingDays = it.ongoingDays,
