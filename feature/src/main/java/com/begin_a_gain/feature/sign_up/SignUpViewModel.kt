@@ -39,7 +39,16 @@ class SignUpViewModel @Inject constructor(
                 if (nickname.length in 2..10) {
                     userRepository.postNicknameValidation(nickname)
                         .onSuccess {
-                            reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            if (it.isValid) {
+                                reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            } else {
+                                reduce {
+                                    state.copy(
+                                        nicknameValidation = ValidationState.Fail,
+                                        nicknameFailCase = if (it.isDuplicated) NicknameFailCase.Duplicated else NicknameFailCase.Unconventional
+                                    )
+                                }
+                            }
                         }
                         .onFailure {
                             reduce {
@@ -51,6 +60,7 @@ class SignUpViewModel @Inject constructor(
                                                 NicknameFailCase.Duplicated
                                             } else NicknameFailCase.Unconventional
                                         }
+
                                         else -> NicknameFailCase.Unconventional
                                     }
                                 )

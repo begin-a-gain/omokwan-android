@@ -3,9 +3,9 @@ package com.begin_a_gain.data.remote.api
 import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.info
-import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.nicknameValidation
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.nickname
-import com.begin_a_gain.data.remote.response.NicknameResponse
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.nicknameValidation
+import com.begin_a_gain.data.remote.response.NicknameValidationResponse
 import com.begin_a_gain.data.remote.response.UserInfoResponse
 import com.begin_a_gain.domain.model.request.NicknameRequest
 import io.ktor.client.HttpClient
@@ -25,10 +25,10 @@ class UserApi @Inject constructor(
         }.body<Response<Unit>>()
     }
 
-    suspend fun postNicknameValidation(nicknameRequest: NicknameRequest): Response<NicknameResponse> {
+    suspend fun postNicknameValidation(nicknameRequest: NicknameRequest): Response<NicknameValidationResponse> {
         return client.post(ApiEndPoint.User.nicknameValidation()) {
             setBody(nicknameRequest)
-        }.body<Response<NicknameResponse>>()
+        }.body<Response<NicknameValidationResponse>>()
     }
 
     suspend fun getUserInfo(): Response<UserInfoResponse> {

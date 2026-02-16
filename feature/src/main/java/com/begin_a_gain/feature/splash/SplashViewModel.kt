@@ -28,7 +28,7 @@ class SplashViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    delay(2_000L)
+                    intent { postSideEffect(SplashSideEffect.LoggedOut) }
                 }
         }
     }
