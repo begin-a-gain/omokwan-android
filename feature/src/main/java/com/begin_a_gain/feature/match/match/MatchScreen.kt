@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.match.match
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -41,7 +37,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -61,7 +56,6 @@ import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.domain.model.MemberInfo
-import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
@@ -132,12 +126,13 @@ fun MatchScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            MatchCalendar(
+            MatchVerticalCalendar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .clip(shape = RoundedCornerShape(12.dp)),
-                itemSize = calendarItemSize
+                itemSize = calendarItemSize,
+                startDate = DateTime.now().minusDays(6)
             )
             Spacer(modifier = Modifier.height(8.dp))
             MatchParticipantsRow(
@@ -253,44 +248,7 @@ fun getLastDayOfMonth(year: Int, month: Int): Int {
     return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue().dayOfMonth
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Preview
-@Composable
-fun MatchCalendar(
-    modifier: Modifier = Modifier,
-    itemSize: Dp = 58.dp
-) {
-    val startDate = DateTime.now()
-    val startMonth = startDate.monthOfYear // startMonth minus logic has a problem (1-2 = -1)
-    val lazyState = rememberLazyListState()
 
-    LazyColumn(
-        state = lazyState,
-        modifier = modifier
-    ) {
-        (startMonth..startMonth + 2).reversed().map { month ->
-            stickyHeader {
-                CalendarStickyHeader(
-                    header = "${startDate.year}. ${month}월",
-                    isSticky = true
-                )
-            }
-            val days: List<Int> =
-                (1..getLastDayOfMonth(startDate.year, month)).map { it }.reversed()
-            items(days) { day ->
-                MatchCalendarRow(
-                    today = startDate.monthOfYear == month && startDate.dayOfMonth == day,
-                    day = startDate.dayOfWeek().asText.take(1),
-                    date = day,
-                    size = itemSize
-                )
-                if (day == 1) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
