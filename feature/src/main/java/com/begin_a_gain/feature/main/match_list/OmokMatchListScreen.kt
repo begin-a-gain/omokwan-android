@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.button.OIconButton
 import com.begin_a_gain.design.component.dialog.ODatePickerDialog
@@ -58,10 +63,12 @@ import org.joda.time.DateTime
 @Composable
 fun OmokMatchListScreen(
     viewModel: OmokMatchListViewModel = hiltViewModel(),
-    navigateToMatch: (Int, String) -> Unit = {_, _ -> }
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
         selectableDates = TodayOrBeforeSelectableDates()
@@ -69,6 +76,23 @@ fun OmokMatchListScreen(
 
     LaunchedEffect(state.currentDate) {
         datePickerState.selectedDateMillis = state.currentDate.millis
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.setDateAndFetchList(state.currentDate)
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     Column(
@@ -92,7 +116,7 @@ fun OmokMatchListScreen(
         }
 
         OmokMatchGrid(
-            omokMatchItemSize = ((configuration.screenWidthDp - 10)/2).dp,
+            omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
             omokMatches = state.omokMatches
         ) { id, title ->
             navigateToMatch(id, title)
@@ -195,7 +219,7 @@ fun OmokMatchGrid(
         MyMatchItem(status = MatchStatus.Done, name = "명상하기"),
         MyMatchItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
     ),
-    navigateToMatch: (Int, String) -> Unit = {_, _ ->}
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     Box(
         modifier = Modifier
@@ -225,7 +249,8 @@ fun OmokMatchGrid(
             ) {
                 OImage(
                     modifier = Modifier.size(176.dp, 56.dp),
-                    image = OImageRes.SpeechBubble)
+                    image = OImageRes.SpeechBubble
+                )
                 OText(
                     modifier = Modifier
                         .padding(bottom = 14.dp)
