@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.match.match
 
 import com.begin_a_gain.core.base.BaseState
 import com.begin_a_gain.domain.model.MemberInfo
+import com.begin_a_gain.domain.model.match.MatchBoardDate
 
 data class MatchState(
     override val loadingCount: Int = 0,
@@ -16,4 +17,9 @@ interface MatchSideEffect {
     object ShowInitialToast : MatchSideEffect
     data class SuccessToKickMember(val name: String) : MatchSideEffect
     object SuccessToCompleteOmok : MatchSideEffect
+}
+
+sealed class CalendarItem {
+    data class Header(val title: String) : CalendarItem()
+    data class Day(val data: MatchBoardDate) : CalendarItem()
 }

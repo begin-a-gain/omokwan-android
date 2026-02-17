@@ -29,5 +29,6 @@ object DateTimeUtil {
 
 enum class ODateTimeFormat(val format: String) {
     FullDate("yyyy년 MM월 dd일"),
-    DateForNetwork("yyyy-MM-dd")
+    DateForNetwork("yyyy-MM-dd"),
+    CalendarHeader("yyyy. MM월")
 }

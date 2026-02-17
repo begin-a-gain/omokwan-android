@@ -5,7 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MatchBoardResponse(
-    val users: List<MatchUserResponse>
+    val users: List<MatchUserResponse>,
+    val dates: List<MatchDatesResponse>,
+    val prevCursor: String,
+    val nextCursor: String,
+    val hasPrev: Boolean,
+    val hasNext: Boolean,
+    val isTodayMatchCompleted: Boolean
 )
 
 @Serializable
@@ -13,6 +19,20 @@ data class MatchUserResponse(
     val userId: Int,
     val nickname: String,
     val isHost: Boolean
+)
+
+@Serializable
+data class MatchDatesResponse(
+    val date: String,
+    val userStatus: List<MatchDatesUserStatusResponse>
+)
+
+@Serializable
+data class MatchDatesUserStatusResponse(
+    val userId: Int,
+    val isCompleted: Boolean,
+    val streakCount: Int,
+    val isCombo: Boolean
 )
 
 @Serializable

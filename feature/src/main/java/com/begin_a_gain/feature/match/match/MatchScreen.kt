@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -56,9 +57,9 @@ import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.domain.model.MemberInfo
+import com.begin_a_gain.feature.match.match.util.MatchVerticalCalendar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.joda.time.DateTime
 import org.joda.time.YearMonth
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -78,6 +79,7 @@ fun MatchScreen(
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
+    val boardPagingItems = viewModel.calendarItems.collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -132,7 +134,7 @@ fun MatchScreen(
                     .weight(1f)
                     .clip(shape = RoundedCornerShape(12.dp)),
                 itemSize = calendarItemSize,
-                startDate = DateTime.now().minusDays(6)
+                calendarItems = boardPagingItems
             )
             Spacer(modifier = Modifier.height(8.dp))
             MatchParticipantsRow(

@@ -88,10 +88,10 @@ class MatchApi @Inject constructor(
         }.body<Response<JoinMatchResponse>>()
     }
 
-    suspend fun getMatchBoard(matchId: Int): Response<MatchBoardResponse> {
+    suspend fun getMatchBoard(matchId: Int, date: String, pageSize: Int): Response<MatchBoardResponse> {
         return client.get(ApiEndPoint.Match.board(matchId)) {
-            parameter("date", DateTime.now().toString(ODateTimeFormat.DateForNetwork))
-            parameter("size", 10)
+            parameter("date", date)
+            parameter("size", pageSize)
         }.body()
     }
 

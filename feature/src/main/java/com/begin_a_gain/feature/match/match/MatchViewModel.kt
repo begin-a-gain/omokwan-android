@@ -1,18 +1,59 @@
 package com.begin_a_gain.feature.match.match
 
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.flatMap
+import androidx.paging.insertSeparators
 import com.begin_a_gain.core.base.BaseViewModel
+import com.begin_a_gain.data.remote.paging.MatchBoardPagingSource
 import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.util.common.DateTimeUtil.toString
+import com.begin_a_gain.util.common.ODateTimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import org.joda.time.DateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class MatchViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
+    private val matchRepository: MatchRepository,
 ) : BaseViewModel<MatchState, MatchSideEffect>(MatchState()) {
 
     private val currentMatchId = MutableStateFlow(-1)
+
+    private val boardPager = Pager(
+        config = PagingConfig(
+            pageSize = 30,
+            initialLoadSize = 30,
+            prefetchDistance = 30
+        ),
+        pagingSourceFactory = {
+            MatchBoardPagingSource(
+                matchRepository,
+                matchId = currentMatchId.value,
+                date = DateTime.now().toString(ODateTimeFormat.DateForNetwork)
+            )
+        }
+    )
+
+    val calendarItems = boardPager.flow.map { pagingData ->
+        pagingData.flatMap { board ->
+            board.dates.reversed().map { CalendarItem.Day(it) }
+        }.insertSeparators { before, after ->
+            val beforeDate = (before as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
+            val afterDate = (after as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
+
+            if (afterDate != null && (beforeDate == null || beforeDate.monthOfYear != afterDate.monthOfYear)) {
+                CalendarItem.Header(afterDate.toString(ODateTimeFormat.CalendarHeader))
+            } else {
+                null
+            }
+        }
+    }.cachedIn(viewModelScope)
 
     fun initialize(
         isInitial: Boolean,
@@ -21,7 +62,8 @@ class MatchViewModel @Inject constructor(
     ) {
         currentMatchId.value = matchId
         withLoading {
-            val board = matchRepository.getMatchBoard(matchId)
+            val loadDate = DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
+            val boardUsers = matchRepository.getMatchBoardUsers(matchId, loadDate)
                 .getOrDefault(null)
 
             val participants: List<MemberInfo> = matchRepository.getParticipants(matchId)
@@ -30,7 +72,7 @@ class MatchViewModel @Inject constructor(
             intent {
                 var amIHost = false
                 val participantMap = participants.associateBy { it.id }
-                val combinedParticipants = board?.users?.mapIndexed { index, user ->
+                val combinedParticipants = boardUsers?.mapIndexed { index, user ->
                     val info = participantMap[user.userId]
                     if (user.isHost) {
                         amIHost = index == 0
