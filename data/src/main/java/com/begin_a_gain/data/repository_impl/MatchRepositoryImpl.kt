@@ -7,9 +7,9 @@ import com.begin_a_gain.domain.model.BoardPageResult
 import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
+import com.begin_a_gain.domain.model.match.MatchBoardDate
 import com.begin_a_gain.domain.model.match.MatchBoardUser
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
-import com.begin_a_gain.domain.model.match.MatchBoardDate
 import com.begin_a_gain.domain.model.match.MatchDatesUserStatus
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MatchSettings
@@ -163,14 +163,14 @@ class MatchRepositoryImpl @Inject internal constructor(
                 dates = it?.dates?.map { date ->
                     MatchBoardDate(
                         date = date.date,
-                        userStatus = date.userStatus.map { userStatus ->
+                        userStatus = date.userStatus.mapIndexed { index, userStatus ->
                             MatchDatesUserStatus(
                                 userId = userStatus.userId,
                                 status = when {
                                     userStatus.isCombo -> MatchCalendarStatus.Combo
                                     userStatus.isCompleted -> MatchCalendarStatus.Done
                                     else -> {
-                                        if (date.date == DateTime.now().toString(ODateTimeFormat.DateForNetwork)) {
+                                        if (index == 0 && date.date == DateTime.now().toString(ODateTimeFormat.DateForNetwork)) {
                                             MatchCalendarStatus.Todo
                                         } else {
                                             MatchCalendarStatus.None

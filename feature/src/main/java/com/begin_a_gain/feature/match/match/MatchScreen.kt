@@ -46,6 +46,7 @@ import com.begin_a_gain.design.component.button.ButtonStyle
 import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.InitialTextLayout
@@ -150,10 +151,15 @@ fun MatchScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             BottomModalButton(
-                "오목두기"
+                buttonText = if (state.todayDone) "오늘자 오목을 이미 두었어요" else "오목두기",
+                enable = !state.todayDone
             ) {
                 viewModel.completeOmok()
             }
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
         }
 
         if (showMyProfileBottomSheet) {

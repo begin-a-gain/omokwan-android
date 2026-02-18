@@ -13,8 +13,13 @@ import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.joda.time.DateTime
 import javax.inject.Inject
 
@@ -24,6 +29,11 @@ class MatchViewModel @Inject constructor(
 ) : BaseViewModel<MatchState, MatchSideEffect>(MatchState()) {
 
     private val currentMatchId = MutableStateFlow(-1)
+
+    private val refreshPagingTrigger = container.stateFlow
+        .map { it.todayDone }
+        .distinctUntilChanged()
+        .filter { it }
 
     private val boardPager = Pager(
         config = PagingConfig(
@@ -40,20 +50,28 @@ class MatchViewModel @Inject constructor(
         }
     )
 
-    val calendarItems = boardPager.flow.map { pagingData ->
-        pagingData.flatMap { board ->
-            board.dates.reversed().map { CalendarItem.Day(it) }
-        }.insertSeparators { before, after ->
-            val beforeDate = (before as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
-            val afterDate = (after as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val calendarItems = refreshPagingTrigger
+        .onStart { emit(true) }
+        .flatMapLatest {
+            boardPager.flow
+        }
+        .map { pagingData ->
+            pagingData.flatMap { board ->
+                board.dates.reversed().map { CalendarItem.Day(it) }
+            }.insertSeparators { before, after ->
+                val beforeDate =
+                    (before as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
+                val afterDate = (after as? CalendarItem.Day)?.data?.date?.let { DateTime.parse(it) }
 
-            if (afterDate != null && (beforeDate == null || beforeDate.monthOfYear != afterDate.monthOfYear)) {
-                CalendarItem.Header(afterDate.toString(ODateTimeFormat.CalendarHeader))
-            } else {
-                null
+                if (afterDate != null && (beforeDate == null || beforeDate.monthOfYear != afterDate.monthOfYear)) {
+                    CalendarItem.Header(afterDate.toString(ODateTimeFormat.CalendarHeader))
+                } else {
+                    null
+                }
             }
         }
-    }.cachedIn(viewModelScope)
+        .cachedIn(viewModelScope)
 
     fun initialize(
         isInitial: Boolean,
@@ -62,7 +80,8 @@ class MatchViewModel @Inject constructor(
     ) {
         currentMatchId.value = matchId
         withLoading {
-            val loadDate = DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
+            val loadDate =
+                DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
             val boardUsers = matchRepository.getMatchBoardUsers(matchId, loadDate)
                 .getOrDefault(null)
 
@@ -100,6 +119,7 @@ class MatchViewModel @Inject constructor(
             matchRepository.putMatchStatus(currentMatchId.value)
                 .onSuccess {
                     intent {
+                        reduce { state.copy(todayDone = true) }
                         postSideEffect(MatchSideEffect.SuccessToCompleteOmok)
                     }
                 }
