@@ -117,7 +117,10 @@ fun OmokMatchListScreen(
 
         OmokMatchGrid(
             omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
-            omokMatches = state.omokMatches
+            omokMatches = state.omokMatches,
+            onClickCompleteTodo = {
+                viewModel.completeOmok(it)
+            }
         ) { id, title ->
             navigateToMatch(id, title)
         }
@@ -219,6 +222,7 @@ fun OmokMatchGrid(
         MyMatchItem(status = MatchStatus.Done, name = "명상하기"),
         MyMatchItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
     ),
+    onClickCompleteTodo: (Int) -> Unit = {},
     navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     Box(
@@ -236,7 +240,9 @@ fun OmokMatchGrid(
                     onClickOmokMatch = {
                         navigateToMatch(it.matchId, it.name)
                     },
-                    onClickButton = { /*TODO*/ }
+                    onClickButton = {
+                        onClickCompleteTodo(it.matchId)
+                    }
                 )
             }
         }

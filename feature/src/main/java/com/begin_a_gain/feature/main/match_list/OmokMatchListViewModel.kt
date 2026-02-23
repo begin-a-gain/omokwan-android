@@ -4,7 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MyMatchItem
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.feature.match.match.MatchSideEffect
 import com.begin_a_gain.model.type.match.MatchStatus
+import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,5 +66,17 @@ class OmokMatchListViewModel @Inject constructor(
         } else if (matchList.size %2 == 1) {
             matchList + listOf(MyMatchItem(status = MatchStatus.None))
         } else matchList
+    }
+
+    fun completeOmok(matchId: Int) {
+        val state = container.stateFlow.value
+        if (state.currentDate.isToday()) {
+            withLoading {
+                matchRepository.putMatchStatus(matchId)
+                    .onSuccess {
+                        setDateAndFetchList(state.currentDate)
+                    }
+            }
+        }
     }
 }
