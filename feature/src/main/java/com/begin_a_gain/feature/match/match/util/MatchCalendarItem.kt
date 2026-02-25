@@ -90,6 +90,7 @@ fun MatchCalendarItem(
 fun MatchCalendarRow(
     today: Boolean = true,
     day: String = "금",
+    isStartOfMonth: Boolean = true,
     date: Int = 30,
     statusList: List<MatchCalendarStatus> = listOf(MatchCalendarStatus.None, MatchCalendarStatus.None),
     size: Dp = 58.dp
@@ -98,7 +99,7 @@ fun MatchCalendarRow(
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .run {
-                if (date == 1) {
+                if (isStartOfMonth) {
                     clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                 } else {
                     this

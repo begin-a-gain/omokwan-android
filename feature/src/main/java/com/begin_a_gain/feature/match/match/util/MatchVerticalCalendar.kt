@@ -63,15 +63,22 @@ fun MatchVerticalCalendar(
 
                 is CalendarItem.Day -> {
                     val currentDate = DateTime.parse(item.data.date)
+                    val isStartOfMonth = if (index < calendarItems.itemCount - 1) {
+                        calendarItems.peek(index + 1) is CalendarItem.Header
+                    } else {
+                        false
+                    }
+
                     MatchCalendarRow(
                         today = currentDate.isEqual(today),
                         day = currentDate.dayOfWeek().getAsShortText(Locale.KOREAN).take(1),
+                        isStartOfMonth = isStartOfMonth,
                         date = currentDate.dayOfMonth,
                         size = itemSize,
                         statusList = item.data.userStatus.map { it.status }
                     )
 
-                    if (currentDate.dayOfMonth == 1) {
+                    if (isStartOfMonth) {
                         Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
