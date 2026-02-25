@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -18,16 +19,24 @@ import com.begin_a_gain.design.util.OPreview
 fun OImage(
     image: OImageRes,
     modifier: Modifier = Modifier,
-    size: Dp = 24.dp,
+    size: Dp? = 24.dp,
     color: Color? = null,
+    contentScale: ContentScale = ContentScale.Fit
 ) {
     Image(
-        modifier = modifier.size(size),
+        modifier = modifier.then(
+            if (size != null) {
+                Modifier.size(size)
+            } else {
+                Modifier
+            }
+        ),
         painter = painterResource(id = image.res),
         contentDescription = "image",
         colorFilter = color?.let {
             ColorFilter.tint(color)
-        }
+        },
+        contentScale = contentScale
     )
 }
 

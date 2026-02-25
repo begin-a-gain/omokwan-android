@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -40,6 +41,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.button.OIconButton
 import com.begin_a_gain.design.component.dialog.ODatePickerDialog
 import com.begin_a_gain.design.component.dialog.TodayOrBeforeSelectableDates
@@ -114,7 +117,8 @@ fun OmokMatchListScreen(
         ) {
             showDatePicker = true
         }
-
+        OVerticalDivider(colorToken = ColorToken.STROKE_01)
+        
         OmokMatchGrid(
             omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
             omokMatches = state.omokMatches,
@@ -138,9 +142,10 @@ fun OmokMatchListScreen(
     }
 }
 
+@Preview
 @Composable
 private fun OmokMatchListTopBar(
-    navigateToAlarm: () -> Unit
+    navigateToAlarm: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -150,10 +155,10 @@ private fun OmokMatchListTopBar(
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(
+        OImage(
+            image = OImageRes.Logo,
             modifier = Modifier
-                .background(ColorToken.UI_DISABLE_01.color())
-                .size(160.dp, 40.dp)
+                .size(128.dp, 40.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         OIconButton(

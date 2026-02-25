@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,7 +63,7 @@ fun MainGraph(
     toast: String? = null,
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = {_, _ ->}
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
@@ -196,6 +197,7 @@ fun MainGraph(
                         AddMatchType.CreateMatch -> {
                             navigateToCreateMatch()
                         }
+
                         AddMatchType.JoinMatch -> {
                             navigateToJoinMatch()
                         }
@@ -222,13 +224,16 @@ fun AddMatchBottomSheet(
     ) {
         Column {
             Row(
-                modifier = Modifier.weight(1f).padding(16.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 AddMatchType.entries.forEach { type ->
                     val isSelected = selectedType == type
                     Column(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                             .clip(RoundedCornerShape(20.dp))
                             .border(
                                 width = 1.dp,
@@ -245,10 +250,11 @@ fun AddMatchBottomSheet(
                             },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .background(ColorToken.UI_DISABLE_01.color())
+                        OImage(
+                            modifier = Modifier
+                                .weight(1f)
+                                .size(120.dp),
+                            image = type.image
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         OText(
@@ -261,7 +267,9 @@ fun AddMatchBottomSheet(
             }
 
             OButton(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+                    .fillMaxWidth(),
                 text = "확인"
             ) {
                 onDismissRequest()
