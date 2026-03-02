@@ -1,6 +1,6 @@
 package com.begin_a_gain.omokwang.navigation.main
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,6 +48,7 @@ import com.begin_a_gain.design.theme.AppColors
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.BottomSheetPreview
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
@@ -57,7 +58,7 @@ import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
 fun MainGraph(
     toast: String? = null,
@@ -220,13 +221,12 @@ fun AddMatchBottomSheet(
     OBottomSheet(
         title = "대국 추가하기",
         sheetState = sheetState,
+        heightRatio = null,
         onDismissRequest = onDismissRequest
     ) {
         Column {
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 AddMatchType.entries.forEach { type ->
@@ -244,15 +244,15 @@ fun AddMatchBottomSheet(
                                     ColorToken.STROKE_02.color()
                                 }
                             )
-                            .padding(24.dp)
+                            .padding(horizontal = 24.dp, vertical = 42.dp)
                             .noRippleClickable {
                                 selectedType = type
                             },
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
                         OImage(
                             modifier = Modifier
-                                .weight(1f)
                                 .size(120.dp),
                             image = type.image
                         )
@@ -275,6 +275,17 @@ fun AddMatchBottomSheet(
                 onDismissRequest()
                 onSelect(selectedType)
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun MainBottomSheetPreview() {
+    BottomSheetPreview(false) { state, scope ->
+        AddMatchBottomSheet(state, {}) {
+
         }
     }
 }
