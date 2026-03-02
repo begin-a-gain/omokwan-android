@@ -25,6 +25,7 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.domain.enum.MatchCalendarStatus
 
 @Composable
 fun MatchCalendarItem(
@@ -89,6 +90,7 @@ fun MatchCalendarItem(
 fun MatchCalendarRow(
     today: Boolean = true,
     day: String = "금",
+    isStartOfMonth: Boolean = true,
     date: Int = 30,
     statusList: List<MatchCalendarStatus> = listOf(MatchCalendarStatus.None, MatchCalendarStatus.None),
     size: Dp = 58.dp
@@ -97,7 +99,7 @@ fun MatchCalendarRow(
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .run {
-                if (date == 1) {
+                if (isStartOfMonth) {
                     clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                 } else {
                     this
@@ -113,6 +115,7 @@ fun MatchCalendarRow(
         ) {
             Column(
                 modifier = Modifier
+                    .padding(2.dp)
                     .run {
                         if (today) {
                             background(

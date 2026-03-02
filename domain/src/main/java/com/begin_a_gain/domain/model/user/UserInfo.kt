@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserInfo(
-    val id: Long,
+    val id: Int,
     val socialId: Long,
     val nickname: String,
     val refreshToken: String,

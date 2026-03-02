@@ -1,6 +1,5 @@
 package com.begin_a_gain.feature.sign_up
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.exception.SourceException
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -40,7 +39,16 @@ class SignUpViewModel @Inject constructor(
                 if (nickname.length in 2..10) {
                     userRepository.postNicknameValidation(nickname)
                         .onSuccess {
-                            reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            if (it.isValid) {
+                                reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            } else {
+                                reduce {
+                                    state.copy(
+                                        nicknameValidation = ValidationState.Fail,
+                                        nicknameFailCase = if (it.isDuplicated) NicknameFailCase.Duplicated else NicknameFailCase.Unconventional
+                                    )
+                                }
+                            }
                         }
                         .onFailure {
                             reduce {
@@ -52,6 +60,7 @@ class SignUpViewModel @Inject constructor(
                                                 NicknameFailCase.Duplicated
                                             } else NicknameFailCase.Unconventional
                                         }
+
                                         else -> NicknameFailCase.Unconventional
                                     }
                                 )
@@ -69,7 +78,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun saveNickname() = intent {
-        viewModelScope.withLoading {
+        withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {
                     localRepository.saveIsSignUpCompleted(true)
@@ -81,14 +90,18 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun getUserInfo() = intent {
-        viewModelScope.withLoading {
+    private fun getUserInfo() {
+        withLoading {
             userRepository.getUserInfo()
                 .onSuccess {
-                    postSideEffect(SignUpSideEffect.SignUpSuccess)
+                    intent {
+                        postSideEffect(SignUpSideEffect.SignUpSuccess)
+                    }
                 }
                 .onFailure {
-                    postSideEffect(SignUpSideEffect.NavigateToSignIn)
+                    intent {
+                        postSideEffect(SignUpSideEffect.NavigateToSignIn)
+                    }
                 }
         }
     }

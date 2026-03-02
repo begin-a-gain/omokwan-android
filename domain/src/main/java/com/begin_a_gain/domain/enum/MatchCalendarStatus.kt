@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.match.util
+package com.begin_a_gain.domain.enum
 
 enum class MatchCalendarStatus {
     None,

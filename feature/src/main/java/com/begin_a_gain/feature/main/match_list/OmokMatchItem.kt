@@ -92,7 +92,10 @@ fun OmokMatchItem(
                 Spacer(modifier = Modifier.height(6.dp))
                 OText(text = "대국 +${match.ongoingDays}일 째", style = OTextStyle.Caption)
                 Spacer(modifier = Modifier.height(2.dp))
-                OText(text = "${match.participants}/${match.maxParticipants} 명", style = OTextStyle.Caption)
+                OText(
+                    text = "${match.participants}/${match.maxParticipants} 명",
+                    style = OTextStyle.Caption
+                )
             }
 
             MatchCheckButton(
@@ -144,7 +147,11 @@ private fun MatchCheckButton(
                     else -> this
                 }
             }
-            .clickable { onClickButton() },
+            .clickable {
+                if (status == MatchStatus.Todo) {
+                    onClickButton()
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         when (status) {

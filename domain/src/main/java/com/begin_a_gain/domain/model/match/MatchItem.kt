@@ -27,3 +27,15 @@ data class MatchInfo(
     val status: MatchJoinStatus = MatchJoinStatus.Joinable,
     val owner: String = ""
 )
+
+@Serializable
+data class MatchSettings(
+    val name: String = "",
+    val matchCode: String = "",
+    val ongoingDays: Int = 0,
+    val repeatDayTypes: List<Int> = emptyList(),
+    val maxParticipants: Int = 5,
+    val category: MatchCategoryItem? = MatchCategoryItem("", "", ""),
+    val isPublic: Boolean = true,
+    val password: String = ""
+)

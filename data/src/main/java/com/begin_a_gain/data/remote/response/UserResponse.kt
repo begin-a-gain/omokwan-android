@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserInfoResponse(
-    val id: Long?,
+    val id: Int?,
     val socialId: Long?,
     val email: String?,
     val nickname: String?,

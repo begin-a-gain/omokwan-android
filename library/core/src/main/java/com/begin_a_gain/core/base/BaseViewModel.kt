@@ -15,17 +15,13 @@ abstract class BaseViewModel<S : BaseState, SE : Any>(
         initialState = initialState
     )
 
-    protected fun CoroutineScope.withLoading(block: suspend () -> Unit) {
-        launch {
-            intent {
-                reduce { state.updateLoadingCount(state.loadingCount + 1) as S }
-            }
+    protected fun withLoading(block: suspend () -> Unit) {
+        intent {
+            reduce { state.updateLoadingCount(state.loadingCount + 1) as S }
             try {
                 block()
             } finally {
-                intent {
-                    reduce { state.updateLoadingCount((state.loadingCount - 1).coerceAtLeast(0)) as S }
-                }
+                reduce { state.updateLoadingCount((state.loadingCount - 1).coerceAtLeast(0)) as S }
             }
         }
     }

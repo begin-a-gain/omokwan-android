@@ -82,7 +82,7 @@ class JoinMatchViewModel @Inject constructor(
         ).onSuccess { isJoined ->
             if (isJoined) {
                 intent {
-                    postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId))
+                    postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId, state.selectedMatch?.name?: ""))
                 }
             } else {
                 if (password.isNotEmpty()) {

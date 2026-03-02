@@ -16,21 +16,33 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.button.OIconButton
 import com.begin_a_gain.design.component.dialog.ODatePickerDialog
 import com.begin_a_gain.design.component.dialog.TodayOrBeforeSelectableDates
@@ -46,6 +58,7 @@ import com.begin_a_gain.model.type.match.MatchStatus
 import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
+import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,10 +66,12 @@ import org.joda.time.DateTime
 @Composable
 fun OmokMatchListScreen(
     viewModel: OmokMatchListViewModel = hiltViewModel(),
-    navigateToMatch: (Int) -> Unit = {}
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
         selectableDates = TodayOrBeforeSelectableDates()
@@ -66,13 +81,32 @@ fun OmokMatchListScreen(
         datePickerState.selectedDateMillis = state.currentDate.millis
     }
 
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.setDateAndFetchList(state.currentDate)
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(ColorToken.UI_BG.color())
     ) {
         OmokMatchListTopBar(
-            navigateToAlarm = {}
+            navigateToAlarm = {
+
+            }
         )
 
         OmokMatchListDateBar(
@@ -83,12 +117,16 @@ fun OmokMatchListScreen(
         ) {
             showDatePicker = true
         }
-
+        OVerticalDivider(colorToken = ColorToken.STROKE_01)
+        
         OmokMatchGrid(
-            omokMatchItemSize = ((configuration.screenWidthDp - 10)/2).dp,
-            omokMatches = state.omokMatches
-        ) { id ->
-            navigateToMatch(id)
+            omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
+            omokMatches = state.omokMatches,
+            onClickCompleteTodo = {
+                viewModel.completeOmok(it)
+            }
+        ) { id, title ->
+            navigateToMatch(id, title)
         }
     }
 
@@ -104,9 +142,10 @@ fun OmokMatchListScreen(
     }
 }
 
+@Preview
 @Composable
 private fun OmokMatchListTopBar(
-    navigateToAlarm: () -> Unit
+    navigateToAlarm: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -116,10 +155,10 @@ private fun OmokMatchListTopBar(
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(
+        OImage(
+            image = OImageRes.Logo,
             modifier = Modifier
-                .background(ColorToken.UI_DISABLE_01.color())
-                .size(160.dp, 40.dp)
+                .size(128.dp, 40.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         OIconButton(
@@ -188,7 +227,8 @@ fun OmokMatchGrid(
         MyMatchItem(status = MatchStatus.Done, name = "명상하기"),
         MyMatchItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
     ),
-    navigateToMatch: (Int) -> Unit = {}
+    onClickCompleteTodo: (Int) -> Unit = {},
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
 ) {
     Box(
         modifier = Modifier
@@ -203,9 +243,11 @@ fun OmokMatchGrid(
                     match = it,
                     size = omokMatchItemSize,
                     onClickOmokMatch = {
-                        navigateToMatch(it.matchId)
+                        navigateToMatch(it.matchId, it.name)
                     },
-                    onClickButton = { /*TODO*/ }
+                    onClickButton = {
+                        onClickCompleteTodo(it.matchId)
+                    }
                 )
             }
         }
@@ -218,7 +260,8 @@ fun OmokMatchGrid(
             ) {
                 OImage(
                     modifier = Modifier.size(176.dp, 56.dp),
-                    image = OImageRes.SpeechBubble)
+                    image = OImageRes.SpeechBubble
+                )
                 OText(
                     modifier = Modifier
                         .padding(bottom = 14.dp)

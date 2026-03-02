@@ -29,6 +29,14 @@ class LocalRepositoryImpl @Inject internal constructor(
         return dataStoreManager.nickname.data
     }
 
+    override fun saveUserId(value: Int) {
+        dataStoreManager.userId.data = value
+    }
+
+    override fun getUserId(): Int {
+        return dataStoreManager.userId.data
+    }
+
     override fun saveCategoryList(value: List<MatchCategoryItem>) {
         val jsonString = Json.encodeToString(value)
         dataStoreManager.categoryList.data = jsonString
