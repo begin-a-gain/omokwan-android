@@ -42,6 +42,7 @@ fun Modifier.initScreen(usePadding: Boolean = true) = this
 @Composable
 fun OScreen(
     modifier: Modifier = Modifier,
+    showTitle: Boolean = true,
     title: String? = null,
     trailingIcon: OImageRes? = null,
     onTrailingIconClick: () -> Unit = {},
@@ -63,13 +64,15 @@ fun OScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize().addFocusCleaner(focusManager),
         topBar = {
-            OTopBar(
-                title = title ?: "",
-                startIcon = if (showBackButton) OImageRes.ArrowLeft else null,
-                onClickStart = onBackButtonClick,
-                endIcon = trailingIcon,
-                onClickEnd = onTrailingIconClick
-            )
+            if (showTitle) {
+                OTopBar(
+                    title = title ?: "",
+                    startIcon = if (showBackButton) OImageRes.ArrowLeft else null,
+                    onClickStart = onBackButtonClick,
+                    endIcon = trailingIcon,
+                    onClickEnd = onTrailingIconClick
+                )
+            }
         },
         bottomBar = {
             bottomButtonText?.let {

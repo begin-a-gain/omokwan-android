@@ -10,6 +10,9 @@ interface LocalRepository {
     fun saveNickname(value: String)
     fun getNickname(): String
 
+    fun saveUserId(value: Int)
+    fun getUserId(): Int
+
     fun saveCategoryList(value: List<MatchCategoryItem>)
     fun getCategoryList(): List<MatchCategoryItem>
 }

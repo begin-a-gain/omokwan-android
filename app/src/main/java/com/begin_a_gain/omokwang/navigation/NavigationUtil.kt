@@ -11,3 +11,23 @@ fun NavHostController.popAndNavigate(route: Any) {
         launchSingleTop = true
     }
 }
+
+fun NavHostController.popBackWithToast(key: String, message: String) {
+    this.previousBackStackEntry
+        ?.savedStateHandle
+        ?.set(key, message)
+
+    this.popBackStack()
+}
+
+fun NavHostController.popAndNavigateWithToast(
+    route: Any,
+    key: String,
+    message: String,
+) {
+    this.popAndNavigate(route)
+
+    this.currentBackStackEntry
+        ?.savedStateHandle
+        ?.set(key, message)
+}

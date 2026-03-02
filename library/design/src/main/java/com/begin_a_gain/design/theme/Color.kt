@@ -75,5 +75,13 @@ enum class ColorToken(val lightColor: Color, val darkColor: Color? = null) {
         fun ColorToken.color(): Color {
             return if (isDarkMode()) this.darkColor?: this.lightColor else this.lightColor
         }
+
+        fun ColorToken.getLightColor(): Color {
+            return this.lightColor
+        }
+
+        fun ColorToken.getDarkColor(): Color {
+            return this.darkColor?: this.lightColor
+        }
     }
 }

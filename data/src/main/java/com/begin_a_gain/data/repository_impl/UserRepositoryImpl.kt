@@ -5,6 +5,7 @@ import com.begin_a_gain.data.local.TokenManager
 import com.begin_a_gain.data.remote.api.UserApi
 import com.begin_a_gain.data.remote.base.callApi
 import com.begin_a_gain.domain.model.request.NicknameRequest
+import com.begin_a_gain.domain.model.user.NicknameValidation
 import com.begin_a_gain.domain.model.user.UserInfo
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.UserRepository
@@ -25,12 +26,17 @@ class UserRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun postNicknameValidation(nickname: String): Result<Unit> {
+    override suspend fun postNicknameValidation(nickname: String): Result<NicknameValidation> {
         return callApi(
             call = {
                 userApi.postNicknameValidation(NicknameRequest(nickname))
             },
-            handleResponse = {}
+            handleResponse = {
+                NicknameValidation(
+                    isValid = it?.isValid?: false,
+                    isDuplicated = it?.isDuplicated?: false
+                )
+            }
         )
     }
 
@@ -46,6 +52,9 @@ class UserRepositoryImpl @Inject constructor(
                     }
                     response.nickname?.let { nickname ->
                         localRepository.saveNickname(nickname)
+                    }
+                    response.id?.let { userId ->
+                        localRepository.saveUserId(userId)
                     }
 
                     UserInfo(

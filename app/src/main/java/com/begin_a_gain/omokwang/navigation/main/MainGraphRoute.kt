@@ -17,8 +17,8 @@ val bottomNavigationRoutes = listOf(
 
 enum class AddMatchType(
     val title: String,
-    val image: Int
+    val image: OImageRes
 ) {
-    CreateMatch("대국 만들기", 0),
-    JoinMatch("대국 참여하기", 0)
+    CreateMatch("대국 만들기", OImageRes.ImgAdd),
+    JoinMatch("대국 참여하기", OImageRes.ImgSearch)
 }

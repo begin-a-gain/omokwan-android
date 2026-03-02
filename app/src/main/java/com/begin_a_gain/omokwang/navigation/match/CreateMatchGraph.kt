@@ -48,8 +48,8 @@ fun NavGraphBuilder.createMatchGraph(
             CreateMatchScreen(
                 viewModel = matchViewModel,
                 navigateToMain = { navController.popAndNavigate(Main) },
-                navigateToMatch = { matchId ->
-                    navController.popAndNavigate(MatchGraph(isInitial = true, matchId = matchId))
+                navigateToMatch = { matchId, title ->
+                    navController.popAndNavigate(MatchGraph(isInitial = true, matchId = matchId, matchTitle = title))
                 }
             )
         }

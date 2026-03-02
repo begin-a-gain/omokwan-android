@@ -16,3 +16,8 @@ data class CreateMatchRequest(
 data class JoinMatchRequest(
     val password: String
 )
+
+@Serializable
+data class ChangeMatchHostRequest(
+    val userId: Int
+)

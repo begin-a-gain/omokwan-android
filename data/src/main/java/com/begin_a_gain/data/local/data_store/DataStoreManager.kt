@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,6 +23,7 @@ internal class DataStoreManager @Inject constructor(@ApplicationContext private 
         private val SIGN_UP = booleanPreferencesKey("sign_up")
         private val NICKNAME = stringPreferencesKey("nickname")
         private val CATEGORIES = stringPreferencesKey("categories")
+        private val USER_ID = intPreferencesKey("user_id")
     }
 
     val isSignUpCompleted = object : DataStoreData.BooleanData<Boolean>(SIGN_UP) {
@@ -40,6 +42,17 @@ internal class DataStoreManager @Inject constructor(@ApplicationContext private 
             get() = dataStore.getFlow(key, "")
 
         override var data: String
+            get() = runBlocking { flow.first() }
+            set(value) = runBlocking { dataStore.update(key, value) }
+
+        override suspend fun remove() = dataStore.remove(key)
+    }
+
+    val userId = object : DataStoreData.IntData<Int>(USER_ID) {
+        override val flow: Flow<Int>
+            get() = dataStore.getFlow(key, -1)
+
+        override var data: Int
             get() = runBlocking { flow.first() }
             set(value) = runBlocking { dataStore.update(key, value) }
 

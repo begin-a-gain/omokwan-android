@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.match.match.change_leader
+package com.begin_a_gain.feature.match.match.change_host
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,17 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.ParticipantInfo
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.OHorizontalDivider
+import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.selection.ORadioButton
 import com.begin_a_gain.design.component.text.InitialText
 import com.begin_a_gain.design.component.text.OText
@@ -33,39 +33,56 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
+import com.begin_a_gain.domain.model.MemberInfo
+import com.begin_a_gain.feature.match.match.MatchSharedViewModel
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
-fun ChangeLeaderScreen(
-    navigateToSetting: () -> Unit = {}
+fun ChangeHostScreen(
+    matchId: Int = -1,
+    viewModel: ChangeHostViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
+    backToSetting: (toast: String?) -> Unit = {}
 ) {
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId = matchId, participants = sharedViewModel.currentParticipants.value)
+    }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is ChangeHostSideEffect.ChangeSuccess -> {
+                sharedViewModel.changeHost()
+                backToSetting("대국장이 ‘${it.newHostName}’님으로 바뀌었어요.")
+            }
+        }
+    }
+
     OScreen(
         title = "대국장 변경하기",
         showBackButton = true,
         onBackButtonClick = {
-            navigateToSetting()
+            backToSetting(null)
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
-        bottomButtonText = "대국장 변경하기"
-    ) {
-        var selectedIndex by rememberSaveable {
-            mutableStateOf(0)
+        bottomButtonText = "대국장 변경하기",
+        bottomButtonType = if (state.selectedIndex == -1) ButtonType.Disable else ButtonType.Primary,
+        onBottomButtonClick = {
+            viewModel.changeHost()
         }
-
+    ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            listOf(
-                ParticipantInfo(-1, "연날리기", 1000, 100, 1000),
-                ParticipantInfo(-1, "생갈치1호의행방불명", 1, 10, 10),
-                ParticipantInfo(-1, "쥬짱", 10, 5, 10),
-            ).forEachIndexed { index, member ->
-                LeaderCandidateItem(
+            state.participants.forEachIndexed { index, member ->
+                HostCandidateItem(
                     member = member,
-                    isSelected = index == selectedIndex
+                    isSelected = index == state.selectedIndex
                 ) {
-                    selectedIndex = index
+                    viewModel.setSelectedIndex(index)
                 }
             }
         }
@@ -74,8 +91,8 @@ fun ChangeLeaderScreen(
 
 @Preview
 @Composable
-fun LeaderCandidateItem(
-    member: ParticipantInfo = ParticipantInfo(-1, "가나다라", 5, 5, 5),
+fun HostCandidateItem(
+    member: MemberInfo = MemberInfo(-1, "가나다라", 5, 5, 5),
     isSelected: Boolean = false,
     onSelect: () -> Unit = {}
 ) {
@@ -128,6 +145,8 @@ fun LeaderCandidateItem(
         ORadioButton(
             modifier = Modifier.size(20.dp),
             checked = isSelected
-        ) { }
+        ) {
+            onSelect()
+        }
     }
 }
