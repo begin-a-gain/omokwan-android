@@ -4,6 +4,12 @@ import com.begin_a_gain.domain.enum.MatchCalendarStatus
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class MatchBoardInitialInfo(
+    val users: List<MatchBoardUser>,
+    val isTodayMatchCompleted: Boolean
+)
+
+@Serializable
 data class MatchBoard(
     val users: List<MatchBoardUser>,
     val dates: List<MatchBoardDate>,

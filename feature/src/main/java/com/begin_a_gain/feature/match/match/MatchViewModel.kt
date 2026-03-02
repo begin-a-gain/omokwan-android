@@ -82,7 +82,7 @@ class MatchViewModel @Inject constructor(
         withLoading {
             val loadDate =
                 DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
-            val boardUsers = matchRepository.getMatchBoardUsers(matchId, loadDate)
+            val boardInitialInfo = matchRepository.getMatchBoardInitialData(matchId, loadDate)
                 .getOrDefault(null)
 
             val participants: List<MemberInfo> = matchRepository.getParticipants(matchId)
@@ -91,7 +91,7 @@ class MatchViewModel @Inject constructor(
             intent {
                 var amIHost = false
                 val participantMap = participants.associateBy { it.id }
-                val combinedParticipants = boardUsers?.mapIndexed { index, user ->
+                val combinedParticipants = boardInitialInfo?.users?.mapIndexed { index, user ->
                     val info = participantMap[user.userId]
                     if (user.isHost) {
                         amIHost = index == 0
@@ -106,7 +106,13 @@ class MatchViewModel @Inject constructor(
                     )
                 } ?: participants
                 saveMatchInfo(amIHost, combinedParticipants)
-                reduce { state.copy(participants = combinedParticipants, amIHost = amIHost) }
+                reduce {
+                    state.copy(
+                        participants = combinedParticipants,
+                        amIHost = amIHost,
+                        todayDone = boardInitialInfo?.isTodayMatchCompleted ?: false
+                    )
+                }
                 if (isInitial) {
                     postSideEffect(MatchSideEffect.ShowInitialToast)
                 }

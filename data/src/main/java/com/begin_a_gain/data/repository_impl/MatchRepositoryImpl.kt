@@ -8,6 +8,7 @@ import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
 import com.begin_a_gain.domain.model.match.MatchBoardDate
+import com.begin_a_gain.domain.model.match.MatchBoardInitialInfo
 import com.begin_a_gain.domain.model.match.MatchBoardUser
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.match.MatchDatesUserStatus
@@ -132,19 +133,22 @@ class MatchRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun getMatchBoardUsers(matchId: Int, date: String): Result<List<MatchBoardUser>> {
+    override suspend fun getMatchBoardInitialData(matchId: Int, date: String): Result<MatchBoardInitialInfo> {
         return callApi(
             call = {
                 matchApi.getMatchBoard(matchId, date, 1)
             },
             handleResponse = {
-                it?.users?.map { user ->
-                    MatchBoardUser(
-                        userId = user.userId,
-                        nickname = user.nickname,
-                        isHost = user.isHost
-                    )
-                } ?: emptyList()
+                MatchBoardInitialInfo(
+                    users = it?.users?.map { user ->
+                        MatchBoardUser(
+                            userId = user.userId,
+                            nickname = user.nickname,
+                            isHost = user.isHost
+                        )
+                    } ?: emptyList(),
+                    isTodayMatchCompleted = it?.isTodayMatchCompleted ?: false
+                )
             }
         )
     }

@@ -251,13 +251,6 @@ fun CalendarStickyHeader(
     }
 }
 
-fun getLastDayOfMonth(year: Int, month: Int): Int {
-    val yearMonth = YearMonth(year, month)
-    return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue().dayOfMonth
-}
-
-
-
 @Preview
 @Composable
 fun MatchParticipantsRow(

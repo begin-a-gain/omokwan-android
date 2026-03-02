@@ -4,6 +4,7 @@ import com.begin_a_gain.domain.model.BoardPageResult
 import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.model.PageResult
 import com.begin_a_gain.domain.model.match.MatchBoard
+import com.begin_a_gain.domain.model.match.MatchBoardInitialInfo
 import com.begin_a_gain.domain.model.match.MatchBoardUser
 import com.begin_a_gain.domain.model.match.MatchInfo
 import com.begin_a_gain.domain.model.match.MatchSettings
@@ -25,7 +26,7 @@ interface MatchRepository {
     suspend fun postJoinMatch(matchId: Int, request: JoinMatchRequest): Result<Boolean>
     suspend fun getParticipants(matchId: Int): Result<List<MemberInfo>>
     suspend fun getMatchBoardPaging(matchId: Int, date: String, pageSize: Int): BoardPageResult<MatchBoard>
-    suspend fun getMatchBoardUsers(matchId: Int, date: String): Result<List<MatchBoardUser>>
+    suspend fun getMatchBoardInitialData(matchId: Int, date: String): Result<MatchBoardInitialInfo>
     suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
     suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean>
     suspend fun deleteMe(matchId: Int): Result<Boolean>
