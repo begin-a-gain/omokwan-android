@@ -37,7 +37,6 @@ data class MyMatchItem(
     val omok: Int = 0
 )
 
-
 @Serializable
 data class MatchSettings(
     val name: String = "",
