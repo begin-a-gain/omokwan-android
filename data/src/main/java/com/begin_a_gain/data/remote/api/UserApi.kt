@@ -3,10 +3,12 @@ package com.begin_a_gain.data.remote.api
 import com.begin_a_gain.data.remote.base.Response
 import com.begin_a_gain.data.remote.constant.ApiEndPoint
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.info
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.myPage
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.nickname
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Auth.nicknameValidation
 import com.begin_a_gain.data.remote.response.NicknameValidationResponse
 import com.begin_a_gain.data.remote.response.UserInfoResponse
+import com.begin_a_gain.data.remote.response.UserMyPageResponse
 import com.begin_a_gain.domain.model.request.NicknameRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -33,5 +35,9 @@ class UserApi @Inject constructor(
 
     suspend fun getUserInfo(): Response<UserInfoResponse> {
         return client.get(ApiEndPoint.User.info()).body<Response<UserInfoResponse>>()
+    }
+
+    suspend fun getMyPage(userId: Int): Response<UserMyPageResponse> {
+        return client.get(ApiEndPoint.User.myPage(userId)).body()
     }
 }

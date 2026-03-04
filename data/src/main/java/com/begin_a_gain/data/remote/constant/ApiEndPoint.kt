@@ -10,6 +10,7 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun User.info() = this.endPoint + "/info"
     fun User.nickname() = this.endPoint + "/nicknames"
     fun User.nicknameValidation() = this.endPoint + "/nicknames/validations"
+    fun User.myPage(userId: Int) = this.endPoint + "/$userId/mypage"
 
     data object Match : ApiEndPoint("matches")
     fun Match.categories() = this.endPoint + "/categories"

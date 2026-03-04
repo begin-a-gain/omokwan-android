@@ -22,10 +22,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.OText
@@ -36,8 +41,15 @@ import com.begin_a_gain.design.util.OScreen
 
 @Preview
 @Composable
-fun MyPageScreen() {
+fun MyPageScreen(
+    viewModel: MyPageListViewModel = hiltViewModel()
+) {
     val scroll = rememberScrollState()
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.initiate()
+    }
 
     OScreen(
         title = "마이페이지",
@@ -47,7 +59,7 @@ fun MyPageScreen() {
             modifier = Modifier.verticalScroll(scroll),
         ) {
             MyPageHeader(
-                userName = "가나다라마바사"
+                userName = state.nickname
             ) {
 
             }
@@ -64,14 +76,14 @@ fun MyPageScreen() {
                     items = listOf(
                         MyPageTableItem(
                             subTitle = "진행 중인 대국",
-                            description = "10",
+                            description = "${state.inProgressMatches.size}",
                             onClick = {
 
                             }
                         ),
                         MyPageTableItem(
                             subTitle = "완료한 대국",
-                            description = "5",
+                            description = "${state.completedMatches.size}",
                             onClick = {
 
                             }
@@ -132,6 +144,8 @@ fun MyPageScreen() {
                         style = OTextStyle.Title2
                     )
                 }
+
+                Spacer(Modifier.height(60.dp))
             }
         }
     }
@@ -170,7 +184,7 @@ fun MyPageHeader(
                     )
             )
             OText(
-                text = "${userName.first()}",
+                text = "${userName.firstOrNull()?: ""}",
                 style = OTextStyle.Display2,
                 color = ColorToken.TEXT_PRIMARY
             )

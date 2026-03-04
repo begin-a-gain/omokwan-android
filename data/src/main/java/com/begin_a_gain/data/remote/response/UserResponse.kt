@@ -12,3 +12,24 @@ data class UserInfoResponse(
     val refreshToken: String?,
     val deleted: Boolean?
 )
+
+@Serializable
+data class UserMyPageResponse(
+    val userId: Int,
+    val nickname: String,
+    val inProgressMatchCount: Int,
+    val completedMatchCount: Int,
+    val inProgressMatches: List<UserMyPageMatchItemResponse>,
+    val completedMatches: List<UserMyPageMatchItemResponse>
+)
+
+@Serializable
+data class UserMyPageMatchItemResponse(
+    val matchId: Int,
+    val matchName: String,
+    val participantDays: Int,
+    val comboCount: Int,
+    val participantNumbers: Int = 0, // Todo : api fix
+    val omokCount: Int = 0, // Todo : api fix
+    val dayOfWeeks: List<Int>
+)
