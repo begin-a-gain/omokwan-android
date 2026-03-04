@@ -62,6 +62,9 @@ fun ChangeNicknameFullPopup(
             },
             onBottomButtonClick = {
                 viewModel.saveNickname()
+            },
+            onBackButtonClick = {
+                onDismissRequest(false)
             }
         ) {
             NicknameSettingContent(

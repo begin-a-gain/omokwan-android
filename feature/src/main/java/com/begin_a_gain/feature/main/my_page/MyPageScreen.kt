@@ -179,10 +179,7 @@ fun MyPageHeader(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = ColorToken.UI_BG.color())
-            .padding(vertical = 16.dp, horizontal = 20.dp)
-            .noRippleClickable() {
-                onClick()
-            },
+            .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -208,7 +205,13 @@ fun MyPageHeader(
             )
         }
         Spacer(Modifier.width(10.dp))
-        Box(modifier = Modifier.width(IntrinsicSize.Max)) {
+        Box(
+            modifier = Modifier
+                .width(IntrinsicSize.Max)
+                .noRippleClickable {
+                    onClick()
+                }
+        ) {
             Spacer(
                 Modifier
                     .fillMaxWidth()
