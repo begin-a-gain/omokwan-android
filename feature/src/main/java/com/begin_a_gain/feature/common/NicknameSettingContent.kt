@@ -11,8 +11,8 @@ import com.begin_a_gain.design.component.text.OTextField
 import com.begin_a_gain.design.component.text.TextFieldStatus
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.OTextStyle
-import com.begin_a_gain.feature.sign_up.NicknameFailCase
 import com.begin_a_gain.model.type.common.ValidationState
+import com.begin_a_gain.util.enum.NicknameFailCase
 
 
 @Composable

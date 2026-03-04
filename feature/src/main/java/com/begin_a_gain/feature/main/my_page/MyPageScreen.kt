@@ -24,6 +24,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +41,8 @@ import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.feature.main.my_page.change_nickname.ChangeNicknameFullPopup
 
 @Preview
 @Composable
@@ -47,22 +52,26 @@ fun MyPageScreen(
     val scroll = rememberScrollState()
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
+    var showChangeNicknameDialog by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         viewModel.initiate()
     }
 
     OScreen(
         title = "마이페이지",
-        useDefaultPadding = false
-    ) {
+        useDefaultPadding = false,
+        snackBarBottomPadding = 54.dp
+    ) { showSnackBar ->
         Column(
             modifier = Modifier.verticalScroll(scroll),
         ) {
             MyPageHeader(
                 userName = state.nickname
             ) {
-
+                showChangeNicknameDialog = true
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -148,6 +157,15 @@ fun MyPageScreen(
                 Spacer(Modifier.height(60.dp))
             }
         }
+
+        if (showChangeNicknameDialog) {
+            ChangeNicknameFullPopup(nickname = state.nickname) { isSaved ->
+                showChangeNicknameDialog = false
+                if (isSaved) {
+                    showSnackBar("닉네임이 변경 되었어요.")
+                }
+            }
+        }
     }
 }
 
@@ -162,7 +180,7 @@ fun MyPageHeader(
             .fillMaxWidth()
             .background(color = ColorToken.UI_BG.color())
             .padding(vertical = 16.dp, horizontal = 20.dp)
-            .clickable {
+            .noRippleClickable() {
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically

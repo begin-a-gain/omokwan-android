@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.sign_up
+package com.begin_a_gain.feature.main.my_page.change_nickname
 
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.exception.SourceException
@@ -16,10 +16,10 @@ import org.orbitmvi.orbit.blockingIntent
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class ChangeNickNameViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val localRepository: LocalRepository
-) : BaseViewModel<SignUpState, SignUpSideEffect>(SignUpState()) {
+): BaseViewModel<ChangeNicknameState, ChangeNicknameSideEffect>(ChangeNicknameState()) {
 
     init {
         validateNickname()
@@ -82,27 +82,11 @@ class SignUpViewModel @Inject constructor(
         withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {
-                    localRepository.saveIsSignUpCompleted(true)
-                    getUserInfo()
+                    localRepository.saveNickname(state.nickname)
+                    postSideEffect(ChangeNicknameSideEffect.SuccessToChange)
                 }
                 .onFailure {
                     // Todo
-                }
-        }
-    }
-
-    private fun getUserInfo() {
-        withLoading {
-            userRepository.getUserInfo()
-                .onSuccess {
-                    intent {
-                        postSideEffect(SignUpSideEffect.SignUpSuccess)
-                    }
-                }
-                .onFailure {
-                    intent {
-                        postSideEffect(SignUpSideEffect.NavigateToSignIn)
-                    }
                 }
         }
     }
