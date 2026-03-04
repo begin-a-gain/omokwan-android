@@ -20,10 +20,10 @@ data class MyPageInfo(
 
 @Serializable
 data class MyPageMatchItem(
-    val matchId: Int,
-    val title: String,
-    val ongoingDays: Int,
-    val combo: Int,
-    val omok: Int,
-    val repeatDays: List<Int>
+    val matchId: Int = -1,
+    val title: String = "",
+    val ongoingDays: Int = 0,
+    val combo: Int = 0,
+    val omok: Int = 0,
+    val repeatDays: List<Int> = emptyList()
 )

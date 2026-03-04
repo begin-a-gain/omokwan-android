@@ -91,7 +91,7 @@ class UserRepositoryImpl @Inject constructor(
                                 repeatDays = item.dayOfWeeks
                             )
                         },
-                        completedMatchList = it.inProgressMatches.map { item ->
+                        completedMatchList = it.completedMatches.map { item ->
                             MyPageMatchItem(
                                 matchId = item.matchId,
                                 title = item.matchName,

@@ -1,4 +1,4 @@
-package com.begin_a_gain.feature.main.my_page
+package com.begin_a_gain.feature.main.my_page.match_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.Skeleton
 import com.begin_a_gain.design.component.text.OText
@@ -25,42 +27,39 @@ import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
-import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.user.MyPageMatchItem
 
 @Preview
 @Composable
-fun MyMatchListScreen(
-    isComplete: Boolean = false
+fun MyMatchListFullPopup(
+    isComplete: Boolean = false,
+    matchList: List<MyPageMatchItem> = emptyList(),
+    onDismissRequest: () -> Unit = {}
 ) {
-    val test = listOf(
-        MyMatchItem(
-            name = "Test1"
-        ),
-        MyMatchItem(
-            name = "Test2"
-        ),
-        MyMatchItem(
-            name = "Test1"
-        )
-    )
-    OScreen(
-        title = if (isComplete) "완료한 대국" else "진행 중인 대국",
-        useDefaultPadding = false
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(ColorToken.UI_02.color())
-                .padding(20.dp)
+        OScreen(
+            title = if (isComplete) "완료한 대국" else "진행 중인 대국",
+            useDefaultPadding = false,
+            onBackButtonClick = {
+                onDismissRequest()
+            }
         ) {
-            LazyColumn {
-                items(test.size) { index ->
-                    test[index].let { match ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(ColorToken.UI_02.color())
+                    .padding(20.dp)
+            ) {
+                LazyColumn {
+                    items(matchList.size) { index ->
                         MyMatchListItem(
-                            match = match,
+                            match = matchList[index],
                             isLoading = false,
                             isFirst = index == 0,
-                            isLast = index == test.size - 1,
+                            isLast = index == matchList.size - 1,
                             onClick = {
 
                             }
@@ -75,7 +74,7 @@ fun MyMatchListScreen(
 @Preview
 @Composable
 fun MyMatchListItem(
-    match: MyMatchItem = MyMatchItem(),
+    match: MyPageMatchItem = MyPageMatchItem(),
     isLoading: Boolean = true,
     isFirst: Boolean = false,
     isLast: Boolean = false,
@@ -107,7 +106,7 @@ fun MyMatchListItem(
                 isLoading = isLoading
             ){
                 OText(
-                    text = match.name,
+                    text = match.title,
                     style = OTextStyle.Title2,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1

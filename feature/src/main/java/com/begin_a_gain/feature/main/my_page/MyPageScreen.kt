@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +44,7 @@ import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.my_page.change_nickname.ChangeNicknameFullPopup
+import com.begin_a_gain.feature.main.my_page.match_list.MyMatchListFullPopup
 
 @Preview
 @Composable
@@ -53,6 +55,8 @@ fun MyPageScreen(
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     var showChangeNicknameDialog by rememberSaveable { mutableStateOf(false) }
+    var showInProgressMatchListDialog by rememberSaveable { mutableStateOf(false) }
+    var showCompletedMatchListDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.initiate()
@@ -87,14 +91,14 @@ fun MyPageScreen(
                             subTitle = "진행 중인 대국",
                             description = "${state.inProgressMatches.size}",
                             onClick = {
-
+                                showInProgressMatchListDialog = true
                             }
                         ),
                         MyPageTableItem(
                             subTitle = "완료한 대국",
                             description = "${state.completedMatches.size}",
                             onClick = {
-
+                                showCompletedMatchListDialog = true
                             }
                         )
                     )
@@ -165,6 +169,26 @@ fun MyPageScreen(
                     showSnackBar("닉네임이 변경 되었어요.")
                 }
             }
+        }
+
+        if (showInProgressMatchListDialog) {
+            MyMatchListFullPopup(
+                isComplete = false,
+                matchList = state.inProgressMatches,
+                onDismissRequest = {
+                    showInProgressMatchListDialog = false
+                }
+            )
+        }
+
+        if (showCompletedMatchListDialog) {
+            MyMatchListFullPopup(
+                isComplete = true,
+                matchList = state.completedMatches,
+                onDismissRequest = {
+                    showCompletedMatchListDialog = false
+                }
+            )
         }
     }
 }
@@ -243,6 +267,7 @@ fun MyPageTable(
                 color = ColorToken.UI_BG.color(),
                 shape = RoundedCornerShape(8.dp)
             )
+            .clip(RoundedCornerShape(8.dp))
     ) {
         OText(
             modifier = Modifier
@@ -253,7 +278,11 @@ fun MyPageTable(
         )
         items.forEach { item ->
             Row(
-                modifier = Modifier.padding(vertical = 22.dp, horizontal = 16.dp),
+                modifier = Modifier
+                    .clickable(item.onClick != null && items.isNotEmpty()) {
+                        item.onClick?.let { it() }
+                    }
+                    .padding(vertical = 22.dp, horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OText(
