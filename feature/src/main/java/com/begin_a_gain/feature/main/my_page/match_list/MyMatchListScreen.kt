@@ -18,10 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.Skeleton
+import com.begin_a_gain.design.component.dialog.OFullPopup
 import com.begin_a_gain.design.component.text.OText
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
@@ -36,9 +35,8 @@ fun MyMatchListFullPopup(
     matchList: List<MyPageMatchItem> = emptyList(),
     onDismissRequest: () -> Unit = {}
 ) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+    OFullPopup(
+        onDismissRequest = onDismissRequest
     ) {
         OScreen(
             title = if (isComplete) "완료한 대국" else "진행 중인 대국",

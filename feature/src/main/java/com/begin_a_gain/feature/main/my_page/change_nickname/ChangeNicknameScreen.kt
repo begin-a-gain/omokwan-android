@@ -5,14 +5,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.dialog.OFullPopup
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.feature.common.NicknameSettingContent
 import com.begin_a_gain.model.type.common.ValidationState
@@ -46,11 +44,10 @@ fun ChangeNicknameFullPopup(
         }
     }
 
-    Dialog(
+    OFullPopup(
         onDismissRequest = {
             onDismissRequest(false)
-        },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        }
     ) {
         OScreen(
             title = "닉네임 변경",

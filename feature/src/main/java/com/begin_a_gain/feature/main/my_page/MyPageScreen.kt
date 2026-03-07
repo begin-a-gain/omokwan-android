@@ -223,36 +223,37 @@ fun MyPageHeader(
                     )
             )
             OText(
-                text = "${userName.firstOrNull()?: ""}",
+                text = "${userName.firstOrNull() ?: ""}",
                 style = OTextStyle.Display2,
                 color = ColorToken.TEXT_PRIMARY
             )
         }
         Spacer(Modifier.width(10.dp))
-        Box(
-            modifier = Modifier
-                .width(IntrinsicSize.Max)
-                .noRippleClickable {
-                    onClick()
-                }
+        Row(
+            modifier = Modifier.noRippleClickable {
+                onClick()
+            },
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(
-                Modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
-                    .align(Alignment.BottomCenter)
-                    .background(ColorToken.STROKE_PRIMARY_OP40.color())
-            )
-            OText(
-                text = "$userName 님",
-                style = OTextStyle.Headline
+            Box(modifier = Modifier.width(IntrinsicSize.Max)) {
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(ColorToken.STROKE_PRIMARY_OP40.color())
+                )
+                OText(
+                    text = "$userName 님",
+                    style = OTextStyle.Headline
+                )
+            }
+            Spacer(Modifier.width(4.dp))
+            OImage(
+                modifier = Modifier.size(16.dp),
+                image = OImageRes.ArrowRight
             )
         }
-        Spacer(Modifier.width(4.dp))
-        OImage(
-            modifier = Modifier.size(16.dp),
-            image = OImageRes.ArrowRight
-        )
     }
 }
 
