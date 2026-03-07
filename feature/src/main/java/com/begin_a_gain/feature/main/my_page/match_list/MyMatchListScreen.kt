@@ -84,11 +84,12 @@ fun MyMatchListItem(
             .run {
                 if (isFirst) {
                     clip(shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                } else if (isLast) {
+                } else this
+            }
+            .run {
+                if (isLast) {
                     clip(shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                } else {
-                    this
-                }
+                } else this
             }
             .clickable(onClick = onClick)
             .background(ColorToken.UI_BG.color())
