@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.begin_a_gain.design.component.dialog.ODialog
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.OText
@@ -45,11 +46,13 @@ import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.my_page.change_nickname.ChangeNicknameFullPopup
 import com.begin_a_gain.feature.main.my_page.match_list.MyMatchListFullPopup
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
 fun MyPageScreen(
-    viewModel: MyPageListViewModel = hiltViewModel()
+    viewModel: MyPageListViewModel = hiltViewModel(),
+    navigateToSignIn: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
@@ -57,9 +60,18 @@ fun MyPageScreen(
     var showChangeNicknameDialog by rememberSaveable { mutableStateOf(false) }
     var showInProgressMatchListDialog by rememberSaveable { mutableStateOf(false) }
     var showCompletedMatchListDialog by rememberSaveable { mutableStateOf(false) }
+    var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.initiate()
+    }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            MyPageSideEffect.LoggedOut -> {
+                navigateToSignIn()
+            }
+        }
     }
 
     OScreen(
@@ -142,7 +154,11 @@ fun MyPageScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OText(
-                        modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp),
+                        modifier = Modifier
+                            .padding(vertical = 14.dp, horizontal = 16.dp)
+                            .noRippleClickable {
+                                showLogoutDialog = true
+                            },
                         text = "로그아웃",
                         style = OTextStyle.Title2
                     )
@@ -189,6 +205,17 @@ fun MyPageScreen(
                     showCompletedMatchListDialog = false
                 }
             )
+        }
+
+        if (showLogoutDialog) {
+            LogoutDialog(
+                onLogoutClick = {
+                    viewModel.logout()
+                    showLogoutDialog = false
+                }
+            ) {
+                showLogoutDialog = false
+            }
         }
     }
 }
@@ -311,8 +338,23 @@ fun MyPageTable(
     }
 }
 
-data class MyPageTableItem(
-    val subTitle: String,
-    val description: String = "",
-    val onClick: (() -> Unit)? = null
-)
+@Composable
+fun LogoutDialog(
+    onLogoutClick: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    ODialog(
+        title = "로그아웃할까요?",
+        message = "다시 로그인하려면 계정 정보가 필요해요.",
+        buttonText = "로그아웃",
+        onButtonClick = {
+            onLogoutClick()
+        },
+        additionalButtonText = "취소",
+        onAdditionalButtonClick = {
+            onDismissRequest()
+        }
+    ) {
+        onDismissRequest()
+    }
+}

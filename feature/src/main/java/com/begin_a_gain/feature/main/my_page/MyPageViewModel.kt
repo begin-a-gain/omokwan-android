@@ -1,14 +1,16 @@
 package com.begin_a_gain.feature.main.my_page
 
 import com.begin_a_gain.core.base.BaseViewModel
+import com.begin_a_gain.domain.repository.AuthRepository
 import com.begin_a_gain.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageListViewModel @Inject constructor(
-    private val userRepository: UserRepository
-): BaseViewModel<MyPageState, Nothing>(MyPageState()) {
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository
+): BaseViewModel<MyPageState, MyPageSideEffect>(MyPageState()) {
 
     fun initiate() {
         withLoading {
@@ -25,5 +27,10 @@ class MyPageListViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun logout() = intent {
+        authRepository.logout()
+        postSideEffect(MyPageSideEffect.LoggedOut)
     }
 }

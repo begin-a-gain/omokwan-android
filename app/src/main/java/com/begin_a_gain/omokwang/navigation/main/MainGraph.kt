@@ -1,6 +1,5 @@
 package com.begin_a_gain.omokwang.navigation.main
 
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,8 +51,8 @@ import com.begin_a_gain.design.util.BottomSheetPreview
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.feature.main.my_page.MyPageScreen
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
+import com.begin_a_gain.feature.main.my_page.MyPageScreen
 import com.begin_a_gain.omokwang.navigation.MatchList
 import com.begin_a_gain.omokwang.navigation.MyPage
 
@@ -62,6 +61,7 @@ import com.begin_a_gain.omokwang.navigation.MyPage
 @Composable
 fun MainGraph(
     toast: String? = null,
+    navigateToSignIn: () -> Unit = {},
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
     navigateToMatch: (Int, String) -> Unit = { _, _ -> }
@@ -185,7 +185,9 @@ fun MainGraph(
                 }
 
                 composable<MyPage> {
-                    MyPageScreen()
+                    MyPageScreen {
+                        navigateToSignIn()
+                    }
                 }
             }
 

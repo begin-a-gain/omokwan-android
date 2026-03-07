@@ -11,3 +11,13 @@ data class MyPageState(
 ) : BaseState {
     override fun updateLoadingCount(count: Int): BaseState = copy(loadingCount = count)
 }
+
+interface MyPageSideEffect {
+    object LoggedOut : MyPageSideEffect
+}
+
+data class MyPageTableItem(
+    val subTitle: String,
+    val description: String = "",
+    val onClick: (() -> Unit)? = null
+)
