@@ -170,7 +170,11 @@ fun MyPageScreen(
                             .background(color = ColorToken.STROKE_03.color())
                     )
                     OText(
-                        modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp),
+                        modifier = Modifier
+                            .padding(vertical = 14.dp, horizontal = 16.dp)
+                            .noRippleClickable {
+                                showDeleteDialog = true
+                            },
                         text = "회원탈퇴",
                         style = OTextStyle.Title2
                     )
@@ -223,7 +227,7 @@ fun MyPageScreen(
         if (showDeleteDialog) {
             DeleteAccountFullPopup { isDeleted ->
                 if (isDeleted) {
-                    navigateToSignIn()
+                    viewModel.logout()
                 }
                 showDeleteDialog = false
             }

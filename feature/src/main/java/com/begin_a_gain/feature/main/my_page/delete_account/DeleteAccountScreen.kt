@@ -57,8 +57,8 @@ fun DeleteAccountFullPopup(
         OScreen(
             title = "회원 탈퇴",
             bottomButtonText = "탈퇴하기",
-            bottomButtonType = if (state.reasons.isNotEmpty()
-                && (state.isSelectedOther() && state.otherReason.isNotBlank())) {
+            bottomButtonType = if (state.reasons.isNotEmpty() &&
+                (!state.isSelectedOther() || state.otherReason.isNotBlank())) {
                 ButtonType.Primary
             } else ButtonType.Disable,
             onBottomButtonClick = {
