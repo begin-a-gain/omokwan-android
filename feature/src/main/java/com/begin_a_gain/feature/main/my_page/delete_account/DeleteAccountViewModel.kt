@@ -1,21 +1,22 @@
 package com.begin_a_gain.feature.main.my_page.delete_account
 
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.domain.repository.AuthRepository
+import com.begin_a_gain.domain.model.request.DeletionSurveyRequest
+import com.begin_a_gain.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.blockingIntent
 import javax.inject.Inject
 
 @HiltViewModel
 class DeleteAccountViewModel @Inject constructor(
-    private val authRepository: AuthRepository
-): BaseViewModel<DeleteAccountState, Nothing>(DeleteAccountState()) {
+    private val userRepository: UserRepository
+): BaseViewModel<DeleteAccountState, DeleteAccountSideEffect>(DeleteAccountState()) {
 
-    fun selectReason(index: Int) = intent {
+    fun selectReason(reason: DeleteAccountReason) = intent {
         reduce {
             state.copy(
-                reasons = if (index in state.reasons) state.reasons - index
-                else state.reasons + index
+                reasons = if (reason in state.reasons) state.reasons - reason
+                else state.reasons + reason
             )
         }
     }
@@ -28,7 +29,23 @@ class DeleteAccountViewModel @Inject constructor(
         }
     }
 
-    fun deleteAccount() {
+    fun deleteAccount() = intent {
+        withLoading {
+            userRepository.postDeletionSurvey(
+                request = DeletionSurveyRequest(
+                    reasons = state.reasons.map { it.name },
+                    otherReason = if (DeleteAccountReason.OTHER in state.reasons) state.otherReason else ""
+                )
+            ).onSuccess {
+                userRepository.deleteAccount()
+                    .onSuccess {
+                        intent {
+                            postSideEffect(DeleteAccountSideEffect.SuccessToDelete)
+                        }
+                    }
+            }.onFailure {
 
+            }
+        }
     }
 }

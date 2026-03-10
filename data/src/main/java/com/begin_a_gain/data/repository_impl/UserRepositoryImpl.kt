@@ -4,6 +4,7 @@ import android.util.Log
 import com.begin_a_gain.data.local.TokenManager
 import com.begin_a_gain.data.remote.api.UserApi
 import com.begin_a_gain.data.remote.base.callApi
+import com.begin_a_gain.domain.model.request.DeletionSurveyRequest
 import com.begin_a_gain.domain.model.request.NicknameRequest
 import com.begin_a_gain.domain.model.user.MyPageInfo
 import com.begin_a_gain.domain.model.user.MyPageMatchItem
@@ -103,6 +104,28 @@ class UserRepositoryImpl @Inject constructor(
                         }
                     )
                 }
+            }
+        )
+    }
+
+    override suspend fun deleteAccount(): Result<Unit> {
+        return callApi(
+            call = {
+                userApi.deleteAccount()
+            },
+            handleResponse = {
+                null
+            }
+        )
+    }
+
+    override suspend fun postDeletionSurvey(request: DeletionSurveyRequest): Result<Unit> {
+        return callApi(
+            call = {
+                userApi.postDeletionSurvey(request)
+            },
+            handleResponse = {
+                null
             }
         )
     }

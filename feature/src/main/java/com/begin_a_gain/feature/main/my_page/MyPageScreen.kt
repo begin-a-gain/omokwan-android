@@ -45,6 +45,7 @@ import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.my_page.change_nickname.ChangeNicknameFullPopup
+import com.begin_a_gain.feature.main.my_page.delete_account.DeleteAccountFullPopup
 import com.begin_a_gain.feature.main.my_page.match_list.MyMatchListFullPopup
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -61,6 +62,7 @@ fun MyPageScreen(
     var showInProgressMatchListDialog by rememberSaveable { mutableStateOf(false) }
     var showCompletedMatchListDialog by rememberSaveable { mutableStateOf(false) }
     var showLogoutDialog by rememberSaveable { mutableStateOf(false) }
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.initiate()
@@ -215,6 +217,15 @@ fun MyPageScreen(
                 }
             ) {
                 showLogoutDialog = false
+            }
+        }
+
+        if (showDeleteDialog) {
+            DeleteAccountFullPopup { isDeleted ->
+                if (isDeleted) {
+                    navigateToSignIn()
+                }
+                showDeleteDialog = false
             }
         }
     }
