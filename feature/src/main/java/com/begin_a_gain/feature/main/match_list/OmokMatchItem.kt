@@ -30,12 +30,12 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.model.type.match.MatchStatus
 
 @Composable
 fun OmokMatchItem(
-    match: MyMatchItem,
+    match: MyMatchBoardItem,
     size: Dp,
     onClickOmokMatch: () -> Unit,
     onClickButton: () -> Unit,
@@ -191,7 +191,7 @@ fun OmokMatchItemPreview() {
         MatchStatus.entries.forEach { status ->
             OmokMatchItem(
                 modifier = Modifier.size(192.dp),
-                match = MyMatchItem(status = status, name = "Test"),
+                match = MyMatchBoardItem(status = status, name = "Test"),
                 size = 192.dp,
                 onClickOmokMatch = {},
                 onClickButton = {}

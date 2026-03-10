@@ -5,7 +5,7 @@ import com.begin_a_gain.model.type.match.MatchStatus
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MyMatchItem(
+data class MyMatchBoardItem(
     val matchId: Int = 0,
     val name: String = "",
     val ongoingDays: Int = 0,
@@ -26,6 +26,15 @@ data class MatchInfo(
     val public: Boolean = true,
     val status: MatchJoinStatus = MatchJoinStatus.Joinable,
     val owner: String = ""
+)
+
+@Serializable
+data class MyMatchItem(
+    val matchId: Int = 0,
+    val name: String = "",
+    val ongoingDays: Int = 0,
+    val combo: Int = 0,
+    val omok: Int = 0
 )
 
 @Serializable

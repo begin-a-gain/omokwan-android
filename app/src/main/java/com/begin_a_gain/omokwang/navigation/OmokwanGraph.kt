@@ -106,6 +106,7 @@ fun OmokwanGraph(
 
             MainGraph(
                 toast = toast,
+                navigateToSignIn = { navController.popAndNavigate(SignIn) },
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { matchId, title ->

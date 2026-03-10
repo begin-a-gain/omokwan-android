@@ -2,7 +2,7 @@ package com.begin_a_gain.feature.main.match_list
 
 import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.domain.model.match.MyMatchItem
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.feature.match.match.MatchSideEffect
 import com.begin_a_gain.model.type.match.MatchStatus
@@ -59,12 +59,12 @@ class OmokMatchListViewModel @Inject constructor(
             }
     }
 
-    private fun formatOmokMatchList(matchList: List<MyMatchItem>): List<MyMatchItem> {
+    private fun formatOmokMatchList(matchList: List<MyMatchBoardItem>): List<MyMatchBoardItem> {
         val maxCount = 8
         return if (matchList.size < maxCount) {
-            matchList + (1..(maxCount - matchList.size)).map { MyMatchItem(status = MatchStatus.None) }
+            matchList + (1..(maxCount - matchList.size)).map { MyMatchBoardItem(status = MatchStatus.None) }
         } else if (matchList.size %2 == 1) {
-            matchList + listOf(MyMatchItem(status = MatchStatus.None))
+            matchList + listOf(MyMatchBoardItem(status = MatchStatus.None))
         } else matchList
     }
 

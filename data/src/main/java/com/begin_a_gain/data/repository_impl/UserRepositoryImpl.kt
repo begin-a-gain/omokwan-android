@@ -4,7 +4,10 @@ import android.util.Log
 import com.begin_a_gain.data.local.TokenManager
 import com.begin_a_gain.data.remote.api.UserApi
 import com.begin_a_gain.data.remote.base.callApi
+import com.begin_a_gain.domain.model.request.DeletionSurveyRequest
 import com.begin_a_gain.domain.model.request.NicknameRequest
+import com.begin_a_gain.domain.model.user.MyPageInfo
+import com.begin_a_gain.domain.model.user.MyPageMatchItem
 import com.begin_a_gain.domain.model.user.NicknameValidation
 import com.begin_a_gain.domain.model.user.UserInfo
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -65,6 +68,64 @@ class UserRepositoryImpl @Inject constructor(
                         deleted = response.deleted ?: false
                     )
                 }
+            }
+        )
+    }
+
+    override suspend fun getUserMyPage(): Result<MyPageInfo> {
+        val userId = localRepository.getUserId()
+        return callApi(
+            call = {
+                userApi.getMyPage(userId = userId)
+            },
+            handleResponse = { response ->
+                response?.let {
+                    MyPageInfo(
+                        nickname = it.nickname,
+                        inProgressMatchList = it.inProgressMatches.map { item ->
+                            MyPageMatchItem(
+                                matchId = item.matchId,
+                                title = item.matchName,
+                                ongoingDays = item.participantDays,
+                                combo = item.comboCount,
+                                omok = item.omokCount,
+                                repeatDays = item.dayOfWeeks
+                            )
+                        },
+                        completedMatchList = it.completedMatches.map { item ->
+                            MyPageMatchItem(
+                                matchId = item.matchId,
+                                title = item.matchName,
+                                ongoingDays = item.participantDays,
+                                combo = item.comboCount,
+                                omok = item.omokCount,
+                                repeatDays = item.dayOfWeeks
+                            )
+                        }
+                    )
+                }
+            }
+        )
+    }
+
+    override suspend fun deleteAccount(): Result<Unit> {
+        return callApi(
+            call = {
+                userApi.deleteAccount()
+            },
+            handleResponse = {
+                null
+            }
+        )
+    }
+
+    override suspend fun postDeletionSurvey(request: DeletionSurveyRequest): Result<Unit> {
+        return callApi(
+            call = {
+                userApi.postDeletionSurvey(request)
+            },
+            handleResponse = {
+                null
             }
         )
     }
