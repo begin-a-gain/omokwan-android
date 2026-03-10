@@ -33,16 +33,18 @@ import com.begin_a_gain.domain.model.user.MyPageMatchItem
 fun MyMatchListFullPopup(
     isComplete: Boolean = false,
     matchList: List<MyPageMatchItem> = emptyList(),
-    onDismissRequest: () -> Unit = {}
+    onDismissRequest: (matchId: Int?, title: String?) -> Unit = { _, _ ->}
 ) {
     OFullPopup(
-        onDismissRequest = onDismissRequest
+        onDismissRequest = {
+            onDismissRequest(null, null)
+        }
     ) {
         OScreen(
             title = if (isComplete) "완료한 대국" else "진행 중인 대국",
             useDefaultPadding = false,
             onBackButtonClick = {
-                onDismissRequest()
+                onDismissRequest(null, null)
             }
         ) {
             Column(
@@ -59,7 +61,8 @@ fun MyMatchListFullPopup(
                             isFirst = index == 0,
                             isLast = index == matchList.size - 1,
                             onClick = {
-
+                                val match = matchList[index]
+                                onDismissRequest(match.matchId, match.title)
                             }
                         )
                     }

@@ -185,9 +185,14 @@ fun MainGraph(
                 }
 
                 composable<MyPage> {
-                    MyPageScreen {
-                        navigateToSignIn()
-                    }
+                    MyPageScreen(
+                        navigateToSignIn = {
+                            navigateToSignIn()
+                        },
+                        navigateToMatch = { id, title ->
+                            navigateToMatch(id, title)
+                        }
+                    )
                 }
             }
 
