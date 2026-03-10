@@ -11,8 +11,8 @@ data class MainGraphRoute<T: Any>(
 )
 
 val bottomNavigationRoutes = listOf(
-    MainGraphRoute("My 대국", MatchList, OImageRes.PlaceHolder),
-    MainGraphRoute("마이페이지", MyPage, OImageRes.PlaceHolder),
+    MainGraphRoute("My 대국", MatchList, OImageRes.Home),
+    MainGraphRoute("마이페이지", MyPage, OImageRes.Profile),
 )
 
 enum class AddMatchType(

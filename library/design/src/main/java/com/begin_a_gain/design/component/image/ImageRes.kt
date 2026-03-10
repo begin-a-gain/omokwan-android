@@ -13,6 +13,7 @@ enum class OImageRes(val res: Int) {
     Minus(R.drawable.minus),
     PlaceHolder(R.drawable.placeholder20),
 
+    Home(R.drawable.home),
     Profile(R.drawable.profile),
     Bell(R.drawable.bell),
 
