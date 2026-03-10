@@ -1,6 +1,5 @@
 package com.begin_a_gain.data.repository_impl
 
-import android.util.Log
 import com.begin_a_gain.data.local.TokenManager
 import com.begin_a_gain.data.remote.api.UserApi
 import com.begin_a_gain.data.remote.base.callApi
