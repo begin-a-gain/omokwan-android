@@ -1,5 +1,6 @@
 package com.begin_a_gain.data.remote.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,7 +30,7 @@ data class UserMyPageMatchItemResponse(
     val matchName: String,
     val participantDays: Int,
     val comboCount: Int,
-    val participantNumbers: Int = 0, // Todo : api fix
-    val omokCount: Int = 0, // Todo : api fix
+    @SerialName("participantNumbers")
+    val omokCount: Int,
     val dayOfWeeks: List<Int>
 )
