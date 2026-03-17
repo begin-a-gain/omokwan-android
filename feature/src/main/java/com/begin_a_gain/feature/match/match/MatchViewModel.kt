@@ -9,6 +9,7 @@ import androidx.paging.insertSeparators
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.MatchBoardPagingSource
 import com.begin_a_gain.domain.model.MemberInfo
+import com.begin_a_gain.domain.model.match.MatchBoardInitialInfo
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
@@ -80,11 +81,7 @@ class MatchViewModel @Inject constructor(
     ) {
         currentMatchId.value = matchId
         withLoading {
-            val loadDate =
-                DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
-            val boardInitialInfo = matchRepository.getMatchBoardInitialData(matchId, loadDate)
-                .getOrDefault(null)
-
+            val boardInitialInfo = getTodayInfo(matchId)
             val participants: List<MemberInfo> = matchRepository.getParticipants(matchId)
                 .getOrDefault(emptyList())
 
@@ -124,12 +121,27 @@ class MatchViewModel @Inject constructor(
         withLoading {
             matchRepository.putMatchStatus(currentMatchId.value)
                 .onSuccess {
+                    val isComboToday = getTodayInfo(currentMatchId.value)?.isTodayCombo?: false
                     intent {
                         reduce { state.copy(todayDone = true) }
-                        postSideEffect(MatchSideEffect.SuccessToCompleteOmok)
+                        if (isComboToday) {
+                            val myCombo = (container.stateFlow.value.participants.firstOrNull()?.combo)?: 0
+                            postSideEffect(MatchSideEffect.ShowCombo(myCombo + 1))
+                        } else {
+                            postSideEffect(MatchSideEffect.SuccessToCompleteOmok)
+                        }
                     }
                 }
         }
+    }
+
+    private suspend fun getTodayInfo(
+        matchId: Int,
+    ): MatchBoardInitialInfo? {
+        val loadDate =
+            DateTime.now().withTimeAtStartOfDay().toString(ODateTimeFormat.DateForNetwork)
+        return matchRepository.getMatchBoardInitialData(matchId, loadDate)
+            .getOrDefault(null)
     }
 
     fun kickMember(member: MemberInfo) {

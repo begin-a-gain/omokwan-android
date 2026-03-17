@@ -1,6 +1,8 @@
 package com.begin_a_gain.feature.match.match
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,11 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -87,6 +91,7 @@ fun MatchScreen(
     var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showOthersProfileBottomSheet: MemberInfo? by rememberSaveable { mutableStateOf(null) }
     var showMemberOutDialog: MemberInfo? by rememberSaveable { mutableStateOf(null) }
+    var showComboDialog: Int? by rememberSaveable { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
         viewModel.initialize(isInitial, matchId) { amIHost, participants ->
@@ -107,14 +112,14 @@ fun MatchScreen(
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp
     ) { showSnackBar ->
-        viewModel.collectSideEffect {
-            when(it) {
+        viewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
                 MatchSideEffect.ShowInitialToast -> {
                     showSnackBar("새 대국을 만들었어요.")
                 }
 
                 is MatchSideEffect.SuccessToKickMember -> {
-                    showSnackBar("'${it.name}'님을 내보냈어요.")
+                    showSnackBar("'${sideEffect.name}'님을 내보냈어요.")
                     viewModel.initialize(isInitial, matchId) { amIHost, participants ->
                         sharedViewModel.setCurrentMatch(amIHost, participants)
                     }
@@ -122,6 +127,10 @@ fun MatchScreen(
 
                 is MatchSideEffect.SuccessToCompleteOmok -> {
                     showSnackBar("오늘의 오목두기를 완료하였습니다.")
+                }
+
+                is MatchSideEffect.ShowCombo -> {
+                    showComboDialog = sideEffect.combo
                 }
             }
         }
@@ -209,6 +218,15 @@ fun MatchScreen(
                 showMemberOutDialog = null
             }
         }
+
+        showComboDialog?.let { comboCount ->
+            MatchComboBottomSheet(
+                sheetState = sheetState,
+                comboCount = comboCount
+            ) {
+                showComboDialog = null
+            }
+        }
     }
 }
 
@@ -219,9 +237,10 @@ fun CalendarStickyHeader(
     isSticky: Boolean = false
 ) {
     Box {
-        Spacer(modifier = Modifier
-            .background(ColorToken.UI_BG.color())
-            .matchParentSize()
+        Spacer(
+            modifier = Modifier
+                .background(ColorToken.UI_BG.color())
+                .matchParentSize()
         )
         Column(
             modifier = Modifier
@@ -434,6 +453,80 @@ fun MemberProfileBottomSheet(
                 }
             } else {
                 Spacer(modifier = Modifier.height(40.dp))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MatchComboBottomSheet(
+    sheetState: SheetState,
+    comboCount: Int = 1,
+    onDismissRequest: () -> Unit = {}
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        dragHandle = {
+            Spacer(
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .size(36.dp, 3.dp)
+                    .background(
+                        color = ColorToken.UI_03.color(),
+                        shape = RoundedCornerShape(4.dp)
+                    )
+            )
+        },
+        containerColor = ColorToken.UI_BG.color()
+    ) {
+        Column(
+            modifier = Modifier
+                .background(ColorToken.UI_BG.color())
+                .fillMaxWidth()
+                .height(LocalConfiguration.current.screenHeightDp.times(0.8).dp)
+                .navigationBarsPadding()
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                OText(
+                    text = "오목 달성!",
+                    style = OTextStyle.Display2
+                )
+                Spacer(Modifier.height(12.dp))
+                OText(
+                    modifier = Modifier
+                        .background(
+                            color = ColorToken.UI_PRIMARY.color().copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(100.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = ColorToken.STROKE_PRIMARY.color(),
+                            shape = RoundedCornerShape(100.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    text = "${comboCount}번 연속 콤보 달성 중",
+                    style = OTextStyle.Subtitle2,
+                    textAlign = TextAlign.Center,
+                    color = ColorToken.TEXT_PRIMARY
+                )
+                Spacer(Modifier.height(52.dp))
+                OImage(
+                    modifier = Modifier.size(354.dp),
+                    image = OImageRes.ImgCombo
+                )
+            }
+            OButton(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = "확인"
+            ) {
+                onDismissRequest()
             }
         }
     }

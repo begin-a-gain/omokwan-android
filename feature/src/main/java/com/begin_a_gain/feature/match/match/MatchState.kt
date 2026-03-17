@@ -17,6 +17,7 @@ interface MatchSideEffect {
     object ShowInitialToast : MatchSideEffect
     data class SuccessToKickMember(val name: String) : MatchSideEffect
     object SuccessToCompleteOmok : MatchSideEffect
+    data class ShowCombo(val combo: Int): MatchSideEffect
 }
 
 sealed class CalendarItem {

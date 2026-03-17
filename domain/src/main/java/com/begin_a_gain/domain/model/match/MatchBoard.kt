@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MatchBoardInitialInfo(
     val users: List<MatchBoardUser>,
-    val isTodayMatchCompleted: Boolean
+    val isTodayMatchCompleted: Boolean,
+    val isTodayCombo: Boolean
 )
 
 @Serializable

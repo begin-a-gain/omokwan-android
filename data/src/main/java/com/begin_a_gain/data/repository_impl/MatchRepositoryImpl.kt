@@ -148,7 +148,8 @@ class MatchRepositoryImpl @Inject internal constructor(
                             isHost = user.isHost
                         )
                     } ?: emptyList(),
-                    isTodayMatchCompleted = it?.isTodayMatchCompleted ?: false
+                    isTodayMatchCompleted = it?.isTodayMatchCompleted ?: false,
+                    isTodayCombo = it?.dates?.firstOrNull()?.userStatus?.firstOrNull()?.isCombo?: false
                 )
             }
         )
