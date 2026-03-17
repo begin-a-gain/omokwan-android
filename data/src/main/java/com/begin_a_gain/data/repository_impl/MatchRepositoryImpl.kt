@@ -18,6 +18,7 @@ import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
@@ -240,6 +241,18 @@ class MatchRepositoryImpl @Inject internal constructor(
                     password = it?.password ?: ""
                 )
             }
+        )
+    }
+
+    override suspend fun putMatchSettings(
+        matchId: Int,
+        request: MatchSettingsRequest
+    ): Result<Unit> {
+        return callApi(
+            call = {
+                matchApi.putMatchSettings(matchId, request)
+            },
+            handleResponse = { }
         )
     }
 

@@ -27,6 +27,7 @@ import com.begin_a_gain.data.remote.response.match.ParticipantsResponse
 import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import io.ktor.client.HttpClient
@@ -101,6 +102,12 @@ class MatchApi @Inject constructor(
 
     suspend fun getMatchSettings(matchId: Int): Response<MatchSettingsResponse> {
         return client.get(ApiEndPoint.Match.settings(matchId)).body()
+    }
+
+    suspend fun putMatchSettings(matchId: Int, request: MatchSettingsRequest): Response<Unit> {
+        return client.put(ApiEndPoint.Match.settings(matchId)) {
+            setBody(request)
+        }.body()
     }
 
     suspend fun putNewHost(
