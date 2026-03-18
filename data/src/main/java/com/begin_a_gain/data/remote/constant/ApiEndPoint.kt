@@ -13,6 +13,7 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun User.myPage(userId: Int) = this.endPoint + "/$userId/mypage"
     fun User.me() = this.endPoint + "/me"
     fun User.deletionSurvey() = this.endPoint + "me/deletion-survey"
+    fun User.get() = this.endPoint
 
     data object Match : ApiEndPoint("matches")
     fun Match.categories() = this.endPoint + "/categories"

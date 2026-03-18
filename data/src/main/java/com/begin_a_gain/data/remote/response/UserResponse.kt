@@ -34,3 +34,16 @@ data class UserMyPageMatchItemResponse(
     val omokCount: Int,
     val dayOfWeeks: List<Int>
 )
+
+@Serializable
+data class UserResponse(
+    val users: List<UserItemResponse>,
+    val nextCursor: String?,
+    val hasNext: Boolean
+)
+
+@Serializable
+data class UserItemResponse(
+    val userId: Int,
+    val nickname: String
+)
