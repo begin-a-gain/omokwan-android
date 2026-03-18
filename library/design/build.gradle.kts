@@ -50,4 +50,5 @@ dependencies {
     implementation(libs.bundles.android.lifecycle)
 
     implementation(libs.util.jodatime)
+    implementation(libs.util.lottie)
 }
