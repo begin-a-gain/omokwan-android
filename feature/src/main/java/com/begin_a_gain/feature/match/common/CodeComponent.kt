@@ -71,7 +71,7 @@ fun MatchCodeDialog(
     var code4 by rememberSaveable { mutableStateOf(if (code.isBlank()) "" else "${code[3]}") }
 
     ODialog(
-        title = "대국 코드 설정",
+        title = "대국 비밀번호 설정",
         buttonText = "확인",
         onButtonClick = {
             val fullCode = "$code1$code2$code3$code4"
