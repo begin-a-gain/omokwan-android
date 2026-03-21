@@ -29,6 +29,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.begin_a_gain.design.component.button.ButtonStyle
+import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
@@ -43,19 +45,19 @@ import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.domain.model.user.User
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun InviteMemberScreen(
-    maxParticipants: Int = 5,
-    currentMembers: List<Int> = emptyList(),
+    matchId: Int,
     viewModel: InviteMemberViewModel = hiltViewModel(),
-    navigateToSetting: (List<User>) -> Unit = {}
+    navigateToSetting: (String?) -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val users = viewModel.usersPagingData.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        viewModel.initialize(maxParticipants, currentMembers)
+        viewModel.initialize(matchId)
     }
 
     if (users.loadState.refresh is LoadState.Loading) {
@@ -66,15 +68,29 @@ fun InviteMemberScreen(
         title = "대국 초대하기",
         showBackButton = true,
         onBackButtonClick = {
-            navigateToSetting(state.newMembers)
+            navigateToSetting(null)
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "초대하기",
-        useDefaultPadding = false,
+        bottomButtonType = if (state.newMembers.isEmpty()) ButtonType.Disable else ButtonType.Primary,
         onBottomButtonClick = {
-            navigateToSetting(state.newMembers)
+            viewModel.inviteMembers()
+        },
+        useDefaultPadding = false,
+    ) { showSnackBar ->
+
+        viewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
+                is InviteMemberSideEffect.ExceedMaximum -> {
+                    showSnackBar("초대 가능 인원을 초과했어요.")
+                }
+
+                is InviteMemberSideEffect.InvitationSuccess -> {
+                    navigateToSetting(state.newMembers.joinToString(", ") { it.nickname } + "님을 대국에 초대했어요.")
+                }
+            }
         }
-    ) {
+
         Column {
             SelectedInvitees(
                 invitees = state.newMembers,

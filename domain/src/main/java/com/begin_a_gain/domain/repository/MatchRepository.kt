@@ -33,4 +33,5 @@ interface MatchRepository {
     suspend fun deleteMe(matchId: Int): Result<Boolean>
     suspend fun postKickUser(matchId: Int, userId: Int): Result<Boolean>
     suspend fun putMatchStatus(matchId: Int): Result<Boolean>
+    suspend fun postInvitees(matchId: Int, invitees: List<Int>): Result<Unit>
 }

@@ -32,9 +32,7 @@ data class MatchGraph(
 object Match
 
 @Serializable
-data class MatchSetting(
-    val matchId: Int
-)
+object MatchSetting
 
 @Serializable
 object InviteMatch
@@ -44,6 +42,7 @@ object ChangeHost
 
 const val ChangeHostToast = "change_host_toast"
 const val LeaveMatchToast = "leave_match_toast"
+const val InviteToast = "invite_toast"
 
 fun NavGraphBuilder.matchGraph(
     navController: NavHostController,
@@ -65,7 +64,7 @@ fun NavGraphBuilder.matchGraph(
                 isInitial = args.isInitial,
                 navigateToMain = navigateToMain,
                 navigateToSetting = {
-                    navController.navigate(MatchSetting(args.matchId))
+                    navController.navigate(MatchSetting)
                 }
             )
         }
@@ -77,16 +76,23 @@ fun NavGraphBuilder.matchGraph(
             val args = parentEntry.toRoute<MatchGraph>()
             val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             val savedStateHandle = backStackEntry.savedStateHandle
-            val toast by savedStateHandle.getStateFlow<String?>(ChangeHostToast, null)
+            val changeHostToast by savedStateHandle.getStateFlow<String?>(ChangeHostToast, null)
+                .collectAsStateWithLifecycle()
+            val inviteToast by savedStateHandle.getStateFlow<String?>(InviteToast, null)
                 .collectAsStateWithLifecycle()
 
             LaunchedEffect(Unit) {
-                toast?.let { savedStateHandle.remove<String>(ChangeHostToast) }
+                changeHostToast?.let { savedStateHandle.remove<String>(ChangeHostToast) }
+                inviteToast?.let { savedStateHandle.remove<String>(InviteToast) }
             }
 
             MatchSettingScreen(
                 matchId = args.matchId,
-                toast = toast,
+                toast = when {
+                    changeHostToast != null -> changeHostToast
+                    inviteToast != null -> inviteToast
+                    else -> null
+                },
                 sharedViewModel = sharedViewModel,
                 backToMain = { toast ->
                     if (!toast.isNullOrBlank()) {
@@ -105,10 +111,19 @@ fun NavGraphBuilder.matchGraph(
             )
         }
 
-        composable<InviteMatch> {
+        composable<InviteMatch> { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry<MatchGraph>()
+            }
+            val parentArg = parentEntry.toRoute<MatchGraph>()
             InviteMemberScreen(
-                navigateToSetting = {
-                    navController.popBackStack()
+                matchId = parentArg.matchId,
+                navigateToSetting = { toast ->
+                    if (toast == null) {
+                        navController.popBackStack()
+                    } else {
+                        navController.popBackWithToast(InviteToast, toast)
+                    }
                 }
             )
         }

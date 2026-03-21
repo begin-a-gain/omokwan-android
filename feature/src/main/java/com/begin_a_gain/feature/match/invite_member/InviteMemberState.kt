@@ -15,4 +15,5 @@ data class InviteMemberState(
 
 interface InviteMemberSideEffect {
     object ExceedMaximum : InviteMemberSideEffect
+    object InvitationSuccess : InviteMemberSideEffect
 }

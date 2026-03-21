@@ -30,3 +30,8 @@ data class MatchSettingsRequest(
     val password: String,
     val isPublic: Boolean
 )
+
+@Serializable
+data class MatchInviteesRequest(
+    val userIds: List<Int>
+)

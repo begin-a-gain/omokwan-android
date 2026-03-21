@@ -18,6 +18,7 @@ import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.domain.model.request.MatchInviteesRequest
 import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -149,7 +150,8 @@ class MatchRepositoryImpl @Inject internal constructor(
                         )
                     } ?: emptyList(),
                     isTodayMatchCompleted = it?.isTodayMatchCompleted ?: false,
-                    isTodayCombo = it?.dates?.firstOrNull()?.userStatus?.firstOrNull()?.isCombo?: false
+                    isTodayCombo = it?.dates?.firstOrNull()?.userStatus?.firstOrNull()?.isCombo?: false,
+                    maxParticipants = it?.match?.maxParticipants?: 5
                 )
             }
         )
@@ -299,6 +301,15 @@ class MatchRepositoryImpl @Inject internal constructor(
             handleResponse = {
                 it?.completed ?: false
             }
+        )
+    }
+
+    override suspend fun postInvitees(matchId: Int, invitees: List<Int>): Result<Unit> {
+        return callApi(
+            call = {
+                matchApi.postInvites(matchId, MatchInviteesRequest(invitees))
+            },
+            handleResponse = { }
         )
     }
 }
