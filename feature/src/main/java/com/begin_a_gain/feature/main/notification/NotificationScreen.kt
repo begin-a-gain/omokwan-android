@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.main.notification
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +51,8 @@ fun NotificationScreen(
     }
 
     OScreen(
-        title = "알림"
+        title = "알림",
+        useDefaultPadding = false
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -66,23 +68,38 @@ fun NotificationScreen(
                 }
             )
 
-            OListLazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(
-                    count = state.notifications.size
+            if (state.notifications.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxSize().background(ColorToken.UI_02.color()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    NotificationItem(
-                        notification = state.notifications[it],
-                        isFirst = it == 0,
-                        isLast = it == state.notifications.lastIndex,
-                        onClickNotification = {
-
-                        },
-                        onClickParticipate = {
-
-                        }
+                    OText(
+                        text = "모든 알림을 읽었어요",
+                        style = OTextStyle.Title2,
+                        color = ColorToken.TEXT_01
                     )
+                }
+
+            } else {
+                OListLazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(
+                        count = state.notifications.size
+                    ) {
+                        NotificationItem(
+                            notification = state.notifications[it],
+                            isFirst = it == 0,
+                            isLast = it == state.notifications.lastIndex,
+                            onClickNotification = {
+
+                            },
+                            onClickParticipate = {
+
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -102,7 +119,8 @@ private fun NotificationControls(
     onClickReadAll: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -182,7 +200,7 @@ private fun NotificationItem(
                     in 60 until 60 * 24 -> "${notification.diffInMinutes / 60}시간 전"
                     in 60 * 24 until 60 * 24 * 7 -> "${notification.diffInMinutes / (60 * 24)}일 전"
                     else -> {
-                        val date = DateTime.now().plusDays(notification.diffInMinutes / (60 * 24))
+                        val date = DateTime.now().minusDays(notification.diffInMinutes / (60 * 24))
                         "${date.monthOfYear}월 ${date.dayOfMonth}일"
                     }
                 },

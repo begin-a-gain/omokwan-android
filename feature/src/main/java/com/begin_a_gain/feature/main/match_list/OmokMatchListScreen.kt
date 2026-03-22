@@ -66,7 +66,8 @@ import org.joda.time.DateTime
 @Composable
 fun OmokMatchListScreen(
     viewModel: OmokMatchListViewModel = hiltViewModel(),
-    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
+    navigateToMatch: (Int, String) -> Unit = { _, _ -> },
+    navigateToAlarm: () -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
@@ -105,7 +106,7 @@ fun OmokMatchListScreen(
     ) {
         OmokMatchListTopBar(
             navigateToAlarm = {
-
+                navigateToAlarm()
             }
         )
 

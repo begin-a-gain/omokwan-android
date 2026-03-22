@@ -32,9 +32,9 @@ class NotificationRepositoryImpl @Inject internal constructor(
                         matchName = notification.matchName,
                         matchId = notification.matchId,
                         isPublic = notification.isPublic,
-                        actorNickname = notification.actorNickname,
-                        prevHostNickname = notification.prevHostNickname,
-                        newHostNickname = notification.newHostNickname
+                        actorNickname = notification.actorNickname?: "",
+                        prevHostNickname = notification.prevHostNickname?: "",
+                        newHostNickname = notification.newHostNickname?: ""
                     )
                 }?: emptyList()
             }

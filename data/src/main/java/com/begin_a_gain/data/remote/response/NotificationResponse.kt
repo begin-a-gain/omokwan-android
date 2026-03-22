@@ -16,9 +16,9 @@ data class NotificationItemResponse(
     val matchName: String,
     val matchId: Int,
     val isPublic: Boolean,
-    val actorNickname: String,
-    val prevHostNickname: String,
-    val newHostNickname: String
+    val actorNickname: String?,
+    val prevHostNickname: String?,
+    val newHostNickname: String?
 )
 
 @Serializable

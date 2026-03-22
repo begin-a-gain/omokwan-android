@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.begin_a_gain.feature.main.notification.NotificationScreen
 import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
@@ -44,16 +45,10 @@ object MatchList
 object MyPage
 
 @Serializable
-object MatchCategory
-
-@Serializable
-object CreateMatch
-
-@Serializable
 object JoinMatch
 
 @Serializable
-object Alarm
+object Notification
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -106,8 +101,13 @@ fun OmokwanGraph(
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
                 navigateToMatch = { matchId, title ->
                     navController.navigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
-                }
+                },
+                navigateToNotification = { navController.navigate(Notification) }
             )
+        }
+
+        composable<Notification> {
+            NotificationScreen()
         }
 
         createMatchGraph(
@@ -129,4 +129,3 @@ fun OmokwanGraph(
         )
     }
 }
-
