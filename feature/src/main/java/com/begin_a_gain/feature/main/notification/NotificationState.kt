@@ -11,6 +11,10 @@ data class NotificationState(
     override fun updateLoadingCount(count: Int): BaseState = copy(loadingCount = count)
 }
 
+interface NotificationSideEffect {
+    data class SuccessToRead(val id: Int): NotificationSideEffect
+}
+
 enum class NotificationFilter {
     All, Unread
 }

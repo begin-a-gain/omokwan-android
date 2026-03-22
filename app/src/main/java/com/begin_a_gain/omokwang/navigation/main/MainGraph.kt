@@ -64,7 +64,7 @@ fun MainGraph(
     navigateToSignIn: () -> Unit = {},
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = { _, _ -> },
+    navigateToMatch: (Int) -> Unit = {},
     navigateToNotification: () -> Unit = {}
 ) {
     val navController = rememberNavController()
@@ -181,8 +181,8 @@ fun MainGraph(
             ) {
                 composable<MatchList> {
                     OmokMatchListScreen(
-                        navigateToMatch = { id, title ->
-                            navigateToMatch(id, title)
+                        navigateToMatch = { id ->
+                            navigateToMatch(id)
                         },
                         navigateToAlarm = {
                             navigateToNotification()
@@ -195,8 +195,8 @@ fun MainGraph(
                         navigateToSignIn = {
                             navigateToSignIn()
                         },
-                        navigateToMatch = { id, title ->
-                            navigateToMatch(id, title)
+                        navigateToMatch = { id ->
+                            navigateToMatch(id)
                         }
                     )
                 }

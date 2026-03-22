@@ -52,7 +52,7 @@ class NotificationRepositoryImpl @Inject internal constructor(
         )
     }
 
-    override suspend fun patchRead(notificationId: Int): Result<Unit> {
+    override suspend fun patchRead(notificationId: Int?): Result<Unit> {
         return callApi(
             call = {
                 notificationApi.patchRead(notificationId)

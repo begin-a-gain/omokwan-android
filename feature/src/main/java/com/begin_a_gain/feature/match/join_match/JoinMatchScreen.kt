@@ -56,7 +56,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun JoinMatchScreen(
     viewModel: JoinMatchViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = {_, _ ->}
+    navigateToMatch: (Int) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(true)
@@ -82,7 +82,7 @@ fun JoinMatchScreen(
         when (it) {
             is JoinMatchSideEffect.JoinSuccess -> {
                 viewModel.setSelectedMatch(null)
-                navigateToMatch(it.matchId, it.title)
+                navigateToMatch(it.matchId)
             }
         }
     }

@@ -18,6 +18,7 @@ import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.LeaveMatchToast
+import com.begin_a_gain.omokwang.navigation.match.Match
 import com.begin_a_gain.omokwang.navigation.match.MatchGraph
 import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.matchGraph
@@ -99,15 +100,19 @@ fun OmokwanGraph(
                 navigateToSignIn = { navController.popAndNavigate(SignIn) },
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { matchId, title ->
-                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
+                navigateToMatch = { matchId ->
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
                 },
                 navigateToNotification = { navController.navigate(Notification) }
             )
         }
 
         composable<Notification> {
-            NotificationScreen()
+            NotificationScreen {
+                navController.navigate(
+                    MatchGraph(isInitial = false, matchId = it)
+                )
+            }
         }
 
         createMatchGraph(
@@ -117,8 +122,8 @@ fun OmokwanGraph(
         composable<JoinMatch> {
             JoinMatchScreen(
                 navigateToMain = { navController.popAndNavigate(Main) },
-                navigateToMatch = { matchId, title ->
-                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
+                navigateToMatch = { matchId ->
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }

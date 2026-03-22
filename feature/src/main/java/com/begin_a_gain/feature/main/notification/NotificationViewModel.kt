@@ -8,7 +8,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
     private val notificationRepository: NotificationRepository
-) : BaseViewModel<NotificationState, Nothing>(NotificationState()) {
+) : BaseViewModel<NotificationState, NotificationSideEffect>(NotificationState()) {
 
     fun initialize() {
         withLoading {
@@ -21,5 +21,34 @@ class NotificationViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun setFilter(filter: NotificationFilter) = intent {
+        reduce {
+            state.copy(
+                filter = filter,
+                notifications = if (filter == NotificationFilter.All)
+                    state.notifications
+                else
+                    state.notifications.filter { !it.isRead }
+            )
+        }
+    }
+
+    fun readNotification(id: Int) = withLoading {
+        notificationRepository.patchRead(id)
+            .onSuccess {
+                initialize()
+                intent {
+                    postSideEffect(NotificationSideEffect.SuccessToRead(id))
+                }
+            }
+    }
+
+    fun readAllNotifications() = withLoading {
+        notificationRepository.patchRead(null)
+            .onSuccess {
+                initialize()
+            }
     }
 }

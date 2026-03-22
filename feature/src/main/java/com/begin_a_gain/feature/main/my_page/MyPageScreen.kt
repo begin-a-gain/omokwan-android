@@ -54,7 +54,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun MyPageScreen(
     viewModel: MyPageListViewModel = hiltViewModel(),
     navigateToSignIn: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = { _, _ ->}
+    navigateToMatch: (Int) -> Unit = {}
 ) {
     val scroll = rememberScrollState()
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
@@ -200,7 +200,7 @@ fun MyPageScreen(
                 matchList = state.inProgressMatches,
                 onDismissRequest = { matchId, title ->
                     if (matchId != null && title != null) {
-                        navigateToMatch(matchId, title)
+                        navigateToMatch(matchId)
                     }
                     showInProgressMatchListDialog = false
                 }
@@ -213,7 +213,7 @@ fun MyPageScreen(
                 matchList = state.completedMatches,
                 onDismissRequest = { matchId, title ->
                     if (matchId != null && title != null) {
-                        navigateToMatch(matchId, title)
+                        navigateToMatch(matchId)
                     }
                     showCompletedMatchListDialog = false
                 }

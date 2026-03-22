@@ -151,7 +151,8 @@ class MatchRepositoryImpl @Inject internal constructor(
                     } ?: emptyList(),
                     isTodayMatchCompleted = it?.isTodayMatchCompleted ?: false,
                     isTodayCombo = it?.dates?.firstOrNull()?.userStatus?.firstOrNull()?.isCombo?: false,
-                    maxParticipants = it?.match?.maxParticipants?: 5
+                    maxParticipants = it?.match?.maxParticipants?: 5,
+                    matchTitle = it?.match?.matchName?: ""
                 )
             }
         )

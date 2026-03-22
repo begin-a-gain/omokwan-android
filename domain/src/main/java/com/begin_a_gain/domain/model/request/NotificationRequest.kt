@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotificationReadRequest(
-    val notificationId: Int
+    val notificationId: Int?
 )

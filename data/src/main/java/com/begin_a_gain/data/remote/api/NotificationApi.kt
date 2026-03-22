@@ -26,7 +26,7 @@ class NotificationApi @Inject constructor(
         return client.get(ApiEndPoint.Notification.unreadStatus()).body()
     }
 
-    suspend fun patchRead(notificationId :Int): Response<Unit> {
+    suspend fun patchRead(notificationId :Int?): Response<Unit> {
         return client.patch(ApiEndPoint.Notification.read()) {
             setBody(NotificationReadRequest(notificationId))
         }.body()

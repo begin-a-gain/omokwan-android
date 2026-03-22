@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.begin_a_gain.design.component.OListLazyColumn
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.button.OTextButton
@@ -38,16 +39,26 @@ import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.domain.enum.NotificationType
 import com.begin_a_gain.domain.model.Notification
 import org.joda.time.DateTime
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
 fun NotificationScreen(
-    viewModel: NotificationViewModel = hiltViewModel()
+    viewModel: NotificationViewModel = hiltViewModel(),
+    navigateToMatch: (Int) -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.initialize()
+    }
+
+    viewModel.collectSideEffect {
+        when (it) {
+            is NotificationSideEffect.SuccessToRead -> {
+                navigateToMatch(it.id)
+            }
+        }
     }
 
     OScreen(
@@ -61,10 +72,10 @@ fun NotificationScreen(
                 filter = state.filter,
                 unreadCount = state.notifications.count { !it.isRead },
                 onSelectFilter = {
-
+                    viewModel.setFilter(it)
                 },
                 onClickReadAll = {
-
+                    viewModel.readAllNotifications()
                 }
             )
 
@@ -93,7 +104,7 @@ fun NotificationScreen(
                             isFirst = it == 0,
                             isLast = it == state.notifications.lastIndex,
                             onClickNotification = {
-
+                                viewModel.readNotification(state.notifications[it].notificationId)
                             },
                             onClickParticipate = {
 

@@ -10,6 +10,7 @@ data class MatchState(
     val amIHost: Boolean = false,
     val participants: List<MemberInfo> = emptyList(),
     val maxParticipants: Int = 5,
+    val matchTitle: String = ""
 ): BaseState {
     override fun updateLoadingCount(count: Int): BaseState = copy(loadingCount = count)
 }
