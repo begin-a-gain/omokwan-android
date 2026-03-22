@@ -69,7 +69,6 @@ import org.joda.time.YearMonth
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun MatchScreen(
     isInitial: Boolean = false,
@@ -78,7 +77,8 @@ fun MatchScreen(
     viewModel: MatchViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
-    navigateToSetting: () -> Unit = {}
+    navigateToSetting: () -> Unit = {},
+    navigateToInvite: () -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
@@ -149,13 +149,14 @@ fun MatchScreen(
             Spacer(modifier = Modifier.height(8.dp))
             MatchParticipantsRow(
                 participants = state.participants.map { it.name },
+                maxParticipants = state.maxParticipants,
                 itemWidth = calendarItemSize,
                 onMemberClick = { index ->
                     if (index == 0) showMyProfileBottomSheet = true
                     else showOthersProfileBottomSheet = state.participants[index]
                 },
                 onAddMemberClick = {
-
+                    navigateToInvite()
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -273,7 +274,8 @@ fun CalendarStickyHeader(
 @Preview
 @Composable
 fun MatchParticipantsRow(
-    participants: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱", "연날리기"),
+    participants: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱"),
+    maxParticipants: Int = 4,
     itemWidth: Dp = 58.dp,
     onMemberClick: (Int) -> Unit = {},
     onAddMemberClick: () -> Unit = {}
@@ -283,7 +285,7 @@ fun MatchParticipantsRow(
             .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.width(itemWidth + 6.dp))
-        (0..4).forEach { index ->
+        (0.. 4).forEach { index ->
             if (index <= participants.size) {
                 Column(
                     modifier = Modifier
@@ -291,10 +293,14 @@ fun MatchParticipantsRow(
                         .padding(horizontal = 5.dp, vertical = 8.dp)
                 ) {
                     if (index == participants.size) {
-                        AddMemberButton(
-                            itemWidth = itemWidth
-                        ) {
-                            onAddMemberClick()
+                        if (index < maxParticipants) {
+                            AddMemberButton(
+                                itemWidth = itemWidth
+                            ) {
+                                onAddMemberClick()
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.width(itemWidth))
                         }
                     } else {
                         InitialTextLayout(

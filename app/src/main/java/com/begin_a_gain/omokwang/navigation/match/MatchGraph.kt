@@ -65,6 +65,9 @@ fun NavGraphBuilder.matchGraph(
                 navigateToMain = navigateToMain,
                 navigateToSetting = {
                     navController.navigate(MatchSetting)
+                },
+                navigateToInvite = {
+                    navController.navigate(InviteMatch)
                 }
             )
         }

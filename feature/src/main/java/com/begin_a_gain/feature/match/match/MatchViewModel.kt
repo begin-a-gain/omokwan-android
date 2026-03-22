@@ -107,7 +107,8 @@ class MatchViewModel @Inject constructor(
                     state.copy(
                         participants = combinedParticipants,
                         amIHost = amIHost,
-                        todayDone = boardInitialInfo?.isTodayMatchCompleted ?: false
+                        todayDone = boardInitialInfo?.isTodayMatchCompleted ?: false,
+                        maxParticipants = boardInitialInfo?.maxParticipants ?: 5
                     )
                 }
                 if (isInitial) {
