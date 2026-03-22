@@ -2,6 +2,7 @@ package com.begin_a_gain.feature.match.match.setting
 
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.domain.repository.MatchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,6 +82,21 @@ class MatchSettingViewModel @Inject constructor(
                 currentSettings = state.currentSettings.copy(
                     isPrivate = value,
                     password = code ?: ""
+                )
+            )
+        }
+    }
+
+    fun updateSettings() = intent {
+        withLoading {
+            matchRepository.putMatchSettings(
+                matchId = currentMatchId.value,
+                request = MatchSettingsRequest(
+                    name = state.currentSettings.title,
+                    maxParticipants = state.currentSettings.maxParticipantsCount,
+                    category = state.currentSettings.selectedCategory?.code?: "",
+                    password = state.currentSettings.password,
+                    isPublic = !state.currentSettings.isPrivate
                 )
             )
         }

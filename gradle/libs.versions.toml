@@ -39,7 +39,7 @@ jetbrainsKotlinJvm = "2.0.20"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 accompnaist = "0.37.2"
-
+lottie = "6.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -101,10 +101,10 @@ google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinXserialization" }
 
 # Util
-util-ui-glide = { module = "com.github.bumptech.glide:compose", version.ref = "glide" }
 util-jodatime = { module = "joda-time:joda-time", version = "2.12.5" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 util-accompanist-permission = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompnaist"}
+util-lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 
 # Auth
 login-kakao = { group = "com.kakao.sdk", name = "v2-user", version = "2.20.6"}
@@ -141,7 +141,8 @@ android-compose = [
     "androidx-material3-window-size",
     "androidx-hilt-navigation",
     "androidx-navigation-compose",
-    "androidx-compose-material"
+    "androidx-compose-material",
+    "util-lottie"
 ]
 
 android-lifecycle = [

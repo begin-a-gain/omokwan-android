@@ -13,6 +13,7 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun User.myPage(userId: Int) = this.endPoint + "/$userId/mypage"
     fun User.me() = this.endPoint + "/me"
     fun User.deletionSurvey() = this.endPoint + "me/deletion-survey"
+    fun User.get() = this.endPoint
 
     data object Match : ApiEndPoint("matches")
     fun Match.categories() = this.endPoint + "/categories"
@@ -26,4 +27,5 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun Match.changeHost(matchId: Int) = this.endPoint + "/$matchId/host"
     fun Match.kickUser(matchId: Int, userId: Int) = this.endPoint + "/$matchId/users/$userId/kick"
     fun Match.status(matchId: Int) = this.endPoint + "/$matchId/status"
+    fun Match.invite(matchId: Int) = this.endPoint + "/$matchId/invites"
 }

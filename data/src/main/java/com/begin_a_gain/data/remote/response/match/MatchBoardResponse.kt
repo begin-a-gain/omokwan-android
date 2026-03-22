@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MatchBoardResponse(
+    val match: MatchBoardInfoResponse,
     val users: List<MatchUserResponse>,
     val dates: List<MatchDatesResponse>,
     val prevCursor: String,
@@ -12,6 +13,12 @@ data class MatchBoardResponse(
     val hasPrev: Boolean,
     val hasNext: Boolean,
     val isTodayMatchCompleted: Boolean
+)
+
+@Serializable
+data class MatchBoardInfoResponse(
+    val matchName: String,
+    val maxParticipants: Int
 )
 
 @Serializable

@@ -129,7 +129,7 @@ fun MatchSettingCommonLayout(
                 OVerticalDivider(colorToken = ColorToken.STROKE_02)
 
                 SettingRow(
-                    title = "대국코드",
+                    title = "비밀번호",
                     value = state.matchCode,
                     isEditable = false,
                     isValueClickable = true,
@@ -224,7 +224,7 @@ fun MatchSettingCommonLayout(
                 value = if (type == MatchSettingUiType.MatchMember) {
                     if (state.isPrivate) state.password else "공개"
                 } else {
-                    if (state.isPrivate) "코드 : ${state.password}" else ""
+                    if (state.isPrivate) "비밀번호 : ${state.password}" else ""
                 },
                 showSwitch = true,
                 switchChecked = state.isPrivate,

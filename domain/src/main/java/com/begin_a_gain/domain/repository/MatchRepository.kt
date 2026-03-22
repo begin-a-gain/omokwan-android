@@ -10,6 +10,7 @@ import com.begin_a_gain.domain.model.match.MatchSettings
 import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 
 interface MatchRepository {
     suspend fun getMatchCategoryList(): Result<Boolean>
@@ -27,8 +28,10 @@ interface MatchRepository {
     suspend fun getMatchBoardPaging(matchId: Int, date: String, pageSize: Int): BoardPageResult<MatchBoard>
     suspend fun getMatchBoardInitialData(matchId: Int, date: String): Result<MatchBoardInitialInfo>
     suspend fun getMatchSettings(matchId: Int): Result<MatchSettings>
+    suspend fun putMatchSettings(matchId: Int, request: MatchSettingsRequest): Result<Unit>
     suspend fun postChangeHost(matchId: Int, newHostId: Int): Result<Boolean>
     suspend fun deleteMe(matchId: Int): Result<Boolean>
     suspend fun postKickUser(matchId: Int, userId: Int): Result<Boolean>
     suspend fun putMatchStatus(matchId: Int): Result<Boolean>
+    suspend fun postInvitees(matchId: Int, invitees: List<Int>): Result<Unit>
 }

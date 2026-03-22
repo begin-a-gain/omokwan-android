@@ -7,6 +7,7 @@ import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.board
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.categories
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.changeHost
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.deleteMe
+import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.invite
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.kickUser
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.participants
 import com.begin_a_gain.data.remote.constant.ApiEndPoint.Match.settings
@@ -27,6 +28,8 @@ import com.begin_a_gain.data.remote.response.match.ParticipantsResponse
 import com.begin_a_gain.domain.model.request.ChangeMatchHostRequest
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
+import com.begin_a_gain.domain.model.request.MatchInviteesRequest
+import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import io.ktor.client.HttpClient
@@ -103,6 +106,12 @@ class MatchApi @Inject constructor(
         return client.get(ApiEndPoint.Match.settings(matchId)).body()
     }
 
+    suspend fun putMatchSettings(matchId: Int, request: MatchSettingsRequest): Response<Unit> {
+        return client.put(ApiEndPoint.Match.settings(matchId)) {
+            setBody(request)
+        }.body()
+    }
+
     suspend fun putNewHost(
         matchId: Int,
         request: ChangeMatchHostRequest
@@ -126,5 +135,11 @@ class MatchApi @Inject constructor(
         return client.put(ApiEndPoint.Match.status(matchId)) {
             parameter("date", DateTime.now().toString(ODateTimeFormat.DateForNetwork))
         }.body<Response<CompleteMatchResponse>>()
+    }
+
+    suspend fun postInvites(matchId: Int, request: MatchInviteesRequest): Response<Unit> {
+        return client.post(ApiEndPoint.Match.invite(matchId)) {
+            setBody(request)
+        }.body()
     }
 }

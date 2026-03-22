@@ -8,7 +8,9 @@ import com.begin_a_gain.domain.model.request.NicknameRequest
 import com.begin_a_gain.domain.model.user.MyPageInfo
 import com.begin_a_gain.domain.model.user.MyPageMatchItem
 import com.begin_a_gain.domain.model.user.NicknameValidation
+import com.begin_a_gain.domain.model.user.User
 import com.begin_a_gain.domain.model.user.UserInfo
+import com.begin_a_gain.domain.model.user.UserPaging
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.UserRepository
 import javax.inject.Inject
@@ -125,6 +127,30 @@ class UserRepositoryImpl @Inject constructor(
             },
             handleResponse = {
                 null
+            }
+        )
+    }
+
+    override suspend fun getUsersPaging(
+        nickname: String,
+        cursor: String,
+        pageSize: Int
+    ): Result<UserPaging> {
+        return callApi(
+            call = {
+                userApi.getUsers(nickname, cursor, pageSize)
+            },
+            handleResponse = { response ->
+                UserPaging(
+                    users = response?.users?.map {
+                        User(
+                            userId = it.userId,
+                            nickname = it.nickname
+                        )
+                    } ?: emptyList(),
+                    nextCursor = response?.nextCursor,
+                    hasNext = response?.hasNext ?: false
+                )
             }
         )
     }

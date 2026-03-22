@@ -97,6 +97,9 @@ fun MatchSettingScreen(
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "저장하기",
         bottomButtonType = if (state.hasChanges) ButtonType.Primary else ButtonType.Disable,
+        onBottomButtonClick = {
+            viewModel.updateSettings()
+        },
         snackBarBottomPadding = 20.dp
     ) { showSnackBar ->
 

@@ -13,6 +13,7 @@ enum class OImageRes(val res: Int) {
     Minus(R.drawable.minus),
     PlaceHolder(R.drawable.placeholder20),
 
+    Home(R.drawable.home),
     Profile(R.drawable.profile),
     Bell(R.drawable.bell),
 
@@ -47,5 +48,7 @@ enum class OImageRes(val res: Int) {
     TypoSignUp(R.drawable.img_typo_signup),
 
     ImgSearch(R.drawable.img_search),
-    ImgAdd(R.drawable.img_add)
+    ImgAdd(R.drawable.img_add),
+
+    ImgCombo(R.drawable.img_combo)
 }
