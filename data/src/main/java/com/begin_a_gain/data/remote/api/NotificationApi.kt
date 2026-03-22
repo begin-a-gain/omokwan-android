@@ -18,7 +18,7 @@ import javax.inject.Inject
 class NotificationApi @Inject constructor(
     private val client: HttpClient
 ) {
-    suspend fun getNotifications(): Response<List<NotificationResponse>> {
+    suspend fun getNotifications(): Response<NotificationResponse> {
         return client.get(ApiEndPoint.Notification.get()).body()
     }
 

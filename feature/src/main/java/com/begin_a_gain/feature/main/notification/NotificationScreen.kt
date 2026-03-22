@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.begin_a_gain.design.component.OListLazyColumn
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.button.OTextButton
+import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.listItemBackground
 import com.begin_a_gain.design.component.selection.OChip
 import com.begin_a_gain.design.component.text.OText
@@ -42,6 +44,10 @@ fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel()
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize()
+    }
 
     OScreen(
         title = "알림"
@@ -63,8 +69,26 @@ fun NotificationScreen(
             OListLazyColumn(
                 modifier = Modifier.weight(1f)
             ) {
+                items(
+                    count = state.notifications.size
+                ) {
+                    NotificationItem(
+                        notification = state.notifications[it],
+                        isFirst = it == 0,
+                        isLast = it == state.notifications.lastIndex,
+                        onClickNotification = {
 
+                        },
+                        onClickParticipate = {
+
+                        }
+                    )
+                }
             }
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
         }
     }
 }

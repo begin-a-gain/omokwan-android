@@ -8,6 +8,7 @@ import com.begin_a_gain.data.repository_impl.UserRepositoryImpl
 import com.begin_a_gain.domain.repository.AuthRepository
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
+import com.begin_a_gain.domain.repository.NotificationRepository
 import com.begin_a_gain.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
