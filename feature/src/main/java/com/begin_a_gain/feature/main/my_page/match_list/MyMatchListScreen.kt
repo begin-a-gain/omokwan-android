@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.Skeleton
 import com.begin_a_gain.design.component.dialog.OFullPopup
+import com.begin_a_gain.design.component.listItemBackground
 import com.begin_a_gain.design.component.text.OText
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
@@ -82,20 +83,9 @@ fun MyMatchListItem(
     onClick: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .run {
-                if (isFirst) {
-                    clip(shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                } else this
-            }
-            .run {
-                if (isLast) {
-                    clip(shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                } else this
-            }
+        modifier = Modifier.
+            listItemBackground(isFirst = isFirst, isLast = isLast)
             .clickable(onClick = onClick)
-            .background(ColorToken.UI_BG.color())
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
