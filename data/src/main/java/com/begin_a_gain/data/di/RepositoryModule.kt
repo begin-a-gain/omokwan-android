@@ -3,6 +3,7 @@ package com.begin_a_gain.data.di
 import com.begin_a_gain.data.repository_impl.AuthRepositoryImpl
 import com.begin_a_gain.data.repository_impl.LocalRepositoryImpl
 import com.begin_a_gain.data.repository_impl.MatchRepositoryImpl
+import com.begin_a_gain.data.repository_impl.NotificationRepositoryImpl
 import com.begin_a_gain.data.repository_impl.UserRepositoryImpl
 import com.begin_a_gain.domain.repository.AuthRepository
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -41,4 +42,10 @@ abstract class RepositoryModule {
     abstract fun bindMatchRepository(
         matchRepositoryImpl: MatchRepositoryImpl
     ): MatchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationRepository(
+        notificationRepositoryImpl: NotificationRepositoryImpl
+    ): NotificationRepository
 }
