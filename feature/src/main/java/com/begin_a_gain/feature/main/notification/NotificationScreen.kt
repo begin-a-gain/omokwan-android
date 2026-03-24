@@ -22,10 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.begin_a_gain.design.component.OListLazyColumn
 import com.begin_a_gain.design.component.button.OButton
-import com.begin_a_gain.design.component.button.OTextButton
 import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.listItemBackground
 import com.begin_a_gain.design.component.selection.OChip
@@ -45,7 +43,8 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun NotificationScreen(
     viewModel: NotificationViewModel = hiltViewModel(),
-    navigateToMatch: (Int) -> Unit = {}
+    navigateToMatch: (Int) -> Unit = {},
+    navigateToMain: () -> Unit = {}
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
@@ -53,17 +52,20 @@ fun NotificationScreen(
         viewModel.initialize()
     }
 
-    viewModel.collectSideEffect {
-        when (it) {
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
             is NotificationSideEffect.SuccessToRead -> {
-                navigateToMatch(it.id)
+                navigateToMatch(sideEffect.id)
             }
         }
     }
 
     OScreen(
         title = "알림",
-        useDefaultPadding = false
+        useDefaultPadding = false,
+        onBackButtonClick = {
+            navigateToMain()
+        }
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -79,7 +81,12 @@ fun NotificationScreen(
                 }
             )
 
-            if (state.notifications.isEmpty()) {
+            val notifications = when (state.filter) {
+                NotificationFilter.All -> state.notifications
+                NotificationFilter.Unread -> state.notifications.filter { !it.isRead }
+            }
+
+            if (notifications.isEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxSize().background(ColorToken.UI_02.color()),
                     verticalArrangement = Arrangement.Center,
@@ -97,10 +104,10 @@ fun NotificationScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     items(
-                        count = state.notifications.size
+                        count = notifications.size
                     ) {
                         NotificationItem(
-                            notification = state.notifications[it],
+                            notification = notifications[it],
                             isFirst = it == 0,
                             isLast = it == state.notifications.lastIndex,
                             onClickNotification = {

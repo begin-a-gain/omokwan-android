@@ -108,11 +108,14 @@ fun OmokwanGraph(
         }
 
         composable<Notification> {
-            NotificationScreen {
-                navController.navigate(
-                    MatchGraph(isInitial = false, matchId = it)
-                )
-            }
+            NotificationScreen(
+                navigateToMatch = { matchId ->
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
+                },
+                navigateToMain = {
+                    navController.popAndNavigate(Main)
+                }
+            )
         }
 
         createMatchGraph(

@@ -120,18 +120,6 @@ fun MyPageScreen(
                 )
 
                 MyPageTable(
-                    title = "일반",
-                    items = listOf(
-                        MyPageTableItem(
-                            subTitle = "알림",
-                            onClick = {
-
-                            }
-                        )
-                    )
-                )
-
-                MyPageTable(
                     title = "정보",
                     items = listOf(
                         MyPageTableItem(

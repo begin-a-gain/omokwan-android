@@ -25,13 +25,7 @@ class NotificationViewModel @Inject constructor(
 
     fun setFilter(filter: NotificationFilter) = intent {
         reduce {
-            state.copy(
-                filter = filter,
-                notifications = if (filter == NotificationFilter.All)
-                    state.notifications
-                else
-                    state.notifications.filter { !it.isRead }
-            )
+            state.copy(filter = filter)
         }
     }
 
