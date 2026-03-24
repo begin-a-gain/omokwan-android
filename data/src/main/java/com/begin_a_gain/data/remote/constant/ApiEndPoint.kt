@@ -28,4 +28,9 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun Match.kickUser(matchId: Int, userId: Int) = this.endPoint + "/$matchId/users/$userId/kick"
     fun Match.status(matchId: Int) = this.endPoint + "/$matchId/status"
     fun Match.invite(matchId: Int) = this.endPoint + "/$matchId/invites"
+
+    data object Notification : ApiEndPoint("notifications")
+    fun Notification.get() = this.endPoint
+    fun Notification.unreadStatus() = this.endPoint + "/unread-status"
+    fun Notification.read() = this.endPoint + "/read"
 }

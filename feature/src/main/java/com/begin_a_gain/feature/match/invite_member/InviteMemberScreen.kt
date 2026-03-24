@@ -34,6 +34,7 @@ import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.listItemBackground
 import com.begin_a_gain.design.component.text.InitialText
 import com.begin_a_gain.design.component.text.InitialTextLayout
 import com.begin_a_gain.design.component.text.OText
@@ -143,15 +144,7 @@ fun InviteeItem(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .run {
-                if (isFirst)
-                    this.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                else if (isLast)
-                    this.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                else this
-            }
-            .background(ColorToken.UI_BG.color())
+            .listItemBackground(isFirst = isFirst, isLast = isLast)
             .clickable { onSelect() }
             .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically

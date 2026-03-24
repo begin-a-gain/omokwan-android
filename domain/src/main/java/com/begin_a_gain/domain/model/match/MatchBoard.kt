@@ -8,7 +8,8 @@ data class MatchBoardInitialInfo(
     val users: List<MatchBoardUser>,
     val isTodayMatchCompleted: Boolean,
     val isTodayCombo: Boolean,
-    val maxParticipants: Int
+    val maxParticipants: Int,
+    val matchTitle: String
 )
 
 @Serializable

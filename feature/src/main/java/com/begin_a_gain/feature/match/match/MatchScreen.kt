@@ -73,7 +73,6 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun MatchScreen(
     isInitial: Boolean = false,
     matchId: Int = -1,
-    matchTitle: String = "대국방 이름",
     viewModel: MatchViewModel = hiltViewModel(),
     sharedViewModel: MatchSharedViewModel = hiltViewModel(),
     navigateToMain: () -> Unit = {},
@@ -100,7 +99,7 @@ fun MatchScreen(
     }
 
     OScreen(
-        title = matchTitle,
+        title = state.matchTitle,
         showBackButton = true,
         onBackButtonClick = {
             navigateToMain()

@@ -64,7 +64,8 @@ fun MainGraph(
     navigateToSignIn: () -> Unit = {},
     navigateToCreateMatch: () -> Unit = {},
     navigateToJoinMatch: () -> Unit = {},
-    navigateToMatch: (Int, String) -> Unit = { _, _ -> }
+    navigateToMatch: (Int) -> Unit = {},
+    navigateToNotification: () -> Unit = {}
 ) {
     val navController = rememberNavController()
     val sheetState = rememberModalBottomSheetState(true)
@@ -179,9 +180,14 @@ fun MainGraph(
                 startDestination = MatchList
             ) {
                 composable<MatchList> {
-                    OmokMatchListScreen { id, title ->
-                        navigateToMatch(id, title)
-                    }
+                    OmokMatchListScreen(
+                        navigateToMatch = { id ->
+                            navigateToMatch(id)
+                        },
+                        navigateToAlarm = {
+                            navigateToNotification()
+                        }
+                    )
                 }
 
                 composable<MyPage> {
@@ -189,8 +195,8 @@ fun MainGraph(
                         navigateToSignIn = {
                             navigateToSignIn()
                         },
-                        navigateToMatch = { id, title ->
-                            navigateToMatch(id, title)
+                        navigateToMatch = { id ->
+                            navigateToMatch(id)
                         }
                     )
                 }

@@ -108,7 +108,8 @@ class MatchViewModel @Inject constructor(
                         participants = combinedParticipants,
                         amIHost = amIHost,
                         todayDone = boardInitialInfo?.isTodayMatchCompleted ?: false,
-                        maxParticipants = boardInitialInfo?.maxParticipants ?: 5
+                        maxParticipants = boardInitialInfo?.maxParticipants ?: 5,
+                        matchTitle = boardInitialInfo?.matchTitle ?: ""
                     )
                 }
                 if (isInitial) {

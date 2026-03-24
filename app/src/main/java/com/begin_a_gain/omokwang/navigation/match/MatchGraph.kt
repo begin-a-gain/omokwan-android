@@ -24,8 +24,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MatchGraph(
     val isInitial: Boolean = false,
-    val matchId: Int,
-    val matchTitle: String
+    val matchId: Int
 )
 
 @Serializable
@@ -59,7 +58,6 @@ fun NavGraphBuilder.matchGraph(
             val sharedViewModel: MatchSharedViewModel = hiltViewModel(parentEntry)
             MatchScreen(
                 matchId = args.matchId,
-                matchTitle = args.matchTitle,
                 sharedViewModel = sharedViewModel,
                 isInitial = args.isInitial,
                 navigateToMain = navigateToMain,

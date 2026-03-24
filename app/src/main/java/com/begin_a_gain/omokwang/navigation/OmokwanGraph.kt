@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.begin_a_gain.feature.main.notification.NotificationScreen
 import com.begin_a_gain.feature.match.join_match.JoinMatchScreen
 import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
@@ -17,6 +18,7 @@ import com.begin_a_gain.feature.splash.SplashScreen
 import com.begin_a_gain.omokwang.navigation.main.MainGraph
 import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.LeaveMatchToast
+import com.begin_a_gain.omokwang.navigation.match.Match
 import com.begin_a_gain.omokwang.navigation.match.MatchGraph
 import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
 import com.begin_a_gain.omokwang.navigation.match.matchGraph
@@ -44,16 +46,10 @@ object MatchList
 object MyPage
 
 @Serializable
-object MatchCategory
-
-@Serializable
-object CreateMatch
-
-@Serializable
 object JoinMatch
 
 @Serializable
-object Alarm
+object Notification
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -104,8 +100,20 @@ fun OmokwanGraph(
                 navigateToSignIn = { navController.popAndNavigate(SignIn) },
                 navigateToCreateMatch = { navController.navigate(CreateMatchGraph) },
                 navigateToJoinMatch = { navController.navigate(JoinMatch) },
-                navigateToMatch = { matchId, title ->
-                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
+                navigateToMatch = { matchId ->
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
+                },
+                navigateToNotification = { navController.navigate(Notification) }
+            )
+        }
+
+        composable<Notification> {
+            NotificationScreen(
+                navigateToMatch = { matchId ->
+                    navController.navigate(MatchGraph(isInitial = false, matchId = matchId))
+                },
+                navigateToMain = {
+                    navController.popAndNavigate(Main)
                 }
             )
         }
@@ -117,8 +125,8 @@ fun OmokwanGraph(
         composable<JoinMatch> {
             JoinMatchScreen(
                 navigateToMain = { navController.popAndNavigate(Main) },
-                navigateToMatch = { matchId, title ->
-                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId, matchTitle = title))
+                navigateToMatch = { matchId ->
+                    navController.popAndNavigate(MatchGraph(isInitial = false, matchId = matchId))
                 }
             )
         }
@@ -129,4 +137,3 @@ fun OmokwanGraph(
         )
     }
 }
-
