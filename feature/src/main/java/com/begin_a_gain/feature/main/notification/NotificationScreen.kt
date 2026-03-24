@@ -54,8 +54,8 @@ fun NotificationScreen(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is NotificationSideEffect.SuccessToRead -> {
-                navigateToMatch(sideEffect.id)
+            is NotificationSideEffect.NavigateToMatch -> {
+                navigateToMatch(sideEffect.matchId)
             }
         }
     }
@@ -111,7 +111,7 @@ fun NotificationScreen(
                             isFirst = it == 0,
                             isLast = it == state.notifications.lastIndex,
                             onClickNotification = {
-                                viewModel.readNotification(state.notifications[it].notificationId)
+                                viewModel.readNotification(state.notifications[it])
                             },
                             onClickParticipate = {
 

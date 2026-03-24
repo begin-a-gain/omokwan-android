@@ -1,6 +1,7 @@
 package com.begin_a_gain.feature.main.notification
 
 import com.begin_a_gain.core.base.BaseViewModel
+import com.begin_a_gain.domain.model.Notification
 import com.begin_a_gain.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -29,12 +30,12 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    fun readNotification(id: Int) = withLoading {
-        notificationRepository.patchRead(id)
+    fun readNotification(notification: Notification) = withLoading {
+        notificationRepository.patchRead(notification.notificationId)
             .onSuccess {
                 initialize()
                 intent {
-                    postSideEffect(NotificationSideEffect.SuccessToRead(id))
+                    postSideEffect(NotificationSideEffect.NavigateToMatch(notification.matchId))
                 }
             }
     }

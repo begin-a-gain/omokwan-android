@@ -12,7 +12,7 @@ data class NotificationState(
 }
 
 interface NotificationSideEffect {
-    data class SuccessToRead(val id: Int): NotificationSideEffect
+    data class NavigateToMatch(val matchId: Int): NotificationSideEffect
 }
 
 enum class NotificationFilter {
