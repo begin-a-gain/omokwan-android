@@ -4,14 +4,14 @@ import com.begin_a_gain.util.common.DateTimeUtil.toDateTime
 import org.joda.time.DateTime
 import org.joda.time.Days
 
-enum class MatchStatus {
+enum class MatchDoneStatus {
     None,
     Todo,
     Done,
     Skip;
 
     companion object {
-        fun getMatchStatus(date: String, isCompleted: Boolean): MatchStatus {
+        fun getMatchStatus(date: String, isCompleted: Boolean): MatchDoneStatus {
             val today = DateTime.now().withTimeAtStartOfDay()
             val selectedDay = date.toDateTime().withTimeAtStartOfDay()
             val days = Days.daysBetween(today, selectedDay).days
@@ -19,6 +19,21 @@ enum class MatchStatus {
                 isCompleted -> Done
                 !isCompleted && days == 0 -> Todo
                 else -> Skip
+            }
+        }
+    }
+}
+
+enum class MatchStatus {
+    Active, Left, Kicked, Done;
+
+    companion object {
+        fun String.parse(): MatchStatus {
+            return when (this.lowercase()) {
+                Active.name.lowercase() -> Active
+                Left.name.lowercase() -> Left
+                Kicked.name.lowercase() -> Kicked
+                else -> Done
             }
         }
     }

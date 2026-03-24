@@ -23,7 +23,8 @@ import com.begin_a_gain.domain.model.request.MatchSettingsRequest
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
-import com.begin_a_gain.model.type.match.MatchStatus
+import com.begin_a_gain.model.type.match.MatchDoneStatus
+import com.begin_a_gain.model.type.match.MatchStatus.Companion.parse
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import org.joda.time.DateTime
@@ -83,10 +84,11 @@ class MatchRepositoryImpl @Inject internal constructor(
                         participants = it.participants,
                         maxParticipants = it.maxParticipants,
                         public = it.public,
-                        status = MatchStatus.getMatchStatus(
+                        status = MatchDoneStatus.getMatchStatus(
                             date = date,
                             isCompleted = it.completed
-                        )
+                        ),
+                        matchStatus = it.participantStatus.parse()
                     )
                 }?: emptyList()
             }
