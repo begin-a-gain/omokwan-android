@@ -16,21 +16,16 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -41,10 +36,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.button.OIconButton
 import com.begin_a_gain.design.component.dialog.ODatePickerDialog
+import com.begin_a_gain.design.component.dialog.ODialog
 import com.begin_a_gain.design.component.dialog.TodayOrBeforeSelectableDates
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
@@ -52,14 +47,17 @@ import com.begin_a_gain.design.component.text.OText
 import com.begin_a_gain.design.theme.ColorToken
 import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
+import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.domain.model.match.MyMatchBoardItem
+import com.begin_a_gain.feature.match.common.MatchCodeDialog
+import com.begin_a_gain.model.type.match.MatchDoneStatus
 import com.begin_a_gain.model.type.match.MatchStatus
 import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
-import kotlinx.coroutines.launch
 import org.joda.time.DateTime
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showSystemUi = true)
@@ -73,6 +71,8 @@ fun OmokMatchListScreen(
     val configuration = LocalConfiguration.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
+    var showReParticipationDialog: MyMatchBoardItem? by rememberSaveable { mutableStateOf(null) }
+    var showPasswordDialog: Int? by rememberSaveable { mutableStateOf(null) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
         selectableDates = TodayOrBeforeSelectableDates()
@@ -99,35 +99,66 @@ fun OmokMatchListScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(ColorToken.UI_BG.color())
-    ) {
-        OmokMatchListTopBar(
-            navigateToAlarm = {
-                navigateToAlarm()
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is OmokMatchListSideEffect.SuccessToJoin -> {
+                showPasswordDialog = null
+                navigateToMatch(sideEffect.matchId)
             }
-        )
-
-        OmokMatchListDateBar(
-            date = state.currentDate,
-            addDate = { day ->
-                viewModel.addDateAndFetchList(day)
-            }
-        ) {
-            showDatePicker = true
         }
-        OVerticalDivider(colorToken = ColorToken.STROKE_01)
-        
-        OmokMatchGrid(
-            omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
-            omokMatches = state.omokMatches,
-            onClickCompleteTodo = {
-                viewModel.completeOmok(it)
+    }
+
+    OScreen(
+        showTitle = false,
+        useDefaultPadding = false,
+        snackBarBottomPadding = 50.dp
+    ) { showSnackBar ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ColorToken.UI_BG.color())
+        ) {
+            OmokMatchListTopBar(
+                navigateToAlarm = {
+                    navigateToAlarm()
+                }
+            )
+
+            OmokMatchListDateBar(
+                date = state.currentDate,
+                addDate = { day ->
+                    viewModel.addDateAndFetchList(day)
+                }
+            ) {
+                showDatePicker = true
             }
-        ) { id ->
-            navigateToMatch(id)
+            OVerticalDivider(colorToken = ColorToken.STROKE_01)
+
+            OmokMatchGrid(
+                omokMatchItemSize = ((configuration.screenWidthDp - 10) / 2).dp,
+                omokMatches = state.omokMatches,
+                onClickCompleteTodo = {
+                    viewModel.completeOmok(it)
+                }
+            ) { match ->
+                when (match.matchStatus) {
+                    MatchStatus.Active -> {
+                        navigateToMatch(match.matchId)
+                    }
+
+                    MatchStatus.Kicked -> {
+                        showSnackBar("더 이상 참여할 수 없는 대국이에요.")
+                    }
+
+                    MatchStatus.Left -> {
+                        showReParticipationDialog = match
+                    }
+
+                    MatchStatus.Done -> {
+                        showSnackBar("끝난 대국이에요.")
+                    }
+                }
+            }
         }
     }
 
@@ -139,6 +170,29 @@ fun OmokMatchListScreen(
             }
         ) { selectedDate ->
             viewModel.setDateAndFetchList(selectedDate)
+        }
+    }
+
+    showReParticipationDialog?.let { match ->
+        ReParticipationDialog(
+            matchTitle = match.name,
+            onConfirm = {
+                showReParticipationDialog = null
+                showPasswordDialog = match.matchId
+            }
+        ) {
+            showReParticipationDialog = null
+        }
+    }
+
+    showPasswordDialog?.let { matchId ->
+        MatchCodeDialog(
+            isValid = state.isMatchPasswordValid,
+            onConfirmClick = { password ->
+                viewModel.joinMatch(matchId = matchId, password = password)
+            }
+        ) {
+            showPasswordDialog = null
         }
     }
 }
@@ -223,13 +277,13 @@ private fun OmokMatchListDateBar(
 fun OmokMatchGrid(
     omokMatchItemSize: Dp = 200.dp,
     omokMatches: List<MyMatchBoardItem> = listOf(
-        MyMatchBoardItem(status = MatchStatus.None),
-        MyMatchBoardItem(status = MatchStatus.Todo, name = "1일 1Commit"),
-        MyMatchBoardItem(status = MatchStatus.Done, name = "명상하기"),
-        MyMatchBoardItem(status = MatchStatus.Skip, name = "블로그 쓰기"),
+        MyMatchBoardItem(status = MatchDoneStatus.None),
+        MyMatchBoardItem(status = MatchDoneStatus.Todo, name = "1일 1Commit"),
+        MyMatchBoardItem(status = MatchDoneStatus.Done, name = "명상하기"),
+        MyMatchBoardItem(status = MatchDoneStatus.Skip, name = "블로그 쓰기"),
     ),
     onClickCompleteTodo: (Int) -> Unit = {},
-    navigateToMatch: (Int) -> Unit = {}
+    onClickOmokMatch: (MyMatchBoardItem) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -244,7 +298,7 @@ fun OmokMatchGrid(
                     match = it,
                     size = omokMatchItemSize,
                     onClickOmokMatch = {
-                        navigateToMatch(it.matchId)
+                        onClickOmokMatch(it)
                     },
                     onClickButton = {
                         onClickCompleteTodo(it.matchId)
@@ -253,7 +307,7 @@ fun OmokMatchGrid(
             }
         }
 
-        if (omokMatches.all { it.status == MatchStatus.None }) {
+        if (omokMatches.all { it.status == MatchDoneStatus.None }) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -273,5 +327,27 @@ fun OmokMatchGrid(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun ReParticipationDialog(
+    matchTitle: String,
+    onConfirm: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    ODialog(
+        title = "대국에 다시 참여할까요?",
+        message = "'$matchTitle' 대국을 다시 시작해보세요.",
+        buttonText = "참여하기",
+        onButtonClick = {
+            onConfirm()
+        },
+        additionalButtonText = "취소",
+        onAdditionalButtonClick = {
+            onDismissRequest()
+        }
+    ) {
+        onDismissRequest()
     }
 }

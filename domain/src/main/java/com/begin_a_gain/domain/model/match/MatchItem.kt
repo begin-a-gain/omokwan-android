@@ -1,6 +1,7 @@
 package com.begin_a_gain.domain.model.match
 
 import com.begin_a_gain.model.type.match.MatchJoinStatus
+import com.begin_a_gain.model.type.match.MatchDoneStatus
 import com.begin_a_gain.model.type.match.MatchStatus
 import kotlinx.serialization.Serializable
 
@@ -12,7 +13,8 @@ data class MyMatchBoardItem(
     val participants: Int = 0,
     val maxParticipants: Int = 5,
     val public: Boolean = true,
-    val status: MatchStatus = MatchStatus.None
+    val status: MatchDoneStatus = MatchDoneStatus.None,
+    val matchStatus: MatchStatus = MatchStatus.Active
 )
 
 @Serializable

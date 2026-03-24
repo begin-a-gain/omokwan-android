@@ -22,7 +22,8 @@ data class MyDailyMatchResponse(
     val participants: Int,
     val maxParticipants: Int,
     val completed: Boolean,
-    val public: Boolean
+    val public: Boolean,
+    val participantStatus: String
 )
 
 @Serializable
