@@ -43,6 +43,10 @@ constraintlayout = "2.1.4"
 accompnaist = "0.37.2"
 lottie = "6.7.1"
 
+# Firebase
+firebaseBom = "34.11.0"
+googleServices = "4.4.4"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -113,6 +117,11 @@ login-kakao = { group = "com.kakao.sdk", name = "v2-user", version = "2.20.6"}
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -122,6 +131,7 @@ android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 [bundles]
 di-hilt = [
@@ -180,4 +190,9 @@ mvi-orbit = [
 android-paging = [
     "androidx-paging",
     "androidx-paging-compose"
+]
+
+firebase = [
+    "firebase-messaging-ktx",
+    "firebase-analytics-ktx"
 ]
