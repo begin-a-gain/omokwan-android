@@ -13,6 +13,7 @@ enum class OImageRes(val res: Int) {
     Minus(R.drawable.minus),
     PlaceHolder(R.drawable.placeholder20),
 
+    Home(R.drawable.home),
     Profile(R.drawable.profile),
     Bell(R.drawable.bell),
 
@@ -35,5 +36,19 @@ enum class OImageRes(val res: Int) {
     CalendarOthersCombo(R.drawable.combo_other),
     CalendarMyNone(R.drawable.calendar_my_none),
     CalendarOthersNone(R.drawable.calendar_others_none),
-    CalendarNew(R.drawable.calendar_new)
+    CalendarNew(R.drawable.calendar_new),
+
+    Logo(R.drawable.img_logo),
+    LoginLogo(R.drawable.img_logo_login),
+    SplashLogo(R.drawable.img_logo_splash),
+    KakaoLogin(R.drawable.img_kakao),
+
+    OmogiLogin(R.drawable.img_omok_login),
+    OmogiSignUp(R.drawable.img_omok_signup),
+    TypoSignUp(R.drawable.img_typo_signup),
+
+    ImgSearch(R.drawable.img_search),
+    ImgAdd(R.drawable.img_add),
+
+    ImgCombo(R.drawable.img_combo)
 }

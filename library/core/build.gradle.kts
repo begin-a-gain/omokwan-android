@@ -7,10 +7,10 @@ plugins {
 
 android {
     namespace = "com.begin_a_gain.core"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 29
+        minSdk = libs.versions.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

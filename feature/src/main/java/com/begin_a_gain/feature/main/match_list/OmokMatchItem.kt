@@ -30,12 +30,12 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
-import com.begin_a_gain.domain.model.match.MatchItem
-import com.begin_a_gain.model.type.match.MatchStatus
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
+import com.begin_a_gain.model.type.match.MatchDoneStatus
 
 @Composable
 fun OmokMatchItem(
-    match: MatchItem,
+    match: MyMatchBoardItem,
     size: Dp,
     onClickOmokMatch: () -> Unit,
     onClickButton: () -> Unit,
@@ -47,14 +47,14 @@ fun OmokMatchItem(
             image = OImageRes.OmokMatchGrid
         )
 
-        if (match.status != MatchStatus.None) {
+        if (match.status != MatchDoneStatus.None) {
             OImage(
                 modifier = Modifier
                     .size(size)
                     .advanceShadow(
                         color = when (match.status) {
-                            MatchStatus.Todo,
-                            MatchStatus.Skip -> AppColors.OmokGrayShadow.copy(0.4f)
+                            MatchDoneStatus.Todo,
+                            MatchDoneStatus.Skip -> AppColors.OmokGrayShadow.copy(0.4f)
 
                             else -> ColorToken.UI_PRIMARY
                                 .color()
@@ -69,8 +69,8 @@ fun OmokMatchItem(
                         onClickOmokMatch()
                     },
                 image = when (match.status) {
-                    MatchStatus.Todo,
-                    MatchStatus.Skip -> OImageRes.GrayOmokMatch
+                    MatchDoneStatus.Todo,
+                    MatchDoneStatus.Skip -> OImageRes.GrayOmokMatch
 
                     else -> OImageRes.PrimaryOmokMatch
                 }
@@ -92,7 +92,10 @@ fun OmokMatchItem(
                 Spacer(modifier = Modifier.height(6.dp))
                 OText(text = "대국 +${match.ongoingDays}일 째", style = OTextStyle.Caption)
                 Spacer(modifier = Modifier.height(2.dp))
-                OText(text = "${match.participants}/${match.maxParticipants} 명", style = OTextStyle.Caption)
+                OText(
+                    text = "${match.participants}/${match.maxParticipants} 명",
+                    style = OTextStyle.Caption
+                )
             }
 
             MatchCheckButton(
@@ -111,7 +114,7 @@ fun OmokMatchItem(
 private fun MatchCheckButton(
     size: Dp,
     modifier: Modifier,
-    status: MatchStatus,
+    status: MatchDoneStatus,
     onClickButton: () -> Unit
 ) {
     Box(
@@ -121,14 +124,14 @@ private fun MatchCheckButton(
             .background(
                 shape = CircleShape,
                 color = when (status) {
-                    MatchStatus.Done -> ColorToken.UI_PRIMARY.color()
-                    MatchStatus.Todo -> ColorToken.UI_DISABLE_01.color()
+                    MatchDoneStatus.Done -> ColorToken.UI_PRIMARY.color()
+                    MatchDoneStatus.Todo -> ColorToken.UI_DISABLE_01.color()
                     else -> ColorToken.UI_DISABLE_02.color()
                 }
             )
             .run {
                 when (status) {
-                    MatchStatus.Todo -> {
+                    MatchDoneStatus.Todo -> {
                         val stroke = Stroke(
                             width = 10f,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
@@ -144,11 +147,15 @@ private fun MatchCheckButton(
                     else -> this
                 }
             }
-            .clickable { onClickButton() },
+            .clickable {
+                if (status == MatchDoneStatus.Todo) {
+                    onClickButton()
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         when (status) {
-            MatchStatus.Done -> {
+            MatchDoneStatus.Done -> {
                 OImage(
                     image = OImageRes.Checked,
                     size = 24.dp,
@@ -156,7 +163,7 @@ private fun MatchCheckButton(
                 )
             }
 
-            MatchStatus.Todo -> {
+            MatchDoneStatus.Todo -> {
                 OText(
                     text = "완료하기",
                     style = OTextStyle.Subtitle1,
@@ -181,10 +188,10 @@ fun OmokMatchItemPreview() {
     Column(
         Modifier.background(Color.White)
     ) {
-        MatchStatus.entries.forEach { status ->
+        MatchDoneStatus.entries.forEach { status ->
             OmokMatchItem(
                 modifier = Modifier.size(192.dp),
-                match = MatchItem(status = status, name = "Test"),
+                match = MyMatchBoardItem(status = status, name = "Test"),
                 size = 192.dp,
                 onClickOmokMatch = {},
                 onClickButton = {}

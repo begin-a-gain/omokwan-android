@@ -10,9 +10,27 @@ sealed class ApiEndPoint(val endPoint: String) {
     fun User.info() = this.endPoint + "/info"
     fun User.nickname() = this.endPoint + "/nicknames"
     fun User.nicknameValidation() = this.endPoint + "/nicknames/validations"
+    fun User.myPage(userId: Int) = this.endPoint + "/$userId/mypage"
+    fun User.me() = this.endPoint + "/me"
+    fun User.deletionSurvey() = this.endPoint + "me/deletion-survey"
+    fun User.get() = this.endPoint
 
     data object Match : ApiEndPoint("matches")
     fun Match.categories() = this.endPoint + "/categories"
     fun Match.create() = this.endPoint
     fun Match.get() = this.endPoint
+    fun Match.all() = this.endPoint + "/all"
+    fun Match.board(matchId: Int) = this.endPoint + "/$matchId/board"
+    fun Match.participants(matchId: Int) = this.endPoint + "/$matchId/participants"
+    fun Match.deleteMe(matchId: Int) = this.endPoint + "/$matchId/participants/me"
+    fun Match.settings(matchId: Int) = this.endPoint + "/$matchId/settings"
+    fun Match.changeHost(matchId: Int) = this.endPoint + "/$matchId/host"
+    fun Match.kickUser(matchId: Int, userId: Int) = this.endPoint + "/$matchId/users/$userId/kick"
+    fun Match.status(matchId: Int) = this.endPoint + "/$matchId/status"
+    fun Match.invite(matchId: Int) = this.endPoint + "/$matchId/invites"
+
+    data object Notification : ApiEndPoint("notifications")
+    fun Notification.get() = this.endPoint
+    fun Notification.unreadStatus() = this.endPoint + "/unread-status"
+    fun Notification.read() = this.endPoint + "/read"
 }

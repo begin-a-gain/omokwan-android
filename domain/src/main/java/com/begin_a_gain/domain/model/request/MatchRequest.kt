@@ -11,3 +11,27 @@ data class CreateMatchRequest(
     val password: String?,
     val isPublic: Boolean
 )
+
+@Serializable
+data class JoinMatchRequest(
+    val password: String
+)
+
+@Serializable
+data class ChangeMatchHostRequest(
+    val userId: Int
+)
+
+@Serializable
+data class MatchSettingsRequest(
+    val name: String,
+    val maxParticipants: Int,
+    val category: String,
+    val password: String,
+    val isPublic: Boolean
+)
+
+@Serializable
+data class MatchInviteesRequest(
+    val userIds: List<Int>
+)

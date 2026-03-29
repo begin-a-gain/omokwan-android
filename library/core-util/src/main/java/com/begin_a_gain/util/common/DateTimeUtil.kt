@@ -2,6 +2,7 @@ package com.begin_a_gain.util.common
 
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.ISODateTimeFormat
 
 object DateTimeUtil {
     private val today = DateTime.now().withTimeAtStartOfDay()
@@ -25,9 +26,15 @@ object DateTimeUtil {
         val dateTime = DateTime.parse(this, formatter).withTimeAtStartOfDay()
         return dateTime
     }
+
+    fun String.toIsoDateTime(): DateTime {
+        return ISODateTimeFormat.dateTimeParser().parseDateTime(this)
+    }
 }
 
 enum class ODateTimeFormat(val format: String) {
     FullDate("yyyy년 MM월 dd일"),
-    DateForNetwork("yyyy-MM-dd")
+    DateForNetwork("yyyy-MM-dd"),
+    CalendarHeader("yyyy. MM월"),
+
 }

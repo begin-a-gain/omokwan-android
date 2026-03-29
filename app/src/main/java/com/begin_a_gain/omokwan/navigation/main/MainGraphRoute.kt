@@ -1,0 +1,24 @@
+package com.begin_a_gain.omokwan.navigation.main
+
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.omokwan.navigation.MyPage
+import com.begin_a_gain.omokwan.navigation.MatchList
+
+data class MainGraphRoute<T: Any>(
+    val name: String,
+    val route: T,
+    val icon: OImageRes
+)
+
+val bottomNavigationRoutes = listOf(
+    MainGraphRoute("My 대국", MatchList, OImageRes.Home),
+    MainGraphRoute("마이페이지", MyPage, OImageRes.Profile),
+)
+
+enum class AddMatchType(
+    val title: String,
+    val image: OImageRes
+) {
+    CreateMatch("대국 만들기", OImageRes.ImgAdd),
+    JoinMatch("대국 참여하기", OImageRes.ImgSearch)
+}

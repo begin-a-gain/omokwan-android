@@ -1,28 +1,25 @@
 package com.begin_a_gain.feature.sign_up
 
-import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.model.type.common.ValidationState
 import com.begin_a_gain.domain.exception.SourceException
 import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.UserRepository
+import com.begin_a_gain.model.type.common.ValidationState
+import com.begin_a_gain.util.enum.NicknameFailCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.viewmodel.container
+import org.orbitmvi.orbit.blockingIntent
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val localRepository: LocalRepository
-) : BaseViewModel<SignUpState, SignUpSideEffect>() {
-
-    override val container: Container<SignUpState, SignUpSideEffect> = container(SignUpState())
+) : BaseViewModel<SignUpState, SignUpSideEffect>(SignUpState()) {
 
     init {
         validateNickname()
@@ -43,7 +40,16 @@ class SignUpViewModel @Inject constructor(
                 if (nickname.length in 2..10) {
                     userRepository.postNicknameValidation(nickname)
                         .onSuccess {
-                            reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            if (it.isValid) {
+                                reduce { state.copy(nicknameValidation = ValidationState.Success) }
+                            } else {
+                                reduce {
+                                    state.copy(
+                                        nicknameValidation = ValidationState.Fail,
+                                        nicknameFailCase = if (it.isDuplicated) NicknameFailCase.Duplicated else NicknameFailCase.Unconventional
+                                    )
+                                }
+                            }
                         }
                         .onFailure {
                             reduce {
@@ -55,6 +61,7 @@ class SignUpViewModel @Inject constructor(
                                                 NicknameFailCase.Duplicated
                                             } else NicknameFailCase.Unconventional
                                         }
+
                                         else -> NicknameFailCase.Unconventional
                                     }
                                 )
@@ -72,7 +79,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun saveNickname() = intent {
-        viewModelScope.withLoading {
+        withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {
                     localRepository.saveIsSignUpCompleted(true)
@@ -84,14 +91,18 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun getUserInfo() = intent {
-        viewModelScope.withLoading {
+    private fun getUserInfo() {
+        withLoading {
             userRepository.getUserInfo()
                 .onSuccess {
-                    postSideEffect(SignUpSideEffect.SignUpSuccess)
+                    intent {
+                        postSideEffect(SignUpSideEffect.SignUpSuccess)
+                    }
                 }
                 .onFailure {
-                    postSideEffect(SignUpSideEffect.NavigateToSignIn)
+                    intent {
+                        postSideEffect(SignUpSideEffect.NavigateToSignIn)
+                    }
                 }
         }
     }

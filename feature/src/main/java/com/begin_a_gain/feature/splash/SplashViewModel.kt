@@ -6,16 +6,12 @@ import com.begin_a_gain.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val userRepository: UserRepository
-) : BaseViewModel<SplashState, SplashSideEffect>() {
-
-    override val container: Container<SplashState, SplashSideEffect> = container(SplashState())
+) : BaseViewModel<SplashState, SplashSideEffect>(SplashState()) {
 
     init {
         getUserInfo()
@@ -32,7 +28,7 @@ class SplashViewModel @Inject constructor(
                     }
                 }
                 .onFailure {
-                    delay(2_000L)
+                    intent { postSideEffect(SplashSideEffect.LoggedOut) }
                 }
         }
     }

@@ -166,6 +166,7 @@ fun OTextField(
                     )
 
                     TextFieldWithHint(
+                        modifier = Modifier.weight(1f),
                         text = text,
                         hint = hint,
                         focus = isFocused,
@@ -213,6 +214,7 @@ fun TextFieldLeadingIcon(
 
 @Composable
 private fun TextFieldWithHint(
+    modifier: Modifier,
     text: String,
     hint: String?,
     focus: Boolean,
@@ -220,7 +222,7 @@ private fun TextFieldWithHint(
     innerTextField: @Composable () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         contentAlignment = when (textAlign) {
             TextAlign.Center -> Alignment.Center
             else -> Alignment.CenterStart
@@ -364,7 +366,8 @@ fun OTextFieldPreview() {
             text = text,
             hint = "Fill this text field",
             status = TextFieldStatus.Disabled,
-            leadingIcon = OImageRes.Checked
+            leadingIcon = OImageRes.Checked,
+            trailingIcon = OImageRes.Checked
         ) {
             text = it
         }

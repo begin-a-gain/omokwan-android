@@ -12,4 +12,5 @@ data class SplashState(
 sealed class SplashSideEffect {
     data object NotFinishedSignUp: SplashSideEffect()
     data object LoggedIn: SplashSideEffect()
+    data object LoggedOut: SplashSideEffect()
 }

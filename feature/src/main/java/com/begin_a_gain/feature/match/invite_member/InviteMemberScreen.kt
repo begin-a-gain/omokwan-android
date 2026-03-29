@@ -14,19 +14,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.design.component.button.BottomModalButton
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.begin_a_gain.design.component.button.ButtonStyle
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.component.listItemBackground
 import com.begin_a_gain.design.component.text.InitialText
 import com.begin_a_gain.design.component.text.InitialTextLayout
 import com.begin_a_gain.design.component.text.OText
@@ -37,31 +45,68 @@ import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.ScreenBottomButtonType
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.domain.model.user.User
+import org.orbitmvi.orbit.compose.collectSideEffect
 
-@Preview
 @Composable
-fun InviteMemberScreen() {
+fun InviteMemberScreen(
+    matchId: Int,
+    viewModel: InviteMemberViewModel = hiltViewModel(),
+    navigateToSetting: (String?) -> Unit = {}
+) {
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val users = viewModel.usersPagingData.collectAsLazyPagingItems()
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId)
+    }
+
+    if (users.loadState.refresh is LoadState.Loading) {
+        ProgressBar()
+    }
+
     OScreen(
         title = "대국 초대하기",
         showBackButton = true,
         onBackButtonClick = {
-
+            navigateToSetting(null)
         },
         bottomButtonUiType = ScreenBottomButtonType.Modal,
         bottomButtonText = "초대하기",
+        bottomButtonType = if (state.newMembers.isEmpty()) ButtonType.Disable else ButtonType.Primary,
         onBottomButtonClick = {
+            viewModel.inviteMembers()
+        },
+        useDefaultPadding = false,
+    ) { showSnackBar ->
 
+        viewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
+                is InviteMemberSideEffect.ExceedMaximum -> {
+                    showSnackBar("초대 가능 인원을 초과했어요.")
+                }
+
+                is InviteMemberSideEffect.InvitationSuccess -> {
+                    navigateToSetting(state.newMembers.joinToString(", ") { it.nickname } + "님을 대국에 초대했어요.")
+                }
+            }
         }
-    ) {
+
         Column {
-            SelectedInvitees()
+            SelectedInvitees(
+                invitees = state.newMembers,
+                onDelete = { index ->
+                    viewModel.selectNewMember(state.newMembers[index])
+                }
+            )
             SearchBar(
-                modifier = Modifier.padding(vertical = 20.dp),
-                keyword = "",
+                modifier = Modifier.padding(20.dp),
+                keyword = state.searchQuery,
                 hint = "이름으로 검색하기"
             ) {
-
+                viewModel.onSearchQueryChanged(it)
             }
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,16 +114,19 @@ fun InviteMemberScreen() {
                     .background(ColorToken.UI_02.color()),
                 contentPadding = PaddingValues(20.dp)
             ) {
-                itemsIndexed(
-                    (0..10).map { "Member $it" }
-                ) { index, it ->
-                    InviteeItem(
-                        name = it,
-                        isSelected = false,
-                        isFirst = index == 0,
-                        isLast = index == 10
-                    ) {
-
+                items(
+                    count = users.itemCount
+                ) { index ->
+                    val user = users[index]
+                    if (user != null) {
+                        InviteeItem(
+                            name = user.nickname,
+                            isSelected = state.newMembers.any { it.userId == user.userId },
+                            isFirst = index == 0,
+                            isLast = index == users.itemCount - 1
+                        ) {
+                            viewModel.selectNewMember(user)
+                        }
                     }
                 }
             }
@@ -86,7 +134,6 @@ fun InviteMemberScreen() {
     }
 }
 
-@Preview
 @Composable
 fun InviteeItem(
     name: String = "가나다라",
@@ -97,15 +144,7 @@ fun InviteeItem(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .run {
-                if (isFirst)
-                    this.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                else if (isLast)
-                    this.clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                else this
-            }
-            .background(ColorToken.UI_BG.color())
+            .listItemBackground(isFirst = isFirst, isLast = isLast)
             .clickable { onSelect() }
             .padding(vertical = 16.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -126,10 +165,9 @@ fun InviteeItem(
     }
 }
 
-@Preview
 @Composable
 fun SelectedInvitees(
-    invitees: List<String> = (0..2).map { "Member $it" },
+    invitees: List<User> = emptyList(),
     onDelete: (Int) -> Unit = {}
 ) {
     val scroll = rememberScrollState()
@@ -137,21 +175,22 @@ fun SelectedInvitees(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp)
+            .padding(horizontal = 20.dp)
             .horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        invitees.forEachIndexed { index, name ->
+        invitees.forEach { user ->
             Box(
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .noRippleClickable {
-                        onDelete(index)
+                        onDelete(user.userId)
                     },
                 contentAlignment = Alignment.TopEnd
             ) {
                 InitialTextLayout(
                     modifier = Modifier.padding(top = 2.dp),
-                    text = name,
+                    text = user.nickname,
                     itemWidth = 58.dp,
                     isClickable = false
                 )
@@ -173,6 +212,5 @@ fun SelectedInvitees(
                 }
             }
         }
-
     }
 }

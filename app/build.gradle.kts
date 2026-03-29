@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -13,14 +14,14 @@ kotlin {
 }
 
 android {
-    namespace = "com.begin_a_gain.omokwang"
-    compileSdk = 34
+    namespace = "com.begin_a_gain.omokwan"
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.begin_a_gain.omokwang"
-        minSdk = 29
+        applicationId = "com.begin_a_gain.omokwan"
+        minSdk = libs.versions.minSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -54,9 +55,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompilerExtension.get()
     }
     packaging {
         resources {

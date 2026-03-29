@@ -1,7 +1,8 @@
 package com.begin_a_gain.feature.match.match
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,14 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -39,8 +39,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.begin_a_gain.domain.model.MemberHistory
-import com.begin_a_gain.feature.match.match.util.MatchCalendarRow
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.begin_a_gain.design.component.OHorizontalDivider
 import com.begin_a_gain.design.component.OVerticalDivider
 import com.begin_a_gain.design.component.bottom_sheet.OBottomSheet
@@ -49,6 +50,7 @@ import com.begin_a_gain.design.component.button.ButtonStyle
 import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ProgressBar
 import com.begin_a_gain.design.component.image.OImage
 import com.begin_a_gain.design.component.image.OImageRes
 import com.begin_a_gain.design.component.text.InitialTextLayout
@@ -59,127 +61,170 @@ import com.begin_a_gain.design.theme.ColorToken.Companion.color
 import com.begin_a_gain.design.theme.OTextStyle
 import com.begin_a_gain.design.util.OScreen
 import com.begin_a_gain.design.util.noRippleClickable
+import com.begin_a_gain.domain.model.MemberInfo
+import com.begin_a_gain.feature.match.match.util.MatchVerticalCalendar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun MatchScreen(
-    isInitial: Boolean = false
+    isInitial: Boolean = false,
+    matchId: Int = -1,
+    viewModel: MatchViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
+    navigateToMain: () -> Unit = {},
+    navigateToSetting: () -> Unit = {},
+    navigateToInvite: () -> Unit = {}
 ) {
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val deviceWidth = configuration.screenWidthDp.dp
     val calendarItemSize = (deviceWidth - 40.dp - 6.dp).div(6)
+    val boardPagingItems = viewModel.calendarItems.collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showMyProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showOthersProfileBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var showMemberOutDialog by rememberSaveable { mutableStateOf(false) }
+    var showOthersProfileBottomSheet: MemberInfo? by rememberSaveable { mutableStateOf(null) }
+    var showMemberOutDialog: MemberInfo? by rememberSaveable { mutableStateOf(null) }
+    var showComboDialog: Int? by rememberSaveable { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(isInitial, matchId) { amIHost, participants ->
+            sharedViewModel.setCurrentMatch(amIHost, participants)
+        }
+    }
 
     OScreen(
-        title = "대국방 이름",
+        title = state.matchTitle,
         showBackButton = true,
+        onBackButtonClick = {
+            navigateToMain()
+        },
         trailingIcon = OImageRes.Menu,
         onTrailingIconClick = {
-
+            navigateToSetting()
         },
         useDefaultPadding = false,
         snackBarBottomPadding = 104.dp
     ) { showSnackBar ->
+        viewModel.collectSideEffect { sideEffect ->
+            when (sideEffect) {
+                MatchSideEffect.ShowInitialToast -> {
+                    showSnackBar("새 대국을 만들었어요.")
+                }
 
-        LaunchedEffect(Unit) {
-            if (isInitial) {
-                showSnackBar("새 대국을 만들었어요.")
+                is MatchSideEffect.SuccessToKickMember -> {
+                    showSnackBar("'${sideEffect.name}'님을 내보냈어요.")
+                    viewModel.initialize(isInitial, matchId) { amIHost, participants ->
+                        sharedViewModel.setCurrentMatch(amIHost, participants)
+                    }
+                }
+
+                is MatchSideEffect.SuccessToCompleteOmok -> {
+                    showSnackBar("오늘의 오목두기를 완료하였습니다.")
+                }
+
+                is MatchSideEffect.ShowCombo -> {
+                    showComboDialog = sideEffect.combo
+                }
             }
         }
 
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            MatchCalendar(
+            MatchVerticalCalendar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .clip(shape = RoundedCornerShape(12.dp)),
-                itemSize = calendarItemSize
+                itemSize = calendarItemSize,
+                calendarItems = boardPagingItems
             )
             Spacer(modifier = Modifier.height(8.dp))
-            MatchMembers(
+            MatchParticipantsRow(
+                participants = state.participants.map { it.name },
+                maxParticipants = state.maxParticipants,
                 itemWidth = calendarItemSize,
                 onMemberClick = { index ->
                     if (index == 0) showMyProfileBottomSheet = true
-                    else showOthersProfileBottomSheet = true
+                    else showOthersProfileBottomSheet = state.participants[index]
                 },
                 onAddMemberClick = {
-
+                    navigateToInvite()
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
             BottomModalButton(
-                "오목두기"
+                buttonText = if (state.todayDone) "오늘자 오목을 이미 두었어요" else "오목두기",
+                enable = !state.todayDone
             ) {
-                showSnackBar("오늘의 오목두기를 완료하였습니다.")
+                viewModel.completeOmok()
             }
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
         }
 
         if (showMyProfileBottomSheet) {
             MemberProfileBottomSheet(
                 sheetState = sheetState,
-                isMine = true
+                isMine = true,
+                amIHost = state.amIHost,
+                participant = state.participants[0]
             ) {
                 showMyProfileBottomSheet = false
             }
         }
 
-        if (showOthersProfileBottomSheet) {
+        showOthersProfileBottomSheet?.let { participant ->
             MemberProfileBottomSheet(
                 sheetState = sheetState,
+                participant = participant,
                 isMine = false,
-                isOwner = true,
-                onSendOmokClick = {
-                    // Todo : update
-                    scope.launch {
-                        showOthersProfileBottomSheet = false
-                        delay(200L)
-                        showSnackBar("‘0000’님에게 오목알을 튕겼습니다.")
-                    }
-                },
+                amIHost = state.amIHost,
                 onOutMemberClick = {
                     scope.launch {
-                        showOthersProfileBottomSheet = false
+                        showOthersProfileBottomSheet = null
                         delay(200L)
-                        showMemberOutDialog = true
+                        showMemberOutDialog = participant
                     }
                 }
             ) {
-                showOthersProfileBottomSheet = false
+                showOthersProfileBottomSheet = null
             }
         }
 
-        if (showMemberOutDialog) {
+        showMemberOutDialog?.let { member ->
             ODialog(
-                title = "이 멤버를 내보내시겠습니까?",
-                message = "해당 멤버는 대국에 대한 모든 정보가 사라지며 복구할 수 없습니다.",
+                title = "이 멤버를 내보낼까요?",
+                message = "해당 멤버에 대한 기록이 대국에서 사라지며 복구 할 수 없어요.",
                 buttonText = "내보내기",
                 buttonType = ButtonType.Alert,
                 onButtonClick = {
-                    // Todo : update
-                    scope.launch {
-                        showMemberOutDialog = false
-                        delay(200L)
-                        showSnackBar("‘0000’님을 내보내셨습니다.")
-                    }
+                    viewModel.kickMember(member)
+                    showMemberOutDialog = null
                 },
                 additionalButtonText = "취소",
                 onAdditionalButtonClick = {
-                    showMemberOutDialog = false
+                    showMemberOutDialog = null
                 }
             ) {
-               showMemberOutDialog = false
+                showMemberOutDialog = null
+            }
+        }
+
+        showComboDialog?.let { comboCount ->
+            MatchComboBottomSheet(
+                sheetState = sheetState,
+                comboCount = comboCount
+            ) {
+                showComboDialog = null
             }
         }
     }
@@ -192,9 +237,10 @@ fun CalendarStickyHeader(
     isSticky: Boolean = false
 ) {
     Box {
-        Spacer(modifier = Modifier
-            .background(ColorToken.UI_BG.color())
-            .matchParentSize()
+        Spacer(
+            modifier = Modifier
+                .background(ColorToken.UI_BG.color())
+                .matchParentSize()
         )
         Column(
             modifier = Modifier
@@ -224,54 +270,11 @@ fun CalendarStickyHeader(
     }
 }
 
-fun getLastDayOfMonth(year: Int, month: Int): Int {
-    val yearMonth = YearMonth(year, month)
-    return yearMonth.toLocalDate(1).dayOfMonth().withMaximumValue().dayOfMonth
-}
-
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun MatchCalendar(
-    modifier: Modifier = Modifier,
-    itemSize: Dp = 58.dp
-) {
-    val startDate = DateTime.now()
-    val startMonth = startDate.monthOfYear
-    val lazyState = rememberLazyListState()
-
-    LazyColumn(
-        state = lazyState,
-        modifier = modifier
-    ) {
-        (startMonth - 2..startMonth + 2).reversed().map { month ->
-            stickyHeader {
-                CalendarStickyHeader(
-                    header = "${startDate.year}. ${month}월",
-                    isSticky = true
-                )
-            }
-            val days: List<Int> =
-                (1..getLastDayOfMonth(startDate.year, month)).map { it }.reversed()
-            items(days) { day ->
-                MatchCalendarRow(
-                    today = startDate.monthOfYear == month && startDate.dayOfMonth == day,
-                    day = startDate.dayOfWeek().asText.take(1),
-                    date = day,
-                    size = itemSize
-                )
-                if (day == 1) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun MatchMembers(
-    members: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱", "연날리기"),
+fun MatchParticipantsRow(
+    participants: List<String> = listOf("준영", "생갈치1호의행방불명", "쥬짱"),
+    maxParticipants: Int = 4,
     itemWidth: Dp = 58.dp,
     onMemberClick: (Int) -> Unit = {},
     onAddMemberClick: () -> Unit = {}
@@ -281,26 +284,30 @@ fun MatchMembers(
             .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.width(itemWidth + 6.dp))
-        (0..4).forEach { index ->
-            if (index <= members.size) {
+        (0.. 4).forEach { index ->
+            if (index <= participants.size) {
                 Column(
                     modifier = Modifier
                         .width(itemWidth)
                         .padding(horizontal = 5.dp, vertical = 8.dp)
                 ) {
-                    if (index == members.size) {
-                        AddMemberButton(
-                            itemWidth = itemWidth
-                        ) {
-                            onAddMemberClick()
+                    if (index == participants.size) {
+                        if (index < maxParticipants) {
+                            AddMemberButton(
+                                itemWidth = itemWidth
+                            ) {
+                                onAddMemberClick()
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.width(itemWidth))
                         }
                     } else {
                         InitialTextLayout(
-                            text = members[index],
+                            text = participants[index],
                             itemWidth = itemWidth,
                             initialTextColor = if (index == 0) ColorToken.TEXT_ON_01 else ColorToken.TEXT_01,
                             backgroundColor = if (index == 0) ColorToken.UI_PRIMARY.color()
-                            else if (index == members.size) Color.Transparent
+                            else if (index == participants.size) Color.Transparent
                             else ColorToken.UI_03.color()
                         ) {
                             onMemberClick(index)
@@ -365,20 +372,20 @@ fun AddMemberButton(
 fun MemberProfileBottomSheet(
     sheetState: SheetState,
     isMine: Boolean = false,
-    isOwner: Boolean = true,
-    member: MemberHistory = MemberHistory(
-        id = "",
+    amIHost: Boolean = false,
+    participant: MemberInfo = MemberInfo(
+        id = -1,
         name = "가나다라",
         combo = 0,
         omok = 0,
-        days = 0
+        days = 0,
+        isHost = false
     ),
-    onSendOmokClick: () -> Unit = {},
     onOutMemberClick: () -> Unit = {},
     onDismissRequest: () -> Unit = {}
 ) {
     OBottomSheet(
-        title = (if (isMine) "나" else "${member.name} 님") + "의 프로필",
+        title = (if (isMine) "나" else "${participant.name} 님") + "의 프로필",
         sheetState = sheetState,
         heightRatio = null,
         onDismissRequest = onDismissRequest
@@ -393,7 +400,7 @@ fun MemberProfileBottomSheet(
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
                 InitialTextLayout(
-                    text = "${member.name} 님",
+                    text = "${participant.name} 님",
                     itemWidth = 96.dp,
                     initialTextStyle = OTextStyle.Display2,
                     fullTextModifier = Modifier.fillMaxWidth(),
@@ -414,9 +421,9 @@ fun MemberProfileBottomSheet(
                             OText(
                                 style = OTextStyle.Title2,
                                 text = when (index) {
-                                    0 -> "${member.combo}"
-                                    1 -> "${member.omok}"
-                                    else -> "${member.days}"
+                                    0 -> "${participant.combo}"
+                                    1 -> "${participant.omok}"
+                                    else -> "${participant.days}"
                                 }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -441,30 +448,90 @@ fun MemberProfileBottomSheet(
                 }
             }
 
-            if (isMine) {
-                Spacer(modifier = Modifier.height(40.dp))
-            } else {
-                Column(
-                    modifier = Modifier.padding(vertical = 16.dp)
+            if (amIHost && !isMine) {
+                OButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "내보내기",
+                    style = ButtonStyle.None
                 ) {
-                    OButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "오목알 튕기기"
-                    ) {
-                        onSendOmokClick()
-                    }
-
-                    if (isOwner) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        OButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "내보내기",
-                            style = ButtonStyle.None
-                        ) {
-                            onOutMemberClick()
-                        }
-                    }
+                    onOutMemberClick()
                 }
+            } else {
+                Spacer(modifier = Modifier.height(40.dp))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MatchComboBottomSheet(
+    sheetState: SheetState,
+    comboCount: Int = 1,
+    onDismissRequest: () -> Unit = {}
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        dragHandle = {
+            Spacer(
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+                    .size(36.dp, 3.dp)
+                    .background(
+                        color = ColorToken.UI_03.color(),
+                        shape = RoundedCornerShape(4.dp)
+                    )
+            )
+        },
+        containerColor = ColorToken.UI_BG.color()
+    ) {
+        Column(
+            modifier = Modifier
+                .background(ColorToken.UI_BG.color())
+                .fillMaxWidth()
+                .height(LocalConfiguration.current.screenHeightDp.times(0.8).dp)
+                .navigationBarsPadding()
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                OText(
+                    text = "오목 달성!",
+                    style = OTextStyle.Display2
+                )
+                Spacer(Modifier.height(12.dp))
+                OText(
+                    modifier = Modifier
+                        .background(
+                            color = ColorToken.UI_PRIMARY.color().copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(100.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = ColorToken.STROKE_PRIMARY.color(),
+                            shape = RoundedCornerShape(100.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    text = "${comboCount}번 연속 콤보 달성 중",
+                    style = OTextStyle.Subtitle2,
+                    textAlign = TextAlign.Center,
+                    color = ColorToken.TEXT_PRIMARY
+                )
+                Spacer(Modifier.height(52.dp))
+                OImage(
+                    modifier = Modifier.size(354.dp),
+                    image = OImageRes.ImgCombo
+                )
+            }
+            OButton(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = "확인"
+            ) {
+                onDismissRequest()
             }
         }
     }

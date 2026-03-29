@@ -2,24 +2,23 @@ package com.begin_a_gain.feature.main.match_list
 
 import androidx.lifecycle.viewModelScope
 import com.begin_a_gain.core.base.BaseViewModel
-import com.begin_a_gain.domain.model.match.MatchItem
+import com.begin_a_gain.domain.model.match.MyMatchBoardItem
+import com.begin_a_gain.domain.model.request.JoinMatchRequest
 import com.begin_a_gain.domain.repository.MatchRepository
-import com.begin_a_gain.model.type.match.MatchStatus
+import com.begin_a_gain.feature.match.join_match.JoinMatchSideEffect
+import com.begin_a_gain.model.type.match.MatchDoneStatus
+import com.begin_a_gain.util.common.DateTimeUtil.isToday
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
-import org.orbitmvi.orbit.Container
-import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
 class OmokMatchListViewModel @Inject constructor(
     private val matchRepository: MatchRepository
-): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>() {
-
-    override val container: Container<OmokMatchListState, OmokMatchListSideEffect> = container(OmokMatchListState())
+): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>(OmokMatchListState()) {
 
     init {
         viewModelScope.launch {
@@ -61,12 +60,51 @@ class OmokMatchListViewModel @Inject constructor(
             }
     }
 
-    private fun formatOmokMatchList(matchList: List<MatchItem>): List<MatchItem> {
+    private fun formatOmokMatchList(matchList: List<MyMatchBoardItem>): List<MyMatchBoardItem> {
         val maxCount = 8
         return if (matchList.size < maxCount) {
-            matchList + (1..(maxCount - matchList.size)).map { MatchItem(status = MatchStatus.None) }
+            matchList + (1..(maxCount - matchList.size)).map { MyMatchBoardItem(status = MatchDoneStatus.None) }
         } else if (matchList.size %2 == 1) {
-            matchList + listOf(MatchItem(status = MatchStatus.None))
+            matchList + listOf(MyMatchBoardItem(status = MatchDoneStatus.None))
         } else matchList
+    }
+
+    fun completeOmok(matchId: Int) {
+        val state = container.stateFlow.value
+        if (state.currentDate.isToday()) {
+            withLoading {
+                matchRepository.putMatchStatus(matchId)
+                    .onSuccess {
+                        setDateAndFetchList(state.currentDate)
+                    }
+            }
+        }
+    }
+
+    fun joinMatch(matchId: Int, password: String = "") {
+        withLoading {
+            matchRepository.postJoinMatch(
+                matchId = matchId,
+                request = JoinMatchRequest(password)
+            ).onSuccess { isJoined ->
+                if (isJoined) {
+                    intent {
+                        postSideEffect(OmokMatchListSideEffect.SuccessToJoin(matchId))
+                    }
+                } else {
+                    if (password.isNotEmpty()) {
+                        intent {
+                            reduce { state.copy(isMatchPasswordValid = false) }
+                        }
+                    }
+                }
+            }.onFailure {
+                if (password.isNotEmpty()) {
+                    intent {
+                        reduce { state.copy(isMatchPasswordValid = false) }
+                    }
+                }
+            }
+        }
     }
 }

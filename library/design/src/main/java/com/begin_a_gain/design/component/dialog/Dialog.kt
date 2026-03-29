@@ -1,5 +1,6 @@
 package com.begin_a_gain.design.component.dialog
 
+import android.view.WindowManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,11 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import com.begin_a_gain.design.component.button.ButtonType
 import com.begin_a_gain.design.component.button.OButton
 import com.begin_a_gain.design.component.text.OText
@@ -91,8 +96,9 @@ fun ODialog(
                             .height(52.dp)
                             .background(ColorToken.UI_DISABLE_01.color())
                             .clickable {
-                                onDismissRequest()
-                                onAdditionalButtonClick ?: {}
+                                onAdditionalButtonClick?.let {
+                                    onAdditionalButtonClick()
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -116,7 +122,6 @@ fun ODialog(
                             }
                         )
                         .clickable {
-                            onDismissRequest()
                             onButtonClick()
                         },
                     contentAlignment = Alignment.Center
@@ -134,6 +139,25 @@ fun ODialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun OFullPopup(
+    onDismissRequest: () -> Unit,
+    content: @Composable (() -> Unit)
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        val dialogWindowProvider = LocalView.current.parent as? DialogWindowProvider
+
+        SideEffect {
+            dialogWindowProvider?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
+
+        content()
     }
 }
 

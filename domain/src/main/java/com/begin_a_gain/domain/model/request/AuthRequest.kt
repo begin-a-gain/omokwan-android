@@ -11,3 +11,9 @@ data class SignInRequest(
 data class RefreshTokenRequest(
     val refreshToken: String
 )
+
+@Serializable
+data class DeletionSurveyRequest(
+    val reasons: List<String>,
+    val otherReason: String
+)

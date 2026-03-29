@@ -12,10 +12,10 @@ kotlin {
 
 android {
     namespace = "com.begin_a_gain.data"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 29
+        minSdk = libs.versions.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,4 +52,5 @@ dependencies {
     implementation(libs.bundles.data.local)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.util.jodatime)
+    implementation(libs.bundles.android.paging)
 }

@@ -1,5 +1,6 @@
 package com.begin_a_gain.feature.match.match.setting
 
+import android.content.ClipData
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,71 +10,145 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.toClipEntry
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.begin_a_gain.design.component.OVerticalDivider
+import com.begin_a_gain.design.component.button.ButtonType
+import com.begin_a_gain.design.component.button.OButton
+import com.begin_a_gain.design.component.dialog.ODialog
+import com.begin_a_gain.design.component.dialog.ProgressBar
+import com.begin_a_gain.design.component.image.OImageRes
+import com.begin_a_gain.design.theme.ColorToken
+import com.begin_a_gain.design.util.OScreen
+import com.begin_a_gain.design.util.ScreenBottomButtonType
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingCommonLayout
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiState
 import com.begin_a_gain.feature.match.common.match_setting.MatchSettingUiType
 import com.begin_a_gain.feature.match.common.match_setting.SettingBox
 import com.begin_a_gain.feature.match.common.match_setting.SettingRow
-import com.begin_a_gain.design.component.OVerticalDivider
-import com.begin_a_gain.design.component.button.ButtonType
-import com.begin_a_gain.design.component.button.OButton
-import com.begin_a_gain.design.component.dialog.ODialog
-import com.begin_a_gain.design.component.image.OImageRes
-import com.begin_a_gain.design.theme.ColorToken
-import com.begin_a_gain.design.util.OScreen
-import com.begin_a_gain.domain.model.match.MatchCategoryItem
+import com.begin_a_gain.feature.match.match.MatchSharedViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
 fun MatchSettingScreen(
-    isLeader: Boolean = false,
+    matchId: Int = 0,
+    toast: String? = null,
+    viewModel: MatchSettingViewModel = hiltViewModel(),
+    sharedViewModel: MatchSharedViewModel = hiltViewModel(),
+    backToMain: (toast: String?) -> Unit = {},
+    navigateToMatch: () -> Unit = {},
+    navigateToInvite: () -> Unit = {},
+    navigateToChangeHost: () -> Unit = {}
 ) {
     val scroll = rememberScrollState()
+    val scope = rememberCoroutineScope()
+    val clipboard = LocalClipboard.current
 
+    val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val participants by sharedViewModel.currentParticipants.collectAsStateWithLifecycle()
+    val isHost by sharedViewModel.isHost.collectAsStateWithLifecycle()
     var showCheckLeavingDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize(matchId, sharedViewModel.isHost.value)
+        snapshotFlow { state.currentSettings }
+            .distinctUntilChanged()
+            .collect { settings ->
+                viewModel.intent {
+                    reduce {
+                        state.copy(
+                            hasChanges = settings != state.initialSettings
+                        )
+                    }
+                }
+            }
+    }
+
+    viewModel.collectSideEffect {
+        when(it) {
+            MatchSettingSideEffect.SuccessToLeaveMatch -> {
+                backToMain("‘${state.currentSettings.title}’에서 나왔어요.\n다음에 다시 도전해 보세요!")
+            }
+        }
+    }
 
     OScreen(
         title = "대국 설정",
         showBackButton = false,
         trailingIcon = OImageRes.Cancel,
         onTrailingIconClick = {
-            // Todo : dismiss
+            navigateToMatch()
+        },
+        bottomButtonUiType = ScreenBottomButtonType.Modal,
+        bottomButtonText = "저장하기",
+        bottomButtonType = if (state.hasChanges) ButtonType.Primary else ButtonType.Disable,
+        onBottomButtonClick = {
+            viewModel.updateSettings()
+        },
+        snackBarBottomPadding = 20.dp
+    ) { showSnackBar ->
+
+        LaunchedEffect(toast) {
+            if (toast != null) {
+                showSnackBar(toast)
+            }
         }
-    ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scroll)
         ) {
             MatchSettingCommonLayout(
-                type = if (isLeader) MatchSettingUiType.MatchLeader else MatchSettingUiType.MatchMember,
+                type = if (state.isHost) MatchSettingUiType.MatchHost else MatchSettingUiType.MatchMember,
                 state = MatchSettingUiState(
-                    title = "",
-                    setMatchTitle = {
-
+                    title = state.currentSettings.title,
+                    setMatchTitle = { title ->
+                        viewModel.setTitle(title)
                     },
-                    daysInProgress = 1,
+                    daysInProgress = state.daysInProgress,
+                    matchCode = state.matchCode,
+                    onClickMatchCode = {
+                        scope.launch {
+                            val clipData = ClipData.newPlainText("match_code", state.matchCode)
+                            clipboard.setClipEntry(clipData.toClipEntry())
+                        }
+                    },
                     selectedDay = (1..7).map { true },
-                    maxParticipantsCount = 5,
-                    setMaximumParticipants = {
-
+                    maxParticipantsCount = state.currentSettings.maxParticipantsCount,
+                    setMaximumParticipants = { count ->
+                        viewModel.setMaxParticipantsCount(count)
                     },
-                    selectedCategory = null,
-                    setCategory = {
-
+                    selectedCategory = state.currentSettings.selectedCategory,
+                    setCategory = { category ->
+                        viewModel.setCategory(category)
                     },
-                    alarmOn = false,
-                    alarmHour = 0,
-                    alarmMin = 0,
-                    isPrivate = false,
-                    code = "0000"
+                    isPrivate = state.currentSettings.isPrivate,
+                    setPrivate = { value, code ->
+                        viewModel.setPrivate(value, code)
+                    },
+                    password = state.currentSettings.password,
+                    onPasswordClick = {
+                        scope.launch {
+                            val clipData = ClipData.newPlainText("password", state.currentSettings.password)
+                            clipboard.setClipEntry(clipData.toClipEntry())
+                        }
+                    }
                 )
             )
 
@@ -85,13 +160,16 @@ fun MatchSettingScreen(
                     title = "초대하기",
                     value = ""
                 ) {
+                    navigateToInvite()
                 }
-                if (isLeader) {
+
+                if (state.isHost && participants.size > 1) {
                     OVerticalDivider(colorToken = ColorToken.STROKE_02)
                     SettingRow(
                         title = "방장 변경하기",
                         value = ""
                     ) {
+                        navigateToChangeHost()
                     }
                 }
             }
@@ -105,7 +183,11 @@ fun MatchSettingScreen(
                 type = ButtonType.Alert,
                 text = "대국 나가기"
             ) {
-                showCheckLeavingDialog = true
+               if (isHost && participants.size > 1) {
+                   navigateToChangeHost()
+               } else {
+                   showCheckLeavingDialog = true
+               }
             }
             Spacer(modifier = Modifier.height(80.dp))
         }
@@ -117,7 +199,7 @@ fun MatchSettingScreen(
                 buttonText = "나가기",
                 buttonType = ButtonType.Alert,
                 onButtonClick = {
-                    // Todo : update
+                    viewModel.leaveMatch()
                     showCheckLeavingDialog = false
                 },
                 additionalButtonText = "취소",
@@ -127,6 +209,10 @@ fun MatchSettingScreen(
             ) {
                 showCheckLeavingDialog = false
             }
+        }
+
+        if (state.isLoading) {
+            ProgressBar()
         }
     }
 }

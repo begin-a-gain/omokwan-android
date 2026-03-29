@@ -28,4 +28,8 @@ class AuthRepositoryImpl @Inject constructor(
             }
         )
     }
+
+    override fun logout() {
+        tokenManager.clearTokens()
+    }
 }
