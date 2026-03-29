@@ -19,9 +19,9 @@ android {
 
     defaultConfig {
         applicationId = "com.begin_a_gain.omokwan"
-        minSdk = 29
+        minSdk = libs.versions.minSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
