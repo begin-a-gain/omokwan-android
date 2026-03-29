@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang
+package com.begin_a_gain.omokwan
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.begin_a_gain.omokwang", appContext.packageName)
+        assertEquals("com.begin_a_gain.omokwan", appContext.packageName)
     }
 }

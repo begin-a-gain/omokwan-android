@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang
+package com.begin_a_gain.omokwan
 
 import dagger.Module
 import dagger.Provides

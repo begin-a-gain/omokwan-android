@@ -1,11 +1,11 @@
-package com.begin_a_gain.omokwang
+package com.begin_a_gain.omokwan
 
 import android.app.Application
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class OmokwangApplication : Application() {
+class OmokwanApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.navigation.match
+package com.begin_a_gain.omokwan.navigation.match
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,10 +15,10 @@ import com.begin_a_gain.feature.match.match.MatchScreen
 import com.begin_a_gain.feature.match.match.MatchSharedViewModel
 import com.begin_a_gain.feature.match.match.change_host.ChangeHostScreen
 import com.begin_a_gain.feature.match.match.setting.MatchSettingScreen
-import com.begin_a_gain.omokwang.navigation.Main
-import com.begin_a_gain.omokwang.navigation.popAndNavigate
-import com.begin_a_gain.omokwang.navigation.popAndNavigateWithToast
-import com.begin_a_gain.omokwang.navigation.popBackWithToast
+import com.begin_a_gain.omokwan.navigation.Main
+import com.begin_a_gain.omokwan.navigation.popAndNavigate
+import com.begin_a_gain.omokwan.navigation.popAndNavigateWithToast
+import com.begin_a_gain.omokwan.navigation.popBackWithToast
 import kotlinx.serialization.Serializable
 
 @Serializable

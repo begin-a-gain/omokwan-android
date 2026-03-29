@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.navigation.match
+package com.begin_a_gain.omokwan.navigation.match
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,8 +10,8 @@ import androidx.navigation.navigation
 import com.begin_a_gain.feature.match.create_match.CreateMatchScreen
 import com.begin_a_gain.feature.match.create_match.CreateMatchViewModel
 import com.begin_a_gain.feature.match.create_match.MatchCategoryScreen
-import com.begin_a_gain.omokwang.navigation.Main
-import com.begin_a_gain.omokwang.navigation.popAndNavigate
+import com.begin_a_gain.omokwan.navigation.Main
+import com.begin_a_gain.omokwan.navigation.popAndNavigate
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -17,7 +17,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Omokwang"
+rootProject.name = "Omokwan"
 include(":app")
 include(":feature")
 include(":data")

@@ -1,20 +1,18 @@
-package com.begin_a_gain.omokwang
+package com.begin_a_gain.omokwan
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.begin_a_gain.design.theme.OmokwangTheme
-import com.begin_a_gain.omokwang.navigation.OmokwanGraph
-import com.begin_a_gain.omokwang.navigation.SignIn
-import com.begin_a_gain.omokwang.navigation.Splash
-import com.begin_a_gain.omokwang.navigation.popAndNavigate
+import com.begin_a_gain.design.theme.OmokwanTheme
+import com.begin_a_gain.omokwan.navigation.OmokwanGraph
+import com.begin_a_gain.omokwan.navigation.SignIn
+import com.begin_a_gain.omokwan.navigation.Splash
+import com.begin_a_gain.omokwan.navigation.popAndNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -43,7 +41,7 @@ fun MainScreen(
         }
     }
 
-    OmokwangTheme(
+    OmokwanTheme(
         darkTheme = false
     ) {
         OmokwanGraph(

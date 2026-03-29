@@ -1,8 +1,8 @@
-package com.begin_a_gain.omokwang.navigation.main
+package com.begin_a_gain.omokwan.navigation.main
 
 import com.begin_a_gain.design.component.image.OImageRes
-import com.begin_a_gain.omokwang.navigation.MyPage
-import com.begin_a_gain.omokwang.navigation.MatchList
+import com.begin_a_gain.omokwan.navigation.MyPage
+import com.begin_a_gain.omokwan.navigation.MatchList
 
 data class MainGraphRoute<T: Any>(
     val name: String,

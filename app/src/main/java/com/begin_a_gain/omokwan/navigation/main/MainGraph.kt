@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.navigation.main
+package com.begin_a_gain.omokwan.navigation.main
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -53,8 +53,8 @@ import com.begin_a_gain.design.util.advanceShadow
 import com.begin_a_gain.design.util.noRippleClickable
 import com.begin_a_gain.feature.main.match_list.OmokMatchListScreen
 import com.begin_a_gain.feature.main.my_page.MyPageScreen
-import com.begin_a_gain.omokwang.navigation.MatchList
-import com.begin_a_gain.omokwang.navigation.MyPage
+import com.begin_a_gain.omokwan.navigation.MatchList
+import com.begin_a_gain.omokwan.navigation.MyPage
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@Preview(showSystemUi = true)

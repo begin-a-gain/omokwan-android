@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.navigation
+package com.begin_a_gain.omokwan.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -15,13 +15,12 @@ import com.begin_a_gain.feature.sign_in.SignInScreen
 import com.begin_a_gain.feature.sign_up.SignUpDoneScreen
 import com.begin_a_gain.feature.sign_up.SignUpScreen
 import com.begin_a_gain.feature.splash.SplashScreen
-import com.begin_a_gain.omokwang.navigation.main.MainGraph
-import com.begin_a_gain.omokwang.navigation.match.CreateMatchGraph
-import com.begin_a_gain.omokwang.navigation.match.LeaveMatchToast
-import com.begin_a_gain.omokwang.navigation.match.Match
-import com.begin_a_gain.omokwang.navigation.match.MatchGraph
-import com.begin_a_gain.omokwang.navigation.match.createMatchGraph
-import com.begin_a_gain.omokwang.navigation.match.matchGraph
+import com.begin_a_gain.omokwan.navigation.main.MainGraph
+import com.begin_a_gain.omokwan.navigation.match.CreateMatchGraph
+import com.begin_a_gain.omokwan.navigation.match.LeaveMatchToast
+import com.begin_a_gain.omokwan.navigation.match.MatchGraph
+import com.begin_a_gain.omokwan.navigation.match.createMatchGraph
+import com.begin_a_gain.omokwan.navigation.match.matchGraph
 import kotlinx.serialization.Serializable
 
 @Serializable

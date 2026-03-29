@@ -14,11 +14,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.begin_a_gain.omokwang"
+    namespace = "com.begin_a_gain.omokwan"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.begin_a_gain.omokwang"
+        applicationId = "com.begin_a_gain.omokwan"
         minSdk = 29
         versionCode = 1
         versionName = "1.0"

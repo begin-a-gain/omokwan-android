@@ -1,4 +1,4 @@
-package com.begin_a_gain.omokwang.navigation
+package com.begin_a_gain.omokwan.navigation
 
 import androidx.navigation.NavHostController
 
