@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.main.my_page.change_nickname
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.exception.SourceException
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -18,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangeNickNameViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val localRepository: LocalRepository
-): BaseViewModel<ChangeNicknameState, ChangeNicknameSideEffect>(ChangeNicknameState()) {
+    private val localRepository: LocalRepository,
+    analyticsHelper: AnalyticsHelper
+): BaseViewModel<ChangeNicknameState, ChangeNicknameSideEffect>(ChangeNicknameState(), analyticsHelper) {
 
     init {
         validateNickname()
@@ -79,6 +82,7 @@ class ChangeNickNameViewModel @Inject constructor(
     }
 
     fun saveNickname() = intent {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "save_nickname", screen = "change_nickname"))
         withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {

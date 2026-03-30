@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.main.notification
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.Notification
 import com.begin_a_gain.domain.repository.NotificationRepository
@@ -8,8 +10,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationViewModel @Inject constructor(
-    private val notificationRepository: NotificationRepository
-) : BaseViewModel<NotificationState, NotificationSideEffect>(NotificationState()) {
+    private val notificationRepository: NotificationRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<NotificationState, NotificationSideEffect>(NotificationState(), analyticsHelper) {
 
     fun initialize() {
         withLoading {
@@ -31,6 +34,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun readNotification(notification: Notification) = withLoading {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "read_notification", screen = "notification"))
         notificationRepository.patchRead(notification.notificationId)
             .onSuccess {
                 initialize()
@@ -41,6 +45,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun readAllNotifications() = withLoading {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "read_all_notifications", screen = "notification"))
         notificationRepository.patchRead(null)
             .onSuccess {
                 initialize()

@@ -6,6 +6,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.paging.flatMap
 import androidx.paging.insertSeparators
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.MatchBoardPagingSource
 import com.begin_a_gain.domain.model.MemberInfo
@@ -27,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchViewModel @Inject constructor(
     private val matchRepository: MatchRepository,
-) : BaseViewModel<MatchState, MatchSideEffect>(MatchState()) {
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<MatchState, MatchSideEffect>(MatchState(), analyticsHelper) {
 
     private val currentMatchId = MutableStateFlow(-1)
 
@@ -120,9 +123,11 @@ class MatchViewModel @Inject constructor(
     }
 
     fun completeOmok() {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "complete_omok", screen = "match"))
         withLoading {
             matchRepository.putMatchStatus(currentMatchId.value)
                 .onSuccess {
+                    logEvent(AnalyticsEvent.CompleteOmok(screen = "match"))
                     val isComboToday = getTodayInfo(currentMatchId.value)?.isTodayCombo?: false
                     intent {
                         reduce { state.copy(todayDone = true) }
@@ -147,6 +152,7 @@ class MatchViewModel @Inject constructor(
     }
 
     fun kickMember(member: MemberInfo) {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "kick_member", screen = "match"))
         withLoading {
             matchRepository.postKickUser(
                 matchId = currentMatchId.value,

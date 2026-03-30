@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.sign_up
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.exception.SourceException
 import com.begin_a_gain.domain.repository.LocalRepository
@@ -18,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val localRepository: LocalRepository
-) : BaseViewModel<SignUpState, SignUpSideEffect>(SignUpState()) {
+    private val localRepository: LocalRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<SignUpState, SignUpSideEffect>(SignUpState(), analyticsHelper) {
 
     init {
         validateNickname()
@@ -79,6 +82,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun saveNickname() = intent {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "save_nickname", screen = "sign_up"))
         withLoading {
             userRepository.postNickname(state.nickname)
                 .onSuccess {
@@ -95,6 +99,7 @@ class SignUpViewModel @Inject constructor(
         withLoading {
             userRepository.getUserInfo()
                 .onSuccess {
+                    logEvent(AnalyticsEvent.SignUp(method = "kakao"))
                     intent {
                         postSideEffect(SignUpSideEffect.SignUpSuccess)
                     }

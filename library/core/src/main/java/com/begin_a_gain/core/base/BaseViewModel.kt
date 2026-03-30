@@ -1,6 +1,8 @@
 package com.begin_a_gain.core.base
 
 import androidx.lifecycle.ViewModel
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
@@ -8,12 +10,17 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 abstract class BaseViewModel<S : BaseState, SE : Any>(
-    initialState: S
+    initialState: S,
+    private val analyticsHelper: AnalyticsHelper? = null
 ) : ContainerHost<S, SE>, ViewModel() {
 
     override val container: Container<S, SE> = container(
         initialState = initialState
     )
+
+    protected fun logEvent(event: AnalyticsEvent) {
+        analyticsHelper?.logEvent(event)
+    }
 
     protected fun withLoading(block: suspend () -> Unit) {
         intent {

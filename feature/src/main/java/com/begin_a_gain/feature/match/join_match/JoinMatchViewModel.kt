@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.MatchPagingSource
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
@@ -22,8 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JoinMatchViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
-) : BaseViewModel<JoinMatchState, JoinMatchSideEffect>(JoinMatchState()) {
+    private val matchRepository: MatchRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<JoinMatchState, JoinMatchSideEffect>(JoinMatchState(), analyticsHelper) {
 
     private val pagingConfig = PagingConfig(
         pageSize = 10,
@@ -75,12 +78,14 @@ class JoinMatchViewModel @Inject constructor(
     }
 
     fun joinMatch(matchId: Int, password: String = "") = intent {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "join_match", screen = "join_match"))
         reduce { state.copy(isJoining = true) }
         matchRepository.postJoinMatch(
             matchId = matchId,
             request = JoinMatchRequest(password)
         ).onSuccess { isJoined ->
             if (isJoined) {
+                logEvent(AnalyticsEvent.JoinMatch(matchId))
                 intent {
                     postSideEffect(JoinMatchSideEffect.JoinSuccess(matchId, state.selectedMatch?.name?: ""))
                 }

@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.match.match.setting
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.request.MatchSettingsRequest
@@ -11,8 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MatchSettingViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
-) : BaseViewModel<MatchSettingState, MatchSettingSideEffect>(MatchSettingState()) {
+    private val matchRepository: MatchRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<MatchSettingState, MatchSettingSideEffect>(MatchSettingState(), analyticsHelper) {
 
     private var _currentMatchId = MutableStateFlow(-1)
     val currentMatchId = _currentMatchId.asStateFlow()
@@ -88,6 +91,7 @@ class MatchSettingViewModel @Inject constructor(
     }
 
     fun updateSettings() = intent {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "update_settings", screen = "match_setting"))
         withLoading {
             matchRepository.putMatchSettings(
                 matchId = currentMatchId.value,
@@ -103,6 +107,7 @@ class MatchSettingViewModel @Inject constructor(
     }
 
     fun leaveMatch() = intent {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "leave_match", screen = "match_setting"))
         matchRepository.deleteMe(currentMatchId.value)
             .onSuccess {
                 postSideEffect(MatchSettingSideEffect.SuccessToLeaveMatch)

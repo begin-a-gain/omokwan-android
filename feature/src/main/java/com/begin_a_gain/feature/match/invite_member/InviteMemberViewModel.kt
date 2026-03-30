@@ -6,6 +6,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.data.remote.paging.AllUsersPagingSource
 import com.begin_a_gain.domain.model.MemberInfo
@@ -32,8 +34,9 @@ import javax.inject.Inject
 @HiltViewModel
 class InviteMemberViewModel @Inject constructor(
     private val matchRepository: MatchRepository,
-    private val userRepository: UserRepository
-) : BaseViewModel<InviteMemberState, InviteMemberSideEffect>(InviteMemberState()) {
+    private val userRepository: UserRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<InviteMemberState, InviteMemberSideEffect>(InviteMemberState(), analyticsHelper) {
 
     private val _currentMatchId = MutableStateFlow(-1)
     private val _searchQuery = MutableStateFlow("")
@@ -105,6 +108,7 @@ class InviteMemberViewModel @Inject constructor(
     }
 
     fun inviteMembers() {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "invite_members", screen = "invite_member"))
         val state = container.stateFlow.value
         withLoading {
             matchRepository.postInvitees(
