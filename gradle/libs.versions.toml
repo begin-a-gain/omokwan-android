@@ -6,10 +6,11 @@ agp = "8.9.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-googleKsp = "2.0.20-1.0.25"
+# Kotlin
+googleKsp = "2.1.10-1.0.29"
 
 # Kotlin
-kotlin = "2.0.20"
+kotlin = "2.1.10"
 coreKtx = "1.17.0"
 kotlinXserialization = "1.7.2"
 
@@ -37,7 +38,7 @@ paging = "3.3.6"
 glide = "1.0.0-beta01"
 appcompat = "1.6.1"
 material = "1.10.0"
-jetbrainsKotlinJvm = "2.0.20"
+jetbrainsKotlinJvm = "2.1.10"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 accompnaist = "0.37.2"
@@ -119,8 +120,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -193,6 +194,6 @@ android-paging = [
 ]
 
 firebase = [
-    "firebase-messaging-ktx",
-    "firebase-analytics-ktx"
+    "firebase-messaging",
+    "firebase-analytics"
 ]

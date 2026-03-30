@@ -12,13 +12,19 @@ class MatchBoardPagingSource(
 ) : PagingSource<String, MatchBoard>() {
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, MatchBoard> {
+        val currentKey = params.key
         val pageSize = params.loadSize
+        
         return try {
-            val response = matchRepository.getMatchBoardPaging(matchId, date, pageSize)
+            val response = matchRepository.getMatchBoardPaging(matchId, currentKey ?: date, pageSize)
+            
+            val nextKey = if (response.hasPrevious) response.items.prevCursor else null
+            val prevKey = if (response.hasNext) response.items.nextCursor else null
+
             LoadResult.Page(
                 data = listOf(response.items),
-                prevKey = if (response.hasNext) response.items.nextCursor else null,
-                nextKey = if (response.hasPrevious) response.items.prevCursor else null
+                prevKey = if (prevKey == currentKey) null else prevKey,
+                nextKey = if (nextKey == currentKey) null else nextKey
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
