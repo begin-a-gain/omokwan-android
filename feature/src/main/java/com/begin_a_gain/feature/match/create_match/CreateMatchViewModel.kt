@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.match.create_match
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MatchCategoryItem
 import com.begin_a_gain.domain.model.request.CreateMatchRequest
@@ -18,8 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateMatchViewModel @Inject constructor(
     private val localRepository: LocalRepository,
-    private val matchRepository: MatchRepository
-) : BaseViewModel<CreateMatchState, CreateMatchSideEffect>(CreateMatchState()) {
+    private val matchRepository: MatchRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<CreateMatchState, CreateMatchSideEffect>(CreateMatchState(), analyticsHelper) {
 
     init {
         intent {
@@ -79,6 +82,7 @@ class CreateMatchViewModel @Inject constructor(
     }
 
     fun createMatch() {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "create_match", screen = "create_match"))
         withLoading {
             val state = container.stateFlow.value
             matchRepository.postCreateMatch(
@@ -92,6 +96,7 @@ class CreateMatchViewModel @Inject constructor(
                 )
             ).onSuccess {
                 if (it != -1) {
+                    logEvent(AnalyticsEvent.CreateMatch())
                     intent {
                         postSideEffect(CreateMatchSideEffect.CreateSuccess(it))
                     }

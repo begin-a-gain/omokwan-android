@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics.plugin)
 }
 
 kotlin {
@@ -92,4 +94,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.login.kakao)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 }

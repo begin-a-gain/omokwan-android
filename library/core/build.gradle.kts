@@ -47,4 +47,7 @@ dependencies {
 
     implementation(libs.login.kakao)
     implementation(libs.util.jodatime)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 }

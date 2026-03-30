@@ -63,6 +63,9 @@ fun DeleteAccountFullPopup(
             } else ButtonType.Disable,
             onBottomButtonClick = {
                 viewModel.deleteAccount()
+            },
+            onBackButtonClick = {
+                onDismissRequest(false)
             }
         ) {
             Column(

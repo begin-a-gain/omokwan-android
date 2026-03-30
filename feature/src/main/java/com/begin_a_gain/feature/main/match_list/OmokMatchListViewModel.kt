@@ -1,6 +1,8 @@
 package com.begin_a_gain.feature.main.match_list
 
 import androidx.lifecycle.viewModelScope
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.match.MyMatchBoardItem
 import com.begin_a_gain.domain.model.request.JoinMatchRequest
@@ -17,8 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OmokMatchListViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
-): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>(OmokMatchListState()) {
+    private val matchRepository: MatchRepository,
+    analyticsHelper: AnalyticsHelper
+): BaseViewModel<OmokMatchListState, OmokMatchListSideEffect>(OmokMatchListState(), analyticsHelper) {
 
     init {
         viewModelScope.launch {
@@ -70,11 +73,13 @@ class OmokMatchListViewModel @Inject constructor(
     }
 
     fun completeOmok(matchId: Int) {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "complete_omok", screen = "match_list"))
         val state = container.stateFlow.value
         if (state.currentDate.isToday()) {
             withLoading {
                 matchRepository.putMatchStatus(matchId)
                     .onSuccess {
+                        logEvent(AnalyticsEvent.CompleteOmok(screen = "match_list"))
                         setDateAndFetchList(state.currentDate)
                     }
             }
@@ -82,12 +87,14 @@ class OmokMatchListViewModel @Inject constructor(
     }
 
     fun joinMatch(matchId: Int, password: String = "") {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "join_match", screen = "match_list"))
         withLoading {
             matchRepository.postJoinMatch(
                 matchId = matchId,
                 request = JoinMatchRequest(password)
             ).onSuccess { isJoined ->
                 if (isJoined) {
+                    logEvent(AnalyticsEvent.JoinMatch(matchId))
                     intent {
                         postSideEffect(OmokMatchListSideEffect.SuccessToJoin(matchId))
                     }

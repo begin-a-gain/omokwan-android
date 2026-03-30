@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.match.match.change_host
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.domain.model.MemberInfo
 import com.begin_a_gain.domain.repository.MatchRepository
@@ -9,8 +11,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeHostViewModel @Inject constructor(
-    private val matchRepository: MatchRepository
-) : BaseViewModel<ChangeHostState, ChangeHostSideEffect>(ChangeHostState()) {
+    private val matchRepository: MatchRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<ChangeHostState, ChangeHostSideEffect>(ChangeHostState(), analyticsHelper) {
 
     private var currentMatchId = MutableStateFlow(-1)
 
@@ -28,6 +31,7 @@ class ChangeHostViewModel @Inject constructor(
     }
 
     fun changeHost() {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "change_host", screen = "match_setting"))
         withLoading {
             val state = container.stateFlow.value
             val newHost = state.participants[state.selectedIndex]

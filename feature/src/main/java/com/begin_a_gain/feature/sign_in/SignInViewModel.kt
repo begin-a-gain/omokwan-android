@@ -1,5 +1,7 @@
 package com.begin_a_gain.feature.sign_in
 
+import com.begin_a_gain.core.analytics.AnalyticsEvent
+import com.begin_a_gain.core.analytics.AnalyticsHelper
 import com.begin_a_gain.core.base.BaseViewModel
 import com.begin_a_gain.core.util.SocialSignInUtil
 import com.begin_a_gain.domain.model.request.SignInRequest
@@ -12,10 +14,12 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val socialSignInUtil: SocialSignInUtil,
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
-) : BaseViewModel<SignInState, SignInSideEffect>(SignInState()) {
+    private val userRepository: UserRepository,
+    analyticsHelper: AnalyticsHelper
+) : BaseViewModel<SignInState, SignInSideEffect>(SignInState(), analyticsHelper) {
 
     fun signInWithKakao() {
+        logEvent(AnalyticsEvent.ButtonClick(buttonName = "kakao_login", screen = "sign_in"))
         socialSignInUtil.signInWithKakao(
             kakaoSignInCallBack = { token, error ->
                 if (error != null) {
@@ -38,6 +42,7 @@ class SignInViewModel @Inject constructor(
         authRepository.kakaoSignIn(
             signInRequest = SignInRequest(kakaoToken)
         ).onSuccess { signUpComplete ->
+            logEvent(AnalyticsEvent.Login(method = "kakao"))
             intent {
                 if (signUpComplete) {
                     getUserInfo {

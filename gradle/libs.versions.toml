@@ -6,10 +6,11 @@ agp = "8.9.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-googleKsp = "2.0.20-1.0.25"
+# Kotlin
+googleKsp = "2.1.10-1.0.29"
 
 # Kotlin
-kotlin = "2.0.20"
+kotlin = "2.1.10"
 coreKtx = "1.17.0"
 kotlinXserialization = "1.7.2"
 
@@ -37,11 +38,16 @@ paging = "3.3.6"
 glide = "1.0.0-beta01"
 appcompat = "1.6.1"
 material = "1.10.0"
-jetbrainsKotlinJvm = "2.0.20"
+jetbrainsKotlinJvm = "2.1.10"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 accompnaist = "0.37.2"
 lottie = "6.7.1"
+
+# Firebase
+firebaseBom = "34.11.0"
+googleServices = "4.4.4"
+firebaseCrashlytics = "3.0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -113,6 +119,12 @@ login-kakao = { group = "com.kakao.sdk", name = "v2-user", version = "2.20.6"}
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -122,6 +134,8 @@ android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics-plugin = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 
 [bundles]
 di-hilt = [
@@ -180,4 +194,10 @@ mvi-orbit = [
 android-paging = [
     "androidx-paging",
     "androidx-paging-compose"
+]
+
+firebase = [
+    "firebase-messaging",
+    "firebase-analytics",
+    "firebase-crashlytics"
 ]
