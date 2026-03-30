@@ -24,6 +24,7 @@ import com.begin_a_gain.domain.repository.LocalRepository
 import com.begin_a_gain.domain.repository.MatchRepository
 import com.begin_a_gain.model.type.match.MatchJoinStatus.Companion.toMatchJoinStatus
 import com.begin_a_gain.model.type.match.MatchDoneStatus
+import com.begin_a_gain.model.type.match.MatchJoinStatus
 import com.begin_a_gain.model.type.match.MatchStatus.Companion.parse
 import com.begin_a_gain.util.common.DateTimeUtil.toString
 import com.begin_a_gain.util.common.ODateTimeFormat
@@ -103,20 +104,20 @@ class MatchRepositoryImpl @Inject internal constructor(
         keyword: String
     ): PageResult<MatchInfo> {
         val response = matchApi.getAllMatchesPaging(pageNumber, pageSize, category, joinable, keyword)
-        val matchList = response.data?.matchList?.map {
+        val matchList = response.data?.matchList?.mapNotNull {
             val category = localRepository.getCategoryList().firstOrNull { category ->
                 category.code.toInt() == it.categoryId
             }
             MatchInfo(
-                matchId = it.matchId,
-                name = it.name,
-                ongoingDays = it.ongoingDays,
-                participants = it.participants,
-                maxParticipants = it.maxParticipants,
+                matchId = it.matchId ?: return@mapNotNull null,
+                name = it.name?: "",
+                ongoingDays = it.ongoingDays?: 0,
+                participants = it.participants?: 0,
+                maxParticipants = it.maxParticipants?: 5,
                 category = category,
-                public = it.public,
-                owner = it.hostName,
-                status = it.joinable.toMatchJoinStatus()
+                public = it.public?: false,
+                owner = it.hostName?: "",
+                status = if (it.joinable == null) MatchJoinStatus.NotJoinable else it.joinable.toMatchJoinStatus()
             )
         }?: emptyList()
 
