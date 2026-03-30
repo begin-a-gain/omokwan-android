@@ -1,5 +1,9 @@
 package com.begin_a_gain.feature.main.my_page
 
+import android.net.Uri
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,8 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,6 +66,7 @@ fun MyPageScreen(
 ) {
     val scroll = rememberScrollState()
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var showChangeNicknameDialog by rememberSaveable { mutableStateOf(false) }
     var showInProgressMatchListDialog by rememberSaveable { mutableStateOf(false) }
@@ -129,13 +138,15 @@ fun MyPageScreen(
                         MyPageTableItem(
                             subTitle = "이용약관",
                             onClick = {
-
+                                val intent = CustomTabsIntent.Builder().build()
+                                intent.launchUrl(context, Uri.parse("https://www.notion.so/32d2d47341bb80a3947bc2e79f86c679?source=copy_link"))
                             }
                         ),
                         MyPageTableItem(
                             subTitle = "개인정보처리방침",
                             onClick = {
-
+                                val intent = CustomTabsIntent.Builder().build()
+                                intent.launchUrl(context, Uri.parse("https://www.notion.so/32d2d47341bb806688c7d006d65a498e?source=copy_link"))
                             }
                         )
                     )
