@@ -67,6 +67,7 @@ fun MyPageScreen(
     val scroll = rememberScrollState()
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
 
     var showChangeNicknameDialog by rememberSaveable { mutableStateOf(false) }
     var showInProgressMatchListDialog by rememberSaveable { mutableStateOf(false) }
@@ -133,7 +134,7 @@ fun MyPageScreen(
                     items = listOf(
                         MyPageTableItem(
                             subTitle = "현재 앱 버전",
-                            description = "v1.0.0"
+                            description = "v${versionName}"
                         ),
                         MyPageTableItem(
                             subTitle = "이용약관",

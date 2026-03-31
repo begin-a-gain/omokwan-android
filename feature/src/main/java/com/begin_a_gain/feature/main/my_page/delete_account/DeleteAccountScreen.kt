@@ -43,7 +43,7 @@ fun DeleteAccountFullPopup(
 
     viewModel.collectSideEffect {
         when (it) {
-            is DeleteAccountSideEffect -> {
+            is DeleteAccountSideEffect.SuccessToDelete -> {
                 showSuccessDialog = true
             }
         }
